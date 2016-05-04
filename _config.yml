@@ -11,7 +11,7 @@ title                    : "Hoondy.com"
 title_separator          : "-"
 # name                     : "Your Name"
 description              : "Donghoon's Stochastic Life"
-url                      : "http://hoondy.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : "http://hoondy.com" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 gh_repo                  :
 teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
@@ -71,7 +71,7 @@ author:
   codepen          :
   dribbble         :
   flickr           :
-  facebook         : "dhrlee"
+  # facebook         : "dhrlee"
   foursquare       :
   github           : "hoondy"
   google_plus      :
