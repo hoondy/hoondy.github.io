@@ -4,7 +4,7 @@ date: 2010-05-18T03:16:26+00:00
 author: Hoondy
 layout: single
 author_profile: true
-permalink: /2010/05/18/2010-joint-service-open-house-and-airshow/
+# permalink: /2010/05/18/2010-joint-service-open-house-and-airshow/
 categories:
   - Videos
 format: video
