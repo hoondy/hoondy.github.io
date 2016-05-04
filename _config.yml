@@ -55,8 +55,8 @@ analytics:
     tracking_id          : "UA-25206456-3"
 
 # Google AdSense
-google_ad_client         : "ca-pub-2034343186994327"
-google_ad_slot           : "5840233299"
+google_ad_client         :
+google_ad_slot           :
 
 
 # Site Author
@@ -146,7 +146,7 @@ kramdown:
 
 
 # Outputting
-permalink: /:categories/:title/
+permalink: /:year/:month/:day/:title/
 paginate: 10 # amount of posts to show
 paginate_path: /page:num/
 timezone: US # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
