@@ -150,7 +150,7 @@ brew install --build-from-source --fresh -vd boost boost-python
 From your home directory or any directory you want to download caffe
 
 ```
-git clone <a href="https://github.com/BVLC/caffe.git"><b>https://github.com/BVLC/caffe.git</b></a>
+git clone https://github.com/BVLC/caffe.git
 
 cd caffe
 
@@ -188,6 +188,8 @@ export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/cuda/lib:$HOME/anaconda/lib:/usr/lo
 
 ### **Let’s make Caffe**
 
+Make and test
+
 ```
 make clean
 
@@ -208,7 +210,7 @@ You should get a message like the following. You can safely ignore disabled test
 YOU HAVE 2 DISABLED TESTS
 ```
 
-Now make and distribute caffe.
+Now make pycaffe and distribute.
 
 ```
   make pycaffe
