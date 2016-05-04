@@ -30,11 +30,11 @@ tags:
   - Python
 ---
 
-> Update: The instruction is also available in Chinese. I'd like to thank "panovr" for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+> Update: The instruction is also available in Chinese. I'd like to thank **panovr** for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+
+> The following is a step-by-step guide for installing **Caffe** on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)
 
 ---
-
-**The following is a step-by-step guide for installing Caffe on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)**
 
 For the past couple of days, I struggled to get Caffe to work on my macbook. Caffe is a deep learning framework from Berkeley and you can read more about it at <http://caffe.berkeleyvision.org/>. If you are reading this, you probably have noticed you have to get dependencies setup correctly and download libraries and toolkits from several places or compilation will fail. Install documentation on the website was a bit out-dated, incomplete, and somewhat convoluted. So, I've decided to share my success story, and for simplicity's sake, I made it into a step-by-step guide on how to install Caffe on Mac OS X. For the maximal computing performance, I made use of my fancy NVIDIA GPU and took advantage of [NVIDA's cuDNN GPU-accelerated library](https://developer.nvidia.com/cuDNN).
 
