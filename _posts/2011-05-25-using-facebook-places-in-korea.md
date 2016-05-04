@@ -3,9 +3,7 @@ id: 90
 title: Using Facebook Places in Korea
 date: 2011-05-25T01:26:29+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.wordpress.com/?p=83
-permalink: /2011/05/25/using-facebook-places-in-korea/
+layout: single
 jabber_published:
   - 1306301190
 tagazine-media:
@@ -62,7 +60,4 @@ By the way, it seems like you just need to access Facebook Places via VPN once, 
 
 Enjoy!
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2011/05/25/using-facebook-places-in-korea/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2011/05/25/using-facebook-places-in-korea/

@@ -1,19 +1,9 @@
 ---
-id: 259
 title: Keep.Calm.And.Carry.On
 date: 2011-10-24T11:33:00+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=259
+layout: single
 permalink: /2011/10/24/keep-calm-and-carry-on/
-al2fb_facebook_image_id:
-  - 260
-al2fb_facebook_link_id:
-  - 3102615_771467346122
-al2fb_facebook_link_time:
-  - 2011-10-24T02:33:04+00:00
-al2fb_facebook_link_picture:
-  - meta=http://hoondy.com/wp-content/uploads/2011/10/5125_keepcalm_vectorization_vm-150x150.jpg
 categories:
   - Lifestyle
   - Parody
@@ -39,8 +29,3 @@ tags:
 [<img src="http://hoondy.com/wp-content/uploads/2011/10/309378_284258648259698_100000266949766_1156553_69855161_n.jpg" alt="" title="309378_284258648259698_100000266949766_1156553_69855161_n" width="260" height="290" class="aligncenter size-full wp-image-261" />](http://hoondy.com/wp-content/uploads/2011/10/309378_284258648259698_100000266949766_1156553_69855161_n.jpg)
 
 [<img src="http://hoondy.com/wp-content/uploads/2011/10/3570658938_7da6d70454.jpg" alt="" title="3570658938_7da6d70454" width="520" height="416" class="aligncenter size-full wp-image-262" />](http://hoondy.com/wp-content/uploads/2011/10/3570658938_7da6d70454.jpg)
-
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2011/10/24/keep-calm-and-carry-on/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>

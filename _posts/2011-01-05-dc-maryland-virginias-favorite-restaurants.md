@@ -1,11 +1,8 @@
 ---
-id: 33
 title: 'DC, Maryland, Virginia&#8217;s Favorite Restaurants'
 date: 2011-01-05T19:04:16+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.wordpress.com/?p=33
-permalink: /2011/01/05/dc-maryland-virginias-favorite-restaurants/
+layout: single
 jabber_published:
   - 1294272257
   - 1294272257
@@ -323,7 +320,4 @@ categories:
   <strong> </strong>
 </div>
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2011/01/05/dc-maryland-virginias-favorite-restaurants/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2011/01/05/dc-maryland-virginias-favorite-restaurants/
