@@ -1,0 +1,73 @@
+<p>If you install WordPress on GoDaddy’s free web hosting account, your CSS on dashboard gets all messed up. GoDaddy.com injects ad code on every page they process and for some reason it interacts with WordPress dashboard CSS. There were fixes floating around the web, but they were not complete. I went ahead and modified the fix code a bit and now it works great. Hope you find this useful.</p>
+
+<p>You first need to open</p>
+
+<p><em><code class="highlighter-rouge">/wp-includes/script-loader.php</code></em></p>
+
+<p>file and apply the following changes.</p>
+
+<ol>
+  <li>Replace</li>
+</ol>
+
+<p><code class="highlighter-rouge">echo "&lt;script type='text/javascript' src='" . esc_attr($src) . "'&gt;&lt;/script&gt;\n";</code></p>
+
+<p>with</p>
+
+<p><strong><code class="highlighter-rouge">//*********************************************************&lt;br /&gt;
+// godaddy ads fix&lt;br /&gt;
+echo "&lt;script type='text/javascript'&gt;\n";&lt;br /&gt;
+echo file_get_contents( $src ) . "\n";&lt;br /&gt;
+echo "&lt;/script&gt;&lt;!-- /wp-includes/script-load.php --&gt;\n";&lt;br /&gt;
+//*********************************************************</code></strong></p>
+
+<ol>
+  <li>Replace</li>
+</ol>
+
+<p><code class="highlighter-rouge">echo "&lt;link rel='stylesheet' href='" . esc_attr($href) . "' type='text/css' media='all'&gt;\n";</code></p>
+
+<p>with</p>
+
+<p><strong><code class="highlighter-rouge">//*********************************************************&lt;br /&gt;
+// godaddy ads fix&lt;br /&gt;
+echo "&lt;style type='text/css' media='all'&gt;\n";&lt;br /&gt;
+echo file_get_contents( $href ) . "\n";&lt;br /&gt;
+echo "#conash3D0 { display:none; }\n";&lt;br /&gt;
+echo "&lt;/style&gt;&lt;!-- /wp-includes/script-load.php --&gt;\n";&lt;br /&gt;
+//*********************************************************</code></strong></p>
+
+<p>For those who don’t know it yet, you can also hide GoDaddy.com ad banner from your home page and admin login page. To do this, follow the steps below.</p>
+
+<ol>
+  <li>For home page without ads</li>
+</ol>
+
+<p>Open and edit</p>
+
+<p>_</p>
+
+<p><code class="highlighter-rouge">/wp-content/themes/&lt;your theme&gt;/style.css</code>_</p>
+
+<p>and add the following line at the end</p>
+
+<p><strong><code class="highlighter-rouge">#conash3D0{display:none;}</code></strong></p>
+
+<ol>
+  <li>Similarly, for login page without ads</li>
+</ol>
+
+<p>Open and edit</p>
+
+<p><em><code class="highlighter-rouge">/wp-admin/css/login.css</code></em></p>
+
+<p>and add the following line at the end</p>
+
+<p><strong><code class="highlighter-rouge">#conash3D0{display:none;}</code></strong></p>
+
+<p>Enjoy!</p>
+
+<div class="al2fb_like_button">
+  <div id="fb-root">
+  </div><fb:like href="http://hoondy.com/2011/09/01/wordpress-fix-for-godaddy-free-account/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
+</div>

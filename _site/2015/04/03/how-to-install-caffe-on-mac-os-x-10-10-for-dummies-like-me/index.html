@@ -1,0 +1,228 @@
+<p>Update: The instruction is also available in Chinese. I’d like to thank panovr for providing Chinese translation. (<a href="http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html" title="http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html">http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html</a>)</p>
+
+<p> </p>
+
+<p><strong>The following is a step-by-step guide for installing Caffe on </strong>Mac OS X<strong> (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)</strong></p>
+
+<p>For the past couple of days, I struggled to get Caffe to work on my macbook. Caffe is a deep learning framework from Berkeley and you can read more about it at <a href="http://caffe.berkeleyvision.org/">http://caffe.berkeleyvision.org/</a>. If you are reading this, you probably have noticed you have to get dependencies setup correctly and download libraries and toolkits from several places or compilation will fail. Install documentation on the website was a bit out-dated, incomplete, and somewhat convoluted. So, I’ve decided to share my success story, and for simplicity’s sake, I made it into a step-by-step guide on how to install Caffe on Mac OS X. For the maximal computing performance, I made use of my fancy NVIDIA GPU and took advantage of <a href="https://developer.nvidia.com/cuDNN">NVIDA’s cuDNN GPU-accelerated library</a>.</p>
+
+<p> </p>
+
+<p>Take a deep breath..</p>
+
+<p> </p>
+
+<p>**<homebrew>**</homebrew></p>
+
+<ol>
+  <li>Install package manager for OSX called Homebrew by following instruction on <a href="http://brew.sh/">http://brew.sh/</a></li>
+</ol>
+
+<p> </p>
+
+<p>**<anaconda python="">**</anaconda></p>
+
+<ol>
+  <li>Download and install Anaconda Python from <a href="https://store.continuum.io/cshop/anaconda/">https://store.continuum.io/cshop/anaconda/</a> (it includes hdf5, which is used by Caffe)</li>
+  <li>
+    <pre><b><b>export PATH=~/anaconda/bin:$PATH</b></b></pre>
+  </li>
+</ol>
+
+<p> </p>
+
+<p>**<cuda>**</cuda></p>
+
+<ol>
+  <li>Install CUDA 7.0 (for OSX) from <a href="https://developer.nvidia.com/cuda-downloads">https://developer.nvidia.com/cuda-downloads</a></li>
+  <li>Install latest standalone CUDA driver (apparently, one included in CUDA Toolkit is outdated) from <a href="http://www.nvidia.com/object/mac-driver-archive.html">http://www.nvidia.com/object/mac-driver-archive.html</a></li>
+  <li>
+    <pre><b><b>export PATH=/Developer/NVIDIA/CUDA-7.0/bin:$PATH</b></b></pre>
+  </li>
+  <li>
+    <pre><b>export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH</b></pre>
+  </li>
+</ol>
+
+<p> </p>
+
+<p><strong>&lt;BLAS – Intel MKL&gt;</strong></p>
+
+<ol>
+  <li>OSX native BLAS library has some instability issue. Alternatively, install Intel MKL (math kernal library, which is a component of Intel Parallel Studio XE Composer Edition) using free student license, <a href="https://software.intel.com/en-us/qualify-for-free-software/student">https://software.intel.com/en-us/qualify-for-free-software/student</a> (Later, don’t forget to set BLAS := mkl in Makefile.config)</li>
+  <li>Make sure to select every components in Intel Parallel Studio XE (honestly, I don’t know what’s used and what’s not, but apparently default installation was missing some components)</li>
+  <li>
+    <pre><strong>cd /opt/intel/mkl/lib/</strong></pre>
+  </li>
+  <li>
+    <pre><strong>sudo ln -s . /opt/intel/mkl/lib/intel64</strong></pre>
+  </li>
+</ol>
+
+<p> </p>
+
+<p>**<cudnn>**</cudnn></p>
+
+<ol>
+  <li>Install NVIDIA cuDNN from <a href="https://developer.nvidia.com/cudnn">https://developer.nvidia.com/cudnn</a> (Later, don’t forget to uncomment the USE_CUDNN := 1 flag in Makefile.config). You first need to signup and get approved by NVIDIA CUDA Register Developer Program.</li>
+  <li>
+    <pre><b>tar -xzvf cudnn-6.5-osx-v2.tgz</b></pre>
+  </li>
+  <li>
+    <pre><b>cd cudnn-6.5-osx-v2</b></pre>
+  </li>
+  <li>
+    <pre><b>sudo cp lib* /usr/local/cuda/lib</b></pre>
+  </li>
+  <li>
+    <pre><b>sudo cp cudnn.h /usr/local/cuda/include/</b></pre>
+  </li>
+</ol>
+
+<p> </p>
+
+<p>**<dependencies via="" homebrew="">**</dependencies></p>
+
+<ol>
+  <li>First, we need to modify something..</li>
+  <li>
+    <pre><b>brew edit opencv</b></pre>
+  </li>
+  <li>Replace the following lines</li>
+  <li>
+    <pre><strong>args &lt;&lt; "-DPYTHON#{py_ver}_LIBRARY=#{py_lib}/libpython2.7.#{dylib}"</strong>
+<strong>args &lt;&lt; "-DPYTHON#{py_ver}_INCLUDE_DIR=#{py_prefix}/include/python2.7"</strong></pre>
+  </li>
+  <li>with</li>
+  <li>
+    <pre><strong>args &lt;&lt; "-DPYTHON_LIBRARY=#{py_prefix}/lib/libpython2.7.dylib"
+</strong><strong>args &lt;&lt; "-DPYTHON_INCLUDE_DIR=#{py_prefix}/include/python2.7"</strong></pre>
+  </li>
+  <li>
+    <pre><strong>brew install --fresh -vd snappy leveldb gflags glog szip lmdb homebrew/science/opencv</strong></pre>
+  </li>
+  <li>
+    <pre><strong>brew install --build-from-source --with-python --fresh -vd protobuf
+brew install --build-from-source --fresh -vd boost boost-python</strong></pre>
+  </li>
+</ol>
+
+<p> </p>
+
+<p>**<download caffe="" from="" github="">**</download></p>
+
+<ol>
+  <li>
+    <p>from your home directory or any directory you want to download caffe, 
+    &lt;pre&gt;<b>git clone </b><a href="https://github.com/BVLC/caffe.git"><b>https://github.com/BVLC/caffe.git</b></a>&lt;/pre&gt;</p>
+  </li>
+  <li>
+    <pre><b><b>cd caffe</b></b></pre>
+  </li>
+  <li>
+    <pre><b><b>cp Makefile.config.example Makefile.config</b></b></pre>
+  </li>
+</ol>
+
+<p> </p>
+
+<p>**<makefile.config>**</makefile.config></p>
+
+<ol>
+  <li>Set <strong>BLAS := mkl</strong> in Makefile.config</li>
+  <li>Uncomment the <strong>USE_CUDNN := 1</strong> flag in Makefile.config</li>
+  <li>Check your Python path</li>
+  <li>Read through carefully and modify configuration to suit your need!!!</li>
+</ol>
+
+<p> </p>
+
+<p>**<environment variables="">**</environment></p>
+
+<ol>
+  <li>
+    <pre><strong>export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/cuda/lib:$HOME/anaconda/lib:/usr/local/lib:/usr/lib:/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib</strong></pre>
+  </li>
+</ol>
+
+<p><strong> </strong></p>
+
+<p><strong>&lt;Let’s make Caffe&gt;</strong></p>
+
+<ol>
+  <li>
+    <pre><b>make clean</b></pre>
+  </li>
+  <li>
+    <pre><b>make all -j8</b></pre>
+  </li>
+  <li>
+    <pre><b>make test</b></pre>
+  </li>
+  <li>
+    <pre><b>make runtest</b></pre>
+  </li>
+  <li>You should get a message like the following. You can safely ignore disabled tests. 
+    &lt;pre&gt;[———-] Global test environment tear-down
+[==========] 1128 tests from 198 test cases ran. (282609 ms total)
+[  PASSED  ] 1128 tests.</li>
+</ol>
+
+<p>YOU HAVE 2 DISABLED TESTS&lt;/pre&gt;</p>
+
+<ol>
+  <li>
+    <pre><b>make pycaffe</b></pre>
+  </li>
+  <li>
+    <pre><b>make distribute</b></pre>
+  </li>
+</ol>
+
+<p><a href="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png"><img class="aligncenter wp-image-480" src="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png" alt="Screen Shot 2015-04-03 at 8.49.59 PM" width="520" height="280" srcset="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1-300x161.png 300w, http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png 973w" sizes="(max-width: 520px) 100vw, 520px" /></a></p>
+
+<p> </p>
+
+<p>Enjoy!</p>
+
+<p>(Last updated: 04/03/2015)</p>
+
+<p> </p>
+
+<p><strong>Note 1:</strong> CUDA 6 the 32-bit and 64-bit library files were merged under /usr/local/cuda/lib</p>
+
+<p><strong>Note 2:</strong> To run CUDA applications in console mode on MacBook Pro with both an integrated GPU and a discrete GPU, use the following settings before dropping to console mode: Uncheck <strong>System Preferences</strong> &gt; <strong>Energy Saver</strong> &gt; <strong>Automatic Graphic Switch</strong></p>
+
+<p><strong>Note 3:</strong> You might need the following environment variables for Intel MKL. I didn’t needed.</p>
+
+<pre><strong>export MKLROOT=/opt/intel/composer_xe_2015.2.132/mkl</strong></pre>
+
+<pre><strong>export DYLD_LIBRARY_PATH=/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib:$DYLD_LIBRARY_PATH</strong></pre>
+
+<pre><strong>export LIBRARY_PATH=/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib:$LIBRARY_PATH</strong></pre>
+
+<pre><strong>export NLSPATH=/opt/intel/composer_xe_2015.2.132/mkl/lib/locale/%l_%t/%N:$NLSPATH</strong></pre>
+
+<pre><strong>export MANPATH=/opt/intel/composer_xe_2015.2.132/man/en_US:/usr/local/share/man:/usr/share/man:/opt/intel/man:$MANPATH</strong></pre>
+
+<pre><strong>export INCLUDE=/opt/intel/composer_xe_2015.0.077/mkl/include:$INCLUDE</strong></pre>
+
+<pre><strong>export CPATH=/opt/intel/composer_xe_2015.2.132/mkl/include:/opt/intel/composer_xe_2015.2.132/mkl/bin/intel64/mklvars_intel64.sh:$CPATH</strong></pre>
+
+<p> </p>
+
+<p><strong>Reference:</strong></p>
+
+<ol>
+  <li><a href="http://caffe.berkeleyvision.org/installation.html">http://caffe.berkeleyvision.org/installation.html</a></li>
+  <li><a href="http://docs.nvidia.com/cuda/cuda-getting-started-guide-for-mac-os-x/">http://docs.nvidia.com/cuda/cuda-getting-started-guide-for-mac-os-x/</a></li>
+  <li><a href="https://github.com/BVLC/caffe/wiki/Installation-%28OSX%29">https://github.com/BVLC/caffe/wiki/Installation-%28OSX%29</a></li>
+  <li><a href="https://aisgit.informatik.uni-freiburg.de/zhang/caffe_future/blob/ais-master/docs/installation.md">https://aisgit.informatik.uni-freiburg.de/zhang/caffe_future/blob/ais-master/docs/installation.md</a></li>
+  <li><a href="https://haduonght.wordpress.com/2015/02/21/install-caffe-on-mac-os-x-10-10/">https://haduonght.wordpress.com/2015/02/21/install-caffe-on-mac-os-x-10-10/</a></li>
+  <li><a href="http://smrmkt.hatenablog.jp/entry/2015/02/11/195213">http://smrmkt.hatenablog.jp/entry/2015/02/11/195213</a></li>
+</ol>
+
+<div class="al2fb_like_button">
+  <div id="fb-root">
+  </div><fb:like href="http://hoondy.com/2015/04/03/how-to-install-caffe-on-mac-os-x-10-10-for-dummies-like-me/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
+</div>
