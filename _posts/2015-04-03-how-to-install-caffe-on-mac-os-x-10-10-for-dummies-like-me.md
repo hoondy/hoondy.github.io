@@ -46,131 +46,186 @@ Take a deep breath..
 
 ### **Homebrew**
 
-1. Install package manager for OSX called Homebrew by following instruction on
-   ```
-   http://brew.sh/
-   ```
-   
+Install package manager for OSX called Homebrew
+
+<http://brew.sh/>
+
 
 &nbsp;
 
 ### **Anaconda Python**
 
-1. Download and install Anaconda Python from <https://store.continuum.io/cshop/anaconda/> (it includes hdf5, which is used by Caffe)
-2. Set PATH
-   ```
-   export PATH=~/anaconda/bin:$PATH
-   ```
-   
+Download and install Anaconda Python (includes hdf5, which is used by Caffe)
+
+<https://store.continuum.io/cshop/anaconda/>
+
+Set PATH
+
+```
+export PATH=~/anaconda/bin:$PATH
+```
 
 &nbsp;
 
 ### **CUDA**
 
-1. Install CUDA 7.0 (for OSX) from <https://developer.nvidia.com/cuda-downloads>
-2. Install latest standalone CUDA driver (apparently, one included in CUDA Toolkit is outdated) from <http://www.nvidia.com/object/mac-driver-archive.html>
-3. Set PATH
-   ```
-   export PATH=/Developer/NVIDIA/CUDA-7.0/bin:$PATH
-   ```
-   
-4. Set DYLD_LIBRARY_PATH
-   ```
-   export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH
-   ```
-   
+Install CUDA 7.0 (for OSX) 
+
+<https://developer.nvidia.com/cuda-downloads>
+
+Install latest standalone CUDA driver (apparently, one included in CUDA Toolkit is outdated)
+
+<http://www.nvidia.com/object/mac-driver-archive.html>
+
+Set PATH
+
+```
+export PATH=/Developer/NVIDIA/CUDA-7.0/bin:$PATH
+```
+
+Set DYLD_LIBRARY_PATH
+
+```
+export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH
+```
 
 &nbsp;
 
-**BLAS - Intel MKL**
+### **BLAS - Intel MKL**
 
-  1. OSX native BLAS library has some instability issue. Alternatively, install Intel MKL (math kernal library, which is a component of Intel Parallel Studio XE Composer Edition) using free student license, <https://software.intel.com/en-us/qualify-for-free-software/student> (Later, don&#8217;t forget to set BLAS := mkl in Makefile.config)
-  2. Make sure to select every components in Intel Parallel Studio XE (honestly, I don’t know what’s used and what’s not, but apparently default installation was missing some components)
-  3. <pre><strong>cd /opt/intel/mkl/lib/</strong></pre>
+OSX native BLAS library has some instability issue. Alternatively, install Intel MKL (math kernal library, which is a component of Intel Parallel Studio XE Composer Edition) using free student license, <https://software.intel.com/en-us/qualify-for-free-software/student> (Later, don't forget to set BLAS := mkl in Makefile.config)
 
-  4. <pre><strong>sudo ln -s . /opt/intel/mkl/lib/intel64</strong></pre>
+Make sure to select every components in Intel Parallel Studio XE (honestly, I don’t know what’s used and what’s not, but apparently default installation was missing some components)
 
-&nbsp;
+```
+cd /opt/intel/mkl/lib/
 
-**<cuDNN>**
-
-  1. Install NVIDIA cuDNN from <https://developer.nvidia.com/cudnn> (Later, don&#8217;t forget to uncomment the USE_CUDNN := 1 flag in Makefile.config). You first need to signup and get approved by NVIDIA CUDA Register Developer Program.
-  2. <pre><b>tar -xzvf cudnn-6.5-osx-v2.tgz</b></pre>
-
-  3. <pre><b>cd cudnn-6.5-osx-v2</b></pre>
-
-  4. <pre><b>sudo cp lib* /usr/local/cuda/lib</b></pre>
-
-  5. <pre><b>sudo cp cudnn.h /usr/local/cuda/include/</b></pre>
+sudo ln -s . /opt/intel/mkl/lib/intel64
+```
 
 &nbsp;
 
-**<Dependencies via homebrew>**
+### **cuDNN**
 
-  1. First, we need to modify something..
-  2. <pre><b>brew edit opencv</b></pre>
+Install NVIDIA cuDNN from <https://developer.nvidia.com/cudnn> (Later, don't forget to uncomment the USE_CUDNN := 1 flag in Makefile.config). You first need to signup and get approved by NVIDIA CUDA Register Developer Program.
 
-  3. Replace the following lines
-  4. <pre><strong>args &lt;&lt; "-DPYTHON#{py_ver}_LIBRARY=#{py_lib}/libpython2.7.#{dylib}"</strong>
-<strong>args &lt;&lt; "-DPYTHON#{py_ver}_INCLUDE_DIR=#{py_prefix}/include/python2.7"</strong></pre>
+```
+tar -xzvf cudnn-6.5-osx-v2.tgz
 
-  5. with
-  6. <pre><strong>args &lt;&lt; "-DPYTHON_LIBRARY=#{py_prefix}/lib/libpython2.7.dylib"
-</strong><strong>args &lt;&lt; "-DPYTHON_INCLUDE_DIR=#{py_prefix}/include/python2.7"</strong></pre>
+cd cudnn-6.5-osx-v2
 
-  7. <pre><strong>brew install --fresh -vd snappy leveldb gflags glog szip lmdb homebrew/science/opencv</strong></pre>
+sudo cp lib* /usr/local/cuda/lib
 
-  8. <pre><strong>brew install --build-from-source --with-python --fresh -vd protobuf
-brew install --build-from-source --fresh -vd boost boost-python</strong></pre>
+sudo cp cudnn.h /usr/local/cuda/include/
+```
 
 &nbsp;
 
-**<Download Caffe from GitHub>**
+### **Dependencies via homebrew**
 
-  1. from your home directory or any directory you want to download caffe, 
-    <pre><b>git clone </b><a href="https://github.com/BVLC/caffe.git"><b>https://github.com/BVLC/caffe.git</b></a></pre>
+First, we need to modify something..
 
-  2. <pre><b><b>cd caffe</b></b></pre>
+```
+brew edit opencv
+```
 
-  3. <pre><b><b>cp Makefile.config.example Makefile.config</b></b></pre>
+Replace the following lines
+
+```
+args << "-DPYTHON#{py_ver}_LIBRARY=#{py_lib}/libpython2.7.#{dylib}"
+args << "-DPYTHON#{py_ver}_INCLUDE_DIR=#{py_prefix}/include/python2.7"
+```
+
+with
+
+```
+args << "-DPYTHON_LIBRARY=#{py_prefix}/lib/libpython2.7.dylib"
+args << "-DPYTHON_INCLUDE_DIR=#{py_prefix}/include/python2.7"
+```
+
+then
+
+```
+brew install --fresh -vd snappy leveldb gflags glog szip lmdb homebrew/science/opencv
+
+brew install --build-from-source --with-python --fresh -vd protobuf
+brew install --build-from-source --fresh -vd boost boost-python
+```
 
 &nbsp;
 
-**<Makefile.config>**
+### **Download Caffe from GitHub**
 
-  1. Set **BLAS := mkl** in Makefile.config
-  2. Uncomment the **USE_CUDNN := 1** flag in Makefile.config
-  3. Check your Python path
-  4. Read through carefully and modify configuration to suit your need!!!
+From your home directory or any directory you want to download caffe
+
+```
+git clone <a href="https://github.com/BVLC/caffe.git"><b>https://github.com/BVLC/caffe.git</b></a>
+
+cd caffe
+
+cp Makefile.config.example Makefile.config
+```
 
 &nbsp;
 
-**<Environment variables>**
+### **Makefile.config**
 
-  1. <pre><strong>export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/cuda/lib:$HOME/anaconda/lib:/usr/local/lib:/usr/lib:/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib</strong></pre>
+Open Makefile.config file and edit the following:
 
-** **
+```
+BLAS := mkl
+```
 
-**<Let’s make Caffe>**
+Uncomment CUDNN to enable GPU support
 
-  1. <pre><b>make clean</b></pre>
+```
+USE_CUDNN := 1
+```
 
-  2. <pre><b>make all -j8</b></pre>
+Check your Python path
 
-  3. <pre><b>make test</b></pre>
+Read through each line carefully and modify configuration to suit your need!!!
 
-  4. <pre><b>make runtest</b></pre>
+&nbsp;
 
-  5. You should get a message like the following. You can safely ignore disabled tests. 
-    <pre>[----------] Global test environment tear-down
+### **Environment variables**
+
+Set following environmental variables:
+
+```
+export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/cuda/lib:$HOME/anaconda/lib:/usr/local/lib:/usr/lib:/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib
+```
+
+
+### **Let’s make Caffe**
+
+```
+make clean
+
+make all -j8
+
+make test
+
+make runtest
+```
+
+You should get a message like the following. You can safely ignore disabled tests.
+
+```
+[----------] Global test environment tear-down
 [==========] 1128 tests from 198 test cases ran. (282609 ms total)
 [  PASSED  ] 1128 tests.
 
-YOU HAVE 2 DISABLED TESTS</pre>
+YOU HAVE 2 DISABLED TESTS
+```
 
-  6. <pre><b>make pycaffe</b></pre>
+Now make and distribute caffe.
 
-  7. <pre><b>make distribute</b></pre>
+```
+  make pycaffe
+  
+  make distribute
+```
 
 [<img class="aligncenter wp-image-480" src="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png" alt="Screen Shot 2015-04-03 at 8.49.59 PM" width="520" height="280" srcset="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1-300x161.png 300w, http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png 973w" sizes="(max-width: 520px) 100vw, 520px" />](http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png)
 
@@ -186,25 +241,21 @@ Enjoy!
 
 **Note 2:** To run CUDA applications in console mode on MacBook Pro with both an integrated GPU and a discrete GPU, use the following settings before dropping to console mode: Uncheck **System Preferences** > **Energy Saver** > **Automatic Graphic Switch**
 
-**Note 3:** You might need the following environment variables for Intel MKL. I didn&#8217;t needed.
+**Note 3:** You might need the following environment variables for Intel MKL. I didn't needed.
 
-<pre><strong>export MKLROOT=/opt/intel/composer_xe_2015.2.132/mkl</strong></pre>
-
-<pre><strong>export DYLD_LIBRARY_PATH=/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib:$DYLD_LIBRARY_PATH</strong></pre>
-
-<pre><strong>export LIBRARY_PATH=/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib:$LIBRARY_PATH</strong></pre>
-
-<pre><strong>export NLSPATH=/opt/intel/composer_xe_2015.2.132/mkl/lib/locale/%l_%t/%N:$NLSPATH</strong></pre>
-
-<pre><strong>export MANPATH=/opt/intel/composer_xe_2015.2.132/man/en_US:/usr/local/share/man:/usr/share/man:/opt/intel/man:$MANPATH</strong></pre>
-
-<pre><strong>export INCLUDE=/opt/intel/composer_xe_2015.0.077/mkl/include:$INCLUDE</strong></pre>
-
-<pre><strong>export CPATH=/opt/intel/composer_xe_2015.2.132/mkl/include:/opt/intel/composer_xe_2015.2.132/mkl/bin/intel64/mklvars_intel64.sh:$CPATH</strong></pre>
+```
+export MKLROOT=/opt/intel/composer_xe_2015.2.132/mkl
+export DYLD_LIBRARY_PATH=/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib:$DYLD_LIBRARY_PATH
+export LIBRARY_PATH=/opt/intel/composer_xe_2015.2.132/compiler/lib:/opt/intel/composer_xe_2015.2.132/mkl/lib:$LIBRARY_PATH
+export NLSPATH=/opt/intel/composer_xe_2015.2.132/mkl/lib/locale/%l_%t/%N:$NLSPATH
+export MANPATH=/opt/intel/composer_xe_2015.2.132/man/en_US:/usr/local/share/man:/usr/share/man:/opt/intel/man:$MANPATH
+export INCLUDE=/opt/intel/composer_xe_2015.0.077/mkl/include:$INCLUDE
+export CPATH=/opt/intel/composer_xe_2015.2.132/mkl/include:/opt/intel/composer_xe_2015.2.132/mkl/bin/intel64/mklvars_intel64.sh:$CPATH
+```
 
 &nbsp;
 
-**Reference:**
+### **References:**
 
   1. <http://caffe.berkeleyvision.org/installation.html>
   2. <http://docs.nvidia.com/cuda/cuda-getting-started-guide-for-mac-os-x/>
