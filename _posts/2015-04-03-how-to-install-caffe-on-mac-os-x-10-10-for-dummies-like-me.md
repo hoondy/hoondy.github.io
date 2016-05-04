@@ -29,13 +29,14 @@ tags:
   - OS X
   - Python
 ---
-Update: The instruction is also available in Chinese. I&#8217;d like to thank panovr for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+
+Update: The instruction is also available in Chinese. I'd like to thank "panovr" for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
 
 &nbsp;
 
-**The following is a step-by-step guide for installing Caffe on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)**
+**The following is a step-by-step guide for installing Caffe on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)**
 
-For the past couple of days, I struggled to get Caffe to work on my macbook. Caffe is a deep learning framework from Berkeley and you can read more about it at <http://caffe.berkeleyvision.org/>. If you are reading this, you probably have noticed you have to get dependencies setup correctly and download libraries and toolkits from several places or compilation will fail. Install documentation on the website was a bit out-dated, incomplete, and somewhat convoluted. So, I&#8217;ve decided to share my success story, and for simplicity&#8217;s sake, I made it into a step-by-step guide on how to install Caffe on Mac OS X. For the maximal computing performance, I made use of my fancy NVIDIA GPU and took advantage of [NVIDA&#8217;s cuDNN GPU-accelerated library](https://developer.nvidia.com/cuDNN).
+For the past couple of days, I struggled to get Caffe to work on my macbook. Caffe is a deep learning framework from Berkeley and you can read more about it at <http://caffe.berkeleyvision.org/>. If you are reading this, you probably have noticed you have to get dependencies setup correctly and download libraries and toolkits from several places or compilation will fail. Install documentation on the website was a bit out-dated, incomplete, and somewhat convoluted. So, I've decided to share my success story, and for simplicity's sake, I made it into a step-by-step guide on how to install Caffe on Mac OS X. For the maximal computing performance, I made use of my fancy NVIDIA GPU and took advantage of [NVIDA's cuDNN GPU-accelerated library](https://developer.nvidia.com/cuDNN).
 
 &nbsp;
 
@@ -43,30 +44,45 @@ Take a deep breath..
 
 &nbsp;
 
-**<Homebrew>**
+### **Homebrew**
 
-  1. Install package manager for OSX called Homebrew by following instruction on <http://brew.sh/>
-
-&nbsp;
-
-**<Anaconda Python>**
-
-  1. Download and install Anaconda Python from <https://store.continuum.io/cshop/anaconda/> (it includes hdf5, which is used by Caffe)
-  2. <pre><b><b>export PATH=~/anaconda/bin:$PATH</b></b></pre>
+1. Install package manager for OSX called Homebrew by following instruction on
+   ```
+   http://brew.sh/
+   ```
+   
 
 &nbsp;
 
-**<CUDA>**
+### **Anaconda Python**
 
-  1. Install CUDA 7.0 (for OSX) from <https://developer.nvidia.com/cuda-downloads>
-  2. Install latest standalone CUDA driver (apparently, one included in CUDA Toolkit is outdated) from <http://www.nvidia.com/object/mac-driver-archive.html>
-  3. <pre><b><b>export PATH=/Developer/NVIDIA/CUDA-7.0/bin:$PATH</b></b></pre>
-
-  4. <pre><b>export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH</b></pre>
+1. Download and install Anaconda Python from <https://store.continuum.io/cshop/anaconda/> (it includes hdf5, which is used by Caffe)
+2. Set PATH
+   ```
+   export PATH=~/anaconda/bin:$PATH
+   ```
+   
 
 &nbsp;
 
-**<BLAS &#8211; Intel MKL>**
+### **CUDA**
+
+1. Install CUDA 7.0 (for OSX) from <https://developer.nvidia.com/cuda-downloads>
+2. Install latest standalone CUDA driver (apparently, one included in CUDA Toolkit is outdated) from <http://www.nvidia.com/object/mac-driver-archive.html>
+3. Set PATH
+   ```
+   export PATH=/Developer/NVIDIA/CUDA-7.0/bin:$PATH
+   ```
+   
+4. Set DYLD_LIBRARY_PATH
+   ```
+   export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH
+   ```
+   
+
+&nbsp;
+
+**BLAS - Intel MKL**
 
   1. OSX native BLAS library has some instability issue. Alternatively, install Intel MKL (math kernal library, which is a component of Intel Parallel Studio XE Composer Edition) using free student license, <https://software.intel.com/en-us/qualify-for-free-software/student> (Later, don&#8217;t forget to set BLAS := mkl in Makefile.config)
   2. Make sure to select every components in Intel Parallel Studio XE (honestly, I don’t know what’s used and what’s not, but apparently default installation was missing some components)
