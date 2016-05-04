@@ -38,13 +38,16 @@ tags:
 
 For the past couple of days, I struggled to get Caffe to work on my macbook. Caffe is a deep learning framework from Berkeley and you can read more about it at <http://caffe.berkeleyvision.org/>. If you are reading this, you probably have noticed you have to get dependencies setup correctly and download libraries and toolkits from several places or compilation will fail. Install documentation on the website was a bit out-dated, incomplete, and somewhat convoluted. So, I've decided to share my success story, and for simplicity's sake, I made it into a step-by-step guide on how to install Caffe on Mac OS X. For the maximal computing performance, I made use of my fancy NVIDIA GPU and took advantage of [NVIDA's cuDNN GPU-accelerated library](https://developer.nvidia.com/cuDNN).
 
-Take a deep breath..
+
+Now, take a deep breath..
+
 
 ### **Homebrew**
 
 Install package manager for OSX called Homebrew
 
 <http://brew.sh/>
+
 
 ### **Anaconda Python**
 
@@ -57,6 +60,7 @@ Set PATH
 ```
 export PATH=~/anaconda/bin:$PATH
 ```
+
 
 ### **CUDA**
 
@@ -80,6 +84,7 @@ Set DYLD_LIBRARY_PATH
 export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH
 ```
 
+
 ### **BLAS - Intel MKL**
 
 OSX native BLAS library has some instability issue. Alternatively, install Intel MKL (math kernal library, which is a component of Intel Parallel Studio XE Composer Edition) using free student license, <https://software.intel.com/en-us/qualify-for-free-software/student> (Later, don't forget to set BLAS := mkl in Makefile.config)
@@ -91,6 +96,7 @@ cd /opt/intel/mkl/lib/
 
 sudo ln -s . /opt/intel/mkl/lib/intel64
 ```
+
 
 ### **cuDNN**
 
@@ -105,6 +111,7 @@ sudo cp lib* /usr/local/cuda/lib
 
 sudo cp cudnn.h /usr/local/cuda/include/
 ```
+
 
 ### **Dependencies via homebrew**
 
@@ -137,6 +144,7 @@ brew install --build-from-source --with-python --fresh -vd protobuf
 brew install --build-from-source --fresh -vd boost boost-python
 ```
 
+
 ### **Download Caffe from GitHub**
 
 From your home directory or any directory you want to download caffe
@@ -149,7 +157,6 @@ cd caffe
 cp Makefile.config.example Makefile.config
 ```
 
-&nbsp;
 
 ### **Makefile.config**
 
@@ -168,6 +175,7 @@ USE_CUDNN := 1
 Check your Python path
 
 Read through each line carefully and modify configuration to suit your need!!!
+
 
 ### **Environment variables**
 
