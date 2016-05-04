@@ -18,7 +18,7 @@ teaser                   : # filename of teaser fallback teaser image placed in 
 # breadcrumbs              : true # false # true, false (default)
 words_per_minute         : 200
 comments:
-  provider               : # false (default), "disqus", "facebook", "google-plus", custom"
+  provider               : "disqus" # false (default), "disqus", "facebook", "google-plus", custom"
   disqus:
     shortname            : "hoondy" # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
   facebook:
@@ -50,13 +50,13 @@ social:
 
 # Analytics
 analytics:
-  provider               : false # false (default), "google", "google-universal", "custom"
+  provider               : "google-universal" # false (default), "google", "google-universal", "custom"
   google:
     tracking_id          : "UA-25206456-3"
 
 # Google AdSense
-google_ad_client         :
-google_ad_slot           :
+google_ad_client         : "ca-pub-2034343186994327"
+google_ad_slot           : "5840233299"
 
 
 # Site Author
