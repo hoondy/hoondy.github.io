@@ -34,26 +34,17 @@ tags:
 
 ---
 
-&nbsp;
-
 **The following is a step-by-step guide for installing Caffe on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)**
 
 For the past couple of days, I struggled to get Caffe to work on my macbook. Caffe is a deep learning framework from Berkeley and you can read more about it at <http://caffe.berkeleyvision.org/>. If you are reading this, you probably have noticed you have to get dependencies setup correctly and download libraries and toolkits from several places or compilation will fail. Install documentation on the website was a bit out-dated, incomplete, and somewhat convoluted. So, I've decided to share my success story, and for simplicity's sake, I made it into a step-by-step guide on how to install Caffe on Mac OS X. For the maximal computing performance, I made use of my fancy NVIDIA GPU and took advantage of [NVIDA's cuDNN GPU-accelerated library](https://developer.nvidia.com/cuDNN).
 
-&nbsp;
-
 Take a deep breath..
-
-&nbsp;
 
 ### **Homebrew**
 
 Install package manager for OSX called Homebrew
 
 <http://brew.sh/>
-
-
-&nbsp;
 
 ### **Anaconda Python**
 
@@ -66,8 +57,6 @@ Set PATH
 ```
 export PATH=~/anaconda/bin:$PATH
 ```
-
-&nbsp;
 
 ### **CUDA**
 
@@ -91,8 +80,6 @@ Set DYLD_LIBRARY_PATH
 export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.0/lib:$DYLD_LIBRARY_PATH
 ```
 
-&nbsp;
-
 ### **BLAS - Intel MKL**
 
 OSX native BLAS library has some instability issue. Alternatively, install Intel MKL (math kernal library, which is a component of Intel Parallel Studio XE Composer Edition) using free student license, <https://software.intel.com/en-us/qualify-for-free-software/student> (Later, don't forget to set BLAS := mkl in Makefile.config)
@@ -104,8 +91,6 @@ cd /opt/intel/mkl/lib/
 
 sudo ln -s . /opt/intel/mkl/lib/intel64
 ```
-
-&nbsp;
 
 ### **cuDNN**
 
@@ -120,8 +105,6 @@ sudo cp lib* /usr/local/cuda/lib
 
 sudo cp cudnn.h /usr/local/cuda/include/
 ```
-
-&nbsp;
 
 ### **Dependencies via homebrew**
 
@@ -154,8 +137,6 @@ brew install --build-from-source --with-python --fresh -vd protobuf
 brew install --build-from-source --fresh -vd boost boost-python
 ```
 
-&nbsp;
-
 ### **Download Caffe from GitHub**
 
 From your home directory or any directory you want to download caffe
@@ -187,8 +168,6 @@ USE_CUDNN := 1
 Check your Python path
 
 Read through each line carefully and modify configuration to suit your need!!!
-
-&nbsp;
 
 ### **Environment variables**
 
@@ -231,13 +210,9 @@ Now make and distribute caffe.
 
 [<img class="aligncenter wp-image-480" src="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png" alt="Screen Shot 2015-04-03 at 8.49.59 PM" width="520" height="280" srcset="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1-300x161.png 300w, http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png 973w" sizes="(max-width: 520px) 100vw, 520px" />](http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png)
 
-&nbsp;
-
 Enjoy!
 
 (Last updated: 05/04/2016)
-
-&nbsp;
 
 **Note 1:** CUDA 6 the 32-bit and 64-bit library files were merged under /usr/local/cuda/lib
 
@@ -254,8 +229,6 @@ export MANPATH=/opt/intel/composer_xe_2015.2.132/man/en_US:/usr/local/share/man:
 export INCLUDE=/opt/intel/composer_xe_2015.0.077/mkl/include:$INCLUDE
 export CPATH=/opt/intel/composer_xe_2015.2.132/mkl/include:/opt/intel/composer_xe_2015.2.132/mkl/bin/intel64/mklvars_intel64.sh:$CPATH
 ```
-
-&nbsp;
 
 ### **References:**
 
