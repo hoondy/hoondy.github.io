@@ -10,7 +10,8 @@ categories:
   - Videos
 format: video
 ---
-<span class="youtube"></span>
+
+<iframe width="640" height="360" src="https://www.youtube.com/embed/31thnqjQki4" frameborder="0" allowfullscreen></iframe>
 
 Andrews Air Force Base, MD
 
