@@ -1,17 +1,9 @@
 ---
-id: 456
 title: How to install Caffe on Mac OS X 10.10 for dummies (like me)
 date: 2015-04-03T15:45:02+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=456
+layout: single
 permalink: /2015/04/03/how-to-install-caffe-on-mac-os-x-10-10-for-dummies-like-me/
-al2fb_facebook_link_id:
-  - 3102615_10100690823830332
-al2fb_facebook_link_time:
-  - 2015-04-04T00:58:55+00:00
-al2fb_facebook_link_picture:
-  - media=http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM-1024x598.png
 dsq_thread_id:
   - 4738758028
 categories:
@@ -204,8 +196,3 @@ Enjoy!
   4. <https://aisgit.informatik.uni-freiburg.de/zhang/caffe_future/blob/ais-master/docs/installation.md>
   5. <https://haduonght.wordpress.com/2015/02/21/install-caffe-on-mac-os-x-10-10/>
   6. <http://smrmkt.hatenablog.jp/entry/2015/02/11/195213>
-
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2015/04/03/how-to-install-caffe-on-mac-os-x-10-10-for-dummies-like-me/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
