@@ -212,7 +212,7 @@ defaults:
       type: posts
     values:
       layout: single
-      read_time: true
+      read_time: false
       comments: true
       share: true
       related: true
