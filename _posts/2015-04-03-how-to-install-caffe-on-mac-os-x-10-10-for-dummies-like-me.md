@@ -30,7 +30,9 @@ tags:
   - Python
 ---
 
-Update: The instruction is also available in Chinese. I'd like to thank "panovr" for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+> Update: The instruction is also available in Chinese. I'd like to thank "panovr" for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+
+---
 
 &nbsp;
 
@@ -233,7 +235,7 @@ Now make and distribute caffe.
 
 Enjoy!
 
-(Last updated: 04/03/2015)
+(Last updated: 05/04/2016)
 
 &nbsp;
 
