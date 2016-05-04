@@ -62,7 +62,7 @@ google_ad_slot           :
 # Site Author
 author:
   name             : "Donghoon Lee"
-  avatar           : #"bio-photo.jpg"
+  avatar           : "bio-photo.jpg"
   bio              : #"I am an amazing person."
   location         : "New Haven, CT"
   email            : "ryan@hoondy.com"
@@ -71,14 +71,14 @@ author:
   codepen          :
   dribbble         :
   flickr           :
-  facebook         : "https://facebook.com/dhrlee"
+  facebook         : "dhrlee"
   foursquare       :
   github           : "hoondy"
   google_plus      :
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         : "https://linkedin.com/in/hoondy"
+  linkedin         : "hoondy"
   pinterest        :
   soundcloud       :
   stackoverflow    : # http://stackoverflow.com/users/123456/username
