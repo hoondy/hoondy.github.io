@@ -9,4 +9,4 @@ author: Hoondy
 
 For advertising quotes, press, or any other business related inquiries, please contact admin at hoondy.com.
 
-Copyright © 2010 Hoondy.com, LLC. All Rights Reserved.
+Copyright &copy; {{ site.time | date: '%Y' }} Hoondy.com, LLC. All Rights Reserved.
