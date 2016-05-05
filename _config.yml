@@ -64,9 +64,9 @@ google_ad_slot           :
 author:
   name             : "Donghoon Lee"
   avatar           : "bio-photo.jpg"
-  bio              : "I am an amazing person."
+  bio              : #"I am an amazing person."
   location         : "New Haven, CT"
-  email            : "ryan@hoondy.com"
+  email            : "admin@hoondy.com"
   uri              :
   bitbucket        :
   codepen          :
