@@ -13,7 +13,7 @@ The BESTLAP presents the first episode of track battle video series featuring Po
 
 Hope you enjoy and don&#8217;t forget to watch the drag racing between McLaren MP4-12C and Ferrari 458 Spider at the end!
 
-<span class="youtube"></span>
+<iframe width="640" height="360" src="https://www.youtube.com/embed/3AHk94KSGx0" frameborder="0" allowfullscreen></iframe>
 
 2014년 시작과 함께 베스트랩에서 준비한 첫번째 베틀영상을 공개합니다. 시리즈로 제작될 베틀영상중 1편이며, 향후 좀더 다양한 내용으로 후속작을 발표할 예정입니다. 많은 관심과 응원 부탁드립니다.
 
