@@ -1,19 +1,8 @@
 ---
-id: 196
 title: Get Organized
 date: 2011-09-02T11:20:18+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=196
-permalink: /2011/09/02/get-organized/
-al2fb_facebook_image_id:
-  - 203
-al2fb_facebook_link_id:
-  - 3102615_752018332102
-al2fb_facebook_link_time:
-  - 2011-09-02T02:20:20+00:00
-al2fb_facebook_link_picture:
-  - meta=http://hoondy.com/wp-content/uploads/2011/09/dbck1314928196-150x150.jpg
+layout: single
 categories:
   - Lifestyle
 ---
@@ -37,7 +26,4 @@ Let&#8217;s get organized!
 
 Try this at home if you are really bored. <img src="http://hoondy.com/wp-includes/images/smilies/rolleyes.png" alt=":roll:" class="wp-smiley" style="height: 1em; max-height: 1em;" />
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2011/09/02/get-organized/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2011/09/02/get-organized/

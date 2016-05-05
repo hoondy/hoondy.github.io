@@ -1,17 +1,8 @@
 ---
-id: 167
 title: WordPress Fix for GoDaddy Free Account
 date: 2011-09-01T11:40:48+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=167
-permalink: /2011/09/01/wordpress-fix-for-godaddy-free-account/
-al2fb_facebook_link_id:
-  - 3102615_751809480642
-al2fb_facebook_link_time:
-  - 2011-09-01T02:41:03+00:00
-al2fb_facebook_link_picture:
-  - facebook=
+layout: single
 categories:
   - How-To
 tags:
@@ -79,7 +70,4 @@ and add the following line at the end
 
 Enjoy!
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2011/09/01/wordpress-fix-for-godaddy-free-account/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2011/09/01/wordpress-fix-for-godaddy-free-account/

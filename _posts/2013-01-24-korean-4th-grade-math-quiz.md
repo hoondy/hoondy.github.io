@@ -1,19 +1,8 @@
 ---
-id: 397
 title: Korean 4th Grade Math Quiz
 date: 2013-01-24T11:10:15+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=397
-permalink: /2013/01/24/korean-4th-grade-math-quiz/
-al2fb_facebook_excerpt:
-  - Are you good at math?
-al2fb_facebook_link_id:
-  - 3102615_10100125164610942
-al2fb_facebook_link_time:
-  - 2013-01-24T02:10:22+00:00
-al2fb_facebook_link_picture:
-  - facebook=
+layout: single
 dsq_thread_id:
   - 4795967230
 categories:
@@ -38,7 +27,4 @@ tags:
   In triangle ㄱㄴㄷ, ㄴㄹ= ㄹㅁ= ㅁㄷ. Find angle ㄱㄹㅁ.
 </p>
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2013/01/24/korean-4th-grade-math-quiz/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2013/01/24/korean-4th-grade-math-quiz/

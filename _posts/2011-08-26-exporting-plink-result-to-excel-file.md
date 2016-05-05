@@ -1,19 +1,8 @@
 ---
-id: 135
 title: Exporting Plink Result to Excel File
 date: 2011-08-26T13:01:03+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=135
-permalink: /2011/08/26/exporting-plink-result-to-excel-file/
-al2fb_facebook_image_id:
-  - 139
-al2fb_facebook_link_id:
-  - 3102615_750417170842
-al2fb_facebook_link_time:
-  - 2011-08-26T04:06:24+00:00
-al2fb_facebook_link_picture:
-  - meta=http://hoondy.com/wp-content/uploads/2011/08/Screenshot-gPLINK-2.050-150x150.png
+layout: single
 dsq_thread_id:
   - 4743097795
 categories:
@@ -66,7 +55,4 @@ There are many advantages of using command line plink and using custom scripts a
 
 -Hoondy
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2011/08/26/exporting-plink-result-to-excel-file/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2011/08/26/exporting-plink-result-to-excel-file/

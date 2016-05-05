@@ -1,21 +1,8 @@
 ---
-id: 275
 title: Barker Shoes 한국 공식 웹사이트 오픈
 date: 2012-02-28T16:32:59+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=275
-permalink: /2012/02/28/barker-shoes-%ed%95%9c%ea%b5%ad-%ea%b3%b5%ec%8b%9d-%ec%9b%b9%ec%82%ac%ec%9d%b4%ed%8a%b8-%ec%98%a4%ed%94%88/
-al2fb_facebook_excerpt:
-  - http://www.barkerkorea.com/
-al2fb_facebook_image_id:
-  - 276
-al2fb_facebook_link_id:
-  - 3102615_850106841942
-al2fb_facebook_link_time:
-  - 2012-02-28T07:39:48+00:00
-al2fb_facebook_link_picture:
-  - meta=http://hoondy.com/wp-content/uploads/2012/02/2012-02-28-오후-3-59-30-150x150.jpg
+layout: single
 dsq_thread_id:
   - 4780215969
 categories:
@@ -36,7 +23,4 @@ For those who can&#8217;t read Korean, Barker Shoes Korea official website has l
 
 &nbsp;
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2012/02/28/barker-shoes-%ed%95%9c%ea%b5%ad-%ea%b3%b5%ec%8b%9d-%ec%9b%b9%ec%82%ac%ec%9d%b4%ed%8a%b8-%ec%98%a4%ed%94%88/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2012/02/28/barker-shoes-%ed%95%9c%ea%b5%ad-%ea%b3%b5%ec%8b%9d-%ec%9b%b9%ec%82%ac%ec%9d%b4%ed%8a%b8-%ec%98%a4%ed%94%88/

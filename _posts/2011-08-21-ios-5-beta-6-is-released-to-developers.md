@@ -1,9 +1,8 @@
 ---
-id: 113
 title: iOS 5 Beta 6 Released to Developers – New Korean Font
 date: 2011-08-21T12:00:48+00:00
 author: Hoondy
-layout: post
+layout: single
 dsq_thread_id:
   - 4764534066
 categories:

@@ -3,7 +3,6 @@ title: Keep.Calm.And.Carry.On
 date: 2011-10-24T11:33:00+00:00
 author: Hoondy
 layout: single
-permalink: /2011/10/24/keep-calm-and-carry-on/
 categories:
   - Lifestyle
   - Parody
@@ -29,3 +28,5 @@ tags:
 [<img src="http://hoondy.com/wp-content/uploads/2011/10/309378_284258648259698_100000266949766_1156553_69855161_n.jpg" alt="" title="309378_284258648259698_100000266949766_1156553_69855161_n" width="260" height="290" class="aligncenter size-full wp-image-261" />](http://hoondy.com/wp-content/uploads/2011/10/309378_284258648259698_100000266949766_1156553_69855161_n.jpg)
 
 [<img src="http://hoondy.com/wp-content/uploads/2011/10/3570658938_7da6d70454.jpg" alt="" title="3570658938_7da6d70454" width="520" height="416" class="aligncenter size-full wp-image-262" />](http://hoondy.com/wp-content/uploads/2011/10/3570658938_7da6d70454.jpg)
+
+permalink: /2011/10/24/keep-calm-and-carry-on/

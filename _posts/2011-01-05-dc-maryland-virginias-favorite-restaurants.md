@@ -3,9 +3,6 @@ title: 'DC, Maryland, Virginia&#8217;s Favorite Restaurants'
 date: 2011-01-05T19:04:16+00:00
 author: Hoondy
 layout: single
-jabber_published:
-  - 1294272257
-  - 1294272257
 dsq_thread_id:
   - 4738757991
 categories:

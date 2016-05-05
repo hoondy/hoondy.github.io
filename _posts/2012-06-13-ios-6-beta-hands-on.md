@@ -1,19 +1,8 @@
 ---
-id: 299
 title: iOS 6 beta hands-on
 date: 2012-06-13T10:55:48+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=299
-permalink: /2012/06/13/ios-6-beta-hands-on/
-al2fb_facebook_image_id:
-  - 300
-al2fb_facebook_link_id:
-  - 3102615_919858628802
-al2fb_facebook_link_time:
-  - 2012-06-13T02:26:00+00:00
-al2fb_facebook_link_picture:
-  - meta=http://hoondy.com/wp-content/uploads/2012/06/IMG_3454.png
+layout: single
 categories:
   - iPhone
 tags:
@@ -69,7 +58,4 @@ I had a chance to try Apple&#8217;s new iOS 6 beta software on my iPhone. Here&#
 
 Since my phone is iPhone 4, which doesn&#8217;t support Siri, I wasn&#8217;t able to try out Siri in Korean. Overall, to put it simply, I feel like I just got a gift from Apple. In the next update or so, I really hope that they gradually expand supports for users in Korea especially Map stuff. I can&#8217;t wait to see the next iPhone.
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2012/06/13/ios-6-beta-hands-on/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2012/06/13/ios-6-beta-hands-on/

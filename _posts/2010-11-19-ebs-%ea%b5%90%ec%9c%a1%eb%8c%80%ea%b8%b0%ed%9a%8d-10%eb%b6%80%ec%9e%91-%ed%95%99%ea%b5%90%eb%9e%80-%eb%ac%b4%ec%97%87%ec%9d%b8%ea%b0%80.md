@@ -3,8 +3,6 @@ title: EBS 교육대기획 10부작 학교란 무엇인가
 date: 2010-11-19T17:32:28+00:00
 author: Hoondy
 layout: single
-jabber_published:
-  - 1290205952
 categories:
   - TV
 tags:

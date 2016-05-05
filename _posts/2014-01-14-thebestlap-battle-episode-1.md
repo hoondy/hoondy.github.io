@@ -1,21 +1,8 @@
 ---
-id: 423
 title: 'THEBESTLAP BATTLE &#8211; Episode 1'
 date: 2014-01-14T10:12:26+00:00
 author: Hoondy
-layout: post
-guid: http://hoondy.com/?p=423
-permalink: /2014/01/14/thebestlap-battle-episode-1/
-al2fb_facebook_image_id:
-  - 427
-al2fb_facebook_excerpt:
-  - 'THEBESTLAP BATTLE - Episode 1'
-al2fb_facebook_link_id:
-  - 3102615_10100363637254852
-al2fb_facebook_link_time:
-  - 2014-01-14T01:14:47+00:00
-al2fb_facebook_link_picture:
-  - meta=http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg
+layout: single
 categories:
   - Automotive
   - GoPro
@@ -74,7 +61,4 @@ KMSA
 
 <a style="line-height: 1.5em; text-align: center;" href="http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg"><img class="wp-image-427 alignnone" alt="thebestlap" src="http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg" width="520" height="293" srcset="http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM-300x169.jpg 300w, http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg 781w" sizes="(max-width: 520px) 100vw, 520px" /></a>
 
-<div class="al2fb_like_button">
-  <div id="fb-root">
-  </div><fb:like href="http://hoondy.com/2014/01/14/thebestlap-battle-episode-1/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
-</div>
+permalink: /2014/01/14/thebestlap-battle-episode-1/

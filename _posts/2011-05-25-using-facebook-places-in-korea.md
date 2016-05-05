@@ -1,13 +1,10 @@
 ---
-id: 90
 title: Using Facebook Places in Korea
 date: 2011-05-25T01:26:29+00:00
 author: Hoondy
 layout: single
 jabber_published:
   - 1306301190
-tagazine-media:
-  - 'a:7:{s:7:"primary";s:59:"http://hoondy.files.wordpress.com/2011/05/fr_71_size580.jpg";s:6:"images";a:4:{s:73:"http://hoondy.files.wordpress.com/2011/05/facebook-places-iphone-crop.jpg";a:6:{s:8:"file_url";s:73:"http://hoondy.files.wordpress.com/2011/05/facebook-places-iphone-crop.jpg";s:5:"width";s:3:"320";s:6:"height";s:3:"460";s:4:"type";s:5:"image";s:4:"area";s:6:"147200";s:9:"file_path";s:0:"";}s:59:"http://hoondy.files.wordpress.com/2011/05/fr_71_size580.jpg";a:6:{s:8:"file_url";s:59:"http://hoondy.files.wordpress.com/2011/05/fr_71_size580.jpg";s:5:"width";s:3:"387";s:6:"height";s:3:"580";s:4:"type";s:5:"image";s:4:"area";s:6:"224460";s:9:"file_path";s:0:"";}s:59:"http://hoondy.files.wordpress.com/2011/05/fr_72_size580.jpg";a:6:{s:8:"file_url";s:59:"http://hoondy.files.wordpress.com/2011/05/fr_72_size580.jpg";s:5:"width";s:3:"387";s:6:"height";s:3:"580";s:4:"type";s:5:"image";s:4:"area";s:6:"224460";s:9:"file_path";s:0:"";}s:59:"http://hoondy.files.wordpress.com/2011/05/fr_73_size580.jpg";a:6:{s:8:"file_url";s:59:"http://hoondy.files.wordpress.com/2011/05/fr_73_size580.jpg";s:5:"width";s:3:"387";s:6:"height";s:3:"580";s:4:"type";s:5:"image";s:4:"area";s:6:"224460";s:9:"file_path";s:0:"";}}s:6:"videos";a:0:{}s:11:"image_count";s:1:"4";s:6:"author";s:8:"14128546";s:7:"blog_id";s:8:"13729298";s:9:"mod_stamp";s:19:"2011-05-25 05:26:29";}'
 categories:
   - Facebook
   - How-To
