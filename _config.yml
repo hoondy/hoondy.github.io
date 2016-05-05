@@ -14,7 +14,7 @@ description              : "Donghoon's Stochastic Life"
 url                      : "http://hoondy.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 # url                      : "http://127.0.0.1:4000" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
-gh_repo                  :
+gh_repo                  : hoondy
 teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 # breadcrumbs              : true # false # true, false (default)
 words_per_minute         : 200
@@ -198,11 +198,6 @@ tags:
 #     category: /categories/:name/
 #     tag: /tags/:name/
 
-collections:
-  portfolio:
-    output: true
-    permalink: /:collection/:path/
-
 # HTML Compression
 # - http://jch.penibelst.de/
 compress_html:
@@ -210,6 +205,11 @@ compress_html:
   ignore:
     envs: development
 
+collections:
+  portfolio:
+    output: true
+    permalink: /:collection/:path/
+    
 defaults:
   # _posts
   - scope:
