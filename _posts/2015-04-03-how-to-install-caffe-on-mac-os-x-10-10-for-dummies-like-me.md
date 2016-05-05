@@ -29,9 +29,11 @@ tags:
   - Python
 ---
 
-> Update: The instruction is also available in Chinese. I'd like to thank **panovr** for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+Update: The instruction is also available in Chinese. I'd like to thank **panovr** for providing Chinese translation. ([http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html](http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html "http://ylzhao.blogspot.com/2015/04/mac-os-x-1010caffe.html"))
+{: .notice--info} 
 
-> The following is a step-by-step guide for installing **Caffe** on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)
+The following is a step-by-step guide for installing **Caffe** on **Mac OS X** (Tested with OS X Yosemite 10.10.3, mid-2014 rMBP with 2.8 GHz Intel Core i7, NVIDIA GeForce GT 750M 2048 MB)
+{: .notice--primary}
 
 ---
 

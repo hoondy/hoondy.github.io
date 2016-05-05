@@ -3,17 +3,17 @@ main:
   - title: "About"
     url: /about/
 
+  - title: "Portfolio"
+    url: /portfolio/
+
+  - title: "Posts by Year"
+    url: /year-archive/
+
+  - title: "Posts by Tags"
+    url: /tags/
+
+  - title: "Posts by Category"
+    url: /categories/
+
   - title: "Quick-Start Guide"
     url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
-
-  - title: "About"
-    url: https://mmistakes.github.io/minimal-mistakes/
-
-  - title: "Sample Posts"
-    url: https://mmistakes.github.io/minimal-mistakes/year-archive/
-
-  - title: "Sample Pages"
-    url: https://mmistakes.github.io/minimal-mistakes/page-archive/
-
-  - title: "Sample Collections"
-    url: https://mmistakes.github.io/minimal-mistakes/collection-archive/
