@@ -1,19 +1,11 @@
 ---
-layout: portforlio
+layout: portfolio
 header:
   image: hoondy_banner.png
 ---
 
 {% include base_path %}
 
-<!-- <h3 class="archive__subtitle">Recent Posts</h3>
-
-{% for post in paginator.posts %}
-  {% include archive-single.html %}
-{% endfor %}
-
-{% include paginator.html %}
- -->
 <div class="grid__wrapper">
   {% for post in site.portfolio %}
     {% include archive-single.html type="grid" %}
