@@ -12,5 +12,5 @@ main:
   - title: "Posts by Category"
     url: /categories/
 
-  - title: "Legacy WordPress Site"
-    url: wp.hoondy.com
+  - title: "WordPress Site"
+    url: http://wp.hoondy.com
