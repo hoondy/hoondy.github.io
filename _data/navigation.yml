@@ -12,5 +12,5 @@ main:
   - title: "Posts by Category"
     url: /categories/
 
-  - title: "Quick-Start Guide"
-    url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
+  - title: "Legacy WordPress Site"
+    url: wp.hoondy.com
