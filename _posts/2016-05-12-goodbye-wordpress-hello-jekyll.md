@@ -21,16 +21,14 @@ WordPress is great, but I've had many issues including:
 Then I found out you can host a blog directly from your GitHub repository.
 
 GitHub is a great alternative because:
-- It costs you nothing to maintain.
 
-- Your blog is automatically version-controlled.
-
-- The page loads and responds very fast.
-
-- The server is very reliable.
+  * It costs you nothing to maintain.
+  * Your blog is automatically version-controlled.
+  * The page loads and responds very fast.
+  * The server is very reliable.
 
 I have to confess I knew nothing about Jekyll a month ago (not known it existed), but apparantly, in short, it allows you to create a blog on GitHub. It is a ruby-based engine behind GitHub Pages that handles generating static HTML pages from Markdown (*.md) and it's easy and great to work with.
 
-So far, so good. Old WordPress site will still be available [wp.hoondy.com](http://wp.hoondy.com).
+So far, so good. Old WordPress site will still be available through [wp.hoondy.com](http://wp.hoondy.com).
 
 -Hoondy
