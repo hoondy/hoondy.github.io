@@ -19,12 +19,9 @@ tags:
 
 &nbsp;
 
-<p style="text-align: center;">
-  Pretty much self-explanatory even if you don&#8217;t understand Korean.
-</p>
+Pretty much self-explanatory even if you don't understand Korean.
 
-<p style="text-align: center;">
-  In triangle ㄱㄴㄷ, ㄴㄹ= ㄹㅁ= ㅁㄷ. Find angle ㄱㄹㅁ.
-</p>
+In triangle ㄱㄴㄷ, ㄴㄹ = ㄹㅁ = ㅁㄷ. Find angle ㄱㄹㅁ.
+
 
 permalink: /2013/01/24/korean-4th-grade-math-quiz/
