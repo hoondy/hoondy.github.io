@@ -12,7 +12,7 @@ tags:
 
 I am happy to announce I've recently ported my blog from WordPress to Jekyll-based GitHub Pages. I've been a long time user of WordPress blog, hosted on a private web server from GoDaddy. About a month ago, I got a notification from GoDaddy saying they are retiring the web server I've been using for the past 6 years. They offered me the option to move all my contents to a new premium web server for free, but not for long. They said I would be automatically billed for this premium web hosting service after the first year.
 
-WordPress is great, but I've had many issues including:
+WordPress is great and served me well, but I've also had many issues including:
 
   * It updates quite frequently and everytime it does, it tends to break one or two plugins.
   * It was quite slow. It got slower and slower over time.
