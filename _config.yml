@@ -10,7 +10,7 @@ locale                   : "en-US"
 title                    : "Hoondy.com"
 title_separator          : "-"
 name                     :
-description              : "Donghoon's Stochastic Life"
+description              : "Hoondy's Stochastic Life"
 url                      : "http://hoondy.com" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 gh_repo                  :
@@ -61,7 +61,7 @@ google_ad_slot           :
 
 # Site Author
 author:
-  name             : "Donghoon Lee"
+  name             : "Hoondy"
   avatar           : "bio-photo.jpg"
   bio              : #"I am an amazing person."
   location         : "New Haven, CT"
