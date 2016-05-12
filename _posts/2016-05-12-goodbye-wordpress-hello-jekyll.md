@@ -14,11 +14,9 @@ I am happy to announce I've recently ported my blog from WordPress to Jekyll-bas
 
 WordPress is great, but I've had many issues including:
 
-- It updates quite frequently and everytime it does, it tends to break one or two plugins.
-
-- It was quite slow. It got slower and slower over time.
-
-- Not free if you want to customize, requires a web server.
+  * It updates quite frequently and everytime it does, it tends to break one or two plugins.
+  * It was quite slow. It got slower and slower over time.
+  * Not free if you want to customize, requires a web server.
 
 Then I found out you can host a blog directly from your GitHub repository.
 
