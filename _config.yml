@@ -61,7 +61,7 @@ google_ad_slot           :
 
 # Site Author
 author:
-  name             : "Hoondy"
+  name             : "Donghoon Lee"
   avatar           : "bio-photo.jpg"
   bio              : #"I am an amazing person."
   location         : "New Haven, CT"
@@ -84,7 +84,7 @@ author:
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          :
+  twitter          : "hoondy"
   vine             :
   weibo            :
   xing             :
