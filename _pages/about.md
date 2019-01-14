@@ -3,7 +3,7 @@ layout: single
 author_profile: true
 permalink: /about/
 title: About
-author: Donghoon Lee
+author: Hoondy
 ---
 
 # Donghoon Lee
