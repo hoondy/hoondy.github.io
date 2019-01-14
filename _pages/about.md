@@ -18,6 +18,8 @@ My research is in the middle ground between *Functional Genomics* and *Data Scie
 
 ### My most current CV is available [here](https://drive.google.com/open?id=15LouGt-obgbM_RA68kkQBmmgcO4TF-wC).
 
+---
+
 For advertising quotes, press, or any other business related inquiries, please contact admin (at) hoondy.com.
 
 Copyright &copy; {{ site.time | date: '%Y' }} Hoondy.com, LLC. All Rights Reserved.
