@@ -8,9 +8,9 @@ author: Hoondy
 
 # Donghoon Lee
 
-I am a PhD student in the [Computational Biology & Bioinformatics Program](https://cbb.yale.edu/) at Yale.
+I am a PhD candidate in the [Computational Biology & Bioinformatics Program](https://cbb.yale.edu) at Yale.
 
-My research is in the middle ground between *Functional Genomics* and *Data Science*. We are living in an interesting time where an unprecedented amount of data is generated in the field of biology, especially in genomics. I am interested in machine learning approaches (neural network and dimensionality reduction) to tackle problems in genomics. My research experiences encompass integrative approaches in identifying cis-regulatory elements, annotating non-coding genome based on epigenomic profiling, and prioritizing variants related to RNA and cancer biology.
+My research is in the middle ground between *Functional Genomics* and *Data Science*. We are living in an interesting time where an unprecedented amount of data is generated in the field of biology, especially in genomics. I am interested in machine learning approaches (artificial neural network and dimensionality reduction) to tackle problems in genomics. My research experiences encompass integrative approaches in identifying cis-regulatory elements, annotating non-coding genome based on epigenomic profiling, and prioritizing variants related to RNA and cancer biology.
 
 ### donghoon (dot) lee (at) yale (dot) edu
 
