@@ -14,11 +14,17 @@ The title of my dissertation is "Leveraging Functional Genomic Data: Modeling Tr
 
 My research is in the middle ground between *Functional Genomics* and *Data Science*. We are living in an interesting time where an unprecedented amount of data is generated in the field of biology, especially in genomics. I am interested in machine learning approaches (artificial neural network and dimensionality reduction) to tackle problems in genomics. My research experiences encompass integrative approaches in identifying cis-regulatory elements, annotating non-coding genome based on epigenomic profiling, and prioritizing variants related to RNA and cancer biology.
 
-### donghoon (dot) lee (at) yale (dot) edu
+### Correspondence
+donghoon (dot) lee (at) yale (dot) edu
 
-### My publication record is best managed [here](https://scholar.google.com/citations?user=_a8xSwwAAAAJ&hl=en).
+### Publications
+[Google Scholar](https://scholar.google.com/citations?user=_a8xSwwAAAAJ&hl=en)
 
-### My most current CV is available [here](https://drive.google.com/open?id=15LouGt-obgbM_RA68kkQBmmgcO4TF-wC).
+### Current CV
+[PDF](https://drive.google.com/open?id=15LouGt-obgbM_RA68kkQBmmgcO4TF-wC)
+
+### My ORCID iD
+<div itemscope itemtype="https://schema.org/Person"><a itemprop="sameAs" content="https://orcid.org/0000-0003-0453-6059" href="https://orcid.org/0000-0003-0453-6059" target="orcid.widget" rel="noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon">https://orcid.org/0000-0003-0453-6059</a></div>
 
 ---
 
