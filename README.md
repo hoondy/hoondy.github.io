@@ -1,13 +1,11 @@
 # Page based on -- Minimal Mistakes Jekyll Theme
 
-## [Installation and Setup](https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/) / [Preview the Theme](https://mmistakes.github.io/minimal-mistakes/)
-
----
-
 ### Credits
 
 #### Icons + Demo Images:
 
+- [Installation and Setup](https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/)
+- [Preview the Theme](https://mmistakes.github.io/minimal-mistakes/)
 - [The Noun Project](https://thenounproject.com) -- Garrett Knoll, Arthur Shlain, and [tracy tam](https://thenounproject.com/tracytam)
 - [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
 - [Unsplash](https://unsplash.com/)
