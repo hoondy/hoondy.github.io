@@ -1,4 +1,4 @@
-# Page based on -- Minimal Mistakes Jekyll Theme
+# hoondy.com -- based on -- Minimal Mistakes Jekyll Theme
 
 ### Credits
 
