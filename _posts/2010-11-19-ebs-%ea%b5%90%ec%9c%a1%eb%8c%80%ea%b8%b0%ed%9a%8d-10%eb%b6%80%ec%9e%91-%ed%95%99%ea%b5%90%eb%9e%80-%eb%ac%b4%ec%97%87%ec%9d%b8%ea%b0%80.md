@@ -11,7 +11,7 @@ tags:
   - TJ
   - TJS
 ---
-[<img class="alignnone size-full wp-image-23" title="EBS 학교란 무엇인가 4부" src="http://hoondy.com/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1.png" alt="" width="500" height="138" srcset="http://hoondy.com/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1-300x83.png 300w, http://hoondy.com/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1-460x127.png 460w, http://hoondy.com/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1-688x190.png 688w, http://hoondy.com/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1.png 699w" sizes="(max-width: 500px) 100vw, 500px" />](http://hoondy.com/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1.png)
+[<img class="alignnone size-full wp-image-23" title="EBS 학교란 무엇인가 4부" src="/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1.png" alt="" width="500" height="138" srcset="/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1-300x83.png 300w, /wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1-460x127.png 460w, /wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1-688x190.png 688w, /wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1.png 699w" sizes="(max-width: 500px) 100vw, 500px" />](/wp-content/uploads/2010/11/11-19-2010-5-23-02-pm1.png)
 
 2010년 11월 18일 밤 9시50분 방송된 EBS 프로그램 &#8216;[학교란 무엇인가](http://home.ebs.co.kr/school/index.html)&#8216; 4부, &#8220;세계 최고의 고등학교, 진짜 &#8216;최고&#8217;인 이유&#8221; 편에서 제가 나온 미국 [토머스 제퍼슨 학교](http://www.tjs.org)가 소개됩니다. 이미 방송이 나간지라 많은 [다시보기](http://home.ebs.co.kr/reViewLink.jsp?command=vod&client_id=docuprime&menu_seq=1&enc_seq=3061893&out_cp=ebs) 시청 바랍니다.
 
