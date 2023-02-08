@@ -59,6 +59,6 @@ KMSA
 
 감사합니다.
 
-<a style="line-height: 1.5em; text-align: center;" href="http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg"><img class="wp-image-427 alignnone" alt="thebestlap" src="http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg" width="520" height="293" srcset="http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM-300x169.jpg 300w, http://hoondy.com/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg 781w" sizes="(max-width: 520px) 100vw, 520px" /></a>
+<a style="line-height: 1.5em; text-align: center;" href="/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg"><img class="wp-image-427 alignnone" alt="thebestlap" src="/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg" width="520" height="293" srcset="/wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM-300x169.jpg 300w, /wp-content/uploads/2014/01/346908a4f6f9960e6e4fe50f4f79d12b_6hriXv8a15XgHjdOZM.jpg 781w" sizes="(max-width: 520px) 100vw, 520px" /></a>
 
 permalink: /2014/01/14/thebestlap-battle-episode-1/

@@ -219,7 +219,7 @@ Now make pycaffe and distribute.
   make distribute
 ```
 
-[<img class="aligncenter wp-image-480" src="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png" alt="Screen Shot 2015-04-03 at 8.49.59 PM" width="520" height="280" srcset="http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1-300x161.png 300w, http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png 973w" sizes="(max-width: 520px) 100vw, 520px" />](http://hoondy.com/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png)
+[<img class="aligncenter wp-image-480" src="/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png" alt="Screen Shot 2015-04-03 at 8.49.59 PM" width="520" height="280" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1-300x161.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png 973w" sizes="(max-width: 520px) 100vw, 520px" />](/wp-content/uploads/2015/04/Screen-Shot-2015-04-03-at-8.49.59-PM1.png)
 
 Enjoy!
 
