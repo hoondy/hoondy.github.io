@@ -1,0 +1,245 @@
+---
+layout: app
+title: "Scorched Borough"
+description: "A turn-based artillery duel against the CPU over the New York skyline. Set your angle and power, read the wind, dig craters, and flatten the other tank. Free, in your browser."
+app_id: scorched-borough
+app_css: /assets/apps/scorched-borough/scorched-borough.css
+app_js: /assets/apps/scorched-borough/main.js
+image: /assets/apps/scorched-borough/og.png
+lang: en
+---
+{%- capture weapon_icons -%}
+<symbol id="sb-i-standard" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><path d="M12 2.5c2.4 1.9 3.4 4.6 3.4 7.4V18H8.6V9.9c0-2.8 1-5.5 3.4-7.4Z" fill="currentColor"/><rect x="8" y="19" width="8" height="2.6" rx=".8" fill="currentColor"/></g></symbol>
+<symbol id="sb-i-heavy" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7" fill="currentColor"/><path d="M15.5 8.5 18 6m-1-2 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="sb-i-splitter" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.6" fill="currentColor"/><g fill="currentColor"><circle cx="3.6" cy="18" r="2"/><circle cx="7.8" cy="19.6" r="2"/><circle cx="12" cy="20.2" r="2"/><circle cx="16.2" cy="19.6" r="2"/><circle cx="20.4" cy="18" r="2"/></g><path d="M12 8 4.5 15.5M12 8l-3.6 9M12 8v9.4M12 8l3.6 9M12 8l7.5 7.5" stroke="currentColor" stroke-width="1.2" opacity=".55"/></symbol>
+<symbol id="sb-i-dirt" viewBox="0 0 24 24"><path d="M2 20c2.5-6 5.6-9 10-9s7.5 3 10 9Z" fill="currentColor"/><g fill="currentColor"><circle cx="9" cy="5.5" r="1.6"/><circle cx="14" cy="4" r="1.3"/><circle cx="12.5" cy="8" r="1.1"/></g></symbol>
+{%- endcapture -%}
+<svg class="sb-sprites" width="0" height="0" aria-hidden="true" focusable="false">{{ weapon_icons }}</svg>
+
+<div class="container sb-wrap">
+<section class="sb" id="play" data-state="menu" data-share-url="{{ page.url | absolute_url }}" aria-label="Scorched Borough game">
+  <div class="sb-hud">
+    <div class="sb-plate sb-plate--you" data-side="0">
+      <span class="sb-plate__badge" aria-hidden="true">G</span>
+      <span class="sb-plate__body">
+        <span class="sb-plate__top"><span class="sb-plate__name">You</span><span class="sb-pips" aria-hidden="true"><i></i><i></i></span><span class="sb-plate__num sb-plate__num--inline" aria-hidden="true">100</span></span>
+        <span class="sb-hp" role="meter" aria-label="Your armor" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="sb-hp__fill"></span></span>
+      </span>
+      <span class="sb-plate__num" aria-hidden="true">100</span>
+    </div>
+    <div class="sb-center">
+      <div class="sb-wind" role="img" aria-label="Wind calm">
+        <span class="sb-wind__tag" aria-hidden="true">Wind</span>
+        <span class="sb-wind__gauge" aria-hidden="true"></span>
+        <span class="sb-wind__val" aria-hidden="true">0</span>
+      </div>
+      <div class="sb-where"><span class="sb-where__round">Round 1</span><span class="sb-where__place">Red Hook</span></div>
+    </div>
+    <div class="sb-plate sb-plate--cpu" data-side="1">
+      <span class="sb-plate__num" aria-hidden="true">100</span>
+      <span class="sb-plate__body">
+        <span class="sb-plate__top"><span class="sb-plate__num sb-plate__num--inline" aria-hidden="true">100</span><span class="sb-pips" aria-hidden="true"><i></i><i></i></span><span class="sb-plate__name">CPU<span class="sb-plate__lvl"></span></span></span>
+        <span class="sb-hp" role="meter" aria-label="CPU armor" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="sb-hp__fill"></span></span>
+      </span>
+      <span class="sb-plate__badge sb-plate__badge--cpu" aria-hidden="true">C</span>
+    </div>
+  </div>
+
+  <div class="sb-screen">
+    <canvas class="sb-canvas" width="1200" height="675" tabindex="0" aria-label="Battlefield. Arrow keys aim, Space fires, or drag back from your tank to aim.">The battlefield needs a browser that supports the canvas element.</canvas>
+    <div class="sb-banner" aria-hidden="true"><span class="sb-banner__main"></span><span class="sb-banner__sub"></span></div>
+    <span class="sb-demo" aria-hidden="true">Demo</span>
+    <div class="sb-cta">
+      <button type="button" class="sb-cta__go">Start match <span class="sb-cta__lvl">Normal</span> <span aria-hidden="true">&rarr;</span></button>
+      <button type="button" class="sb-cta__pick">Choose difficulty <span aria-hidden="true">&darr;</span></button>
+    </div>
+  </div>
+
+  <div class="sb-dock">
+    <div class="sb-menu">
+      <p class="sb-menu__kicker">Choose your opponent</p>
+      <div class="sb-levels" role="radiogroup" aria-label="Difficulty">
+        <button type="button" class="sb-level" role="radio" aria-checked="false" data-level="easy">
+          <span class="sb-level__bullet" aria-hidden="true">G</span>
+          <span class="sb-level__text"><span class="sb-level__name">Easy</span><span class="sb-level__desc">Local. Stops everywhere, misses a lot. Good for kids.</span></span>
+          <span class="sb-level__rec" data-rec="easy"></span>
+        </button>
+        <button type="button" class="sb-level" role="radio" aria-checked="true" data-level="normal">
+          <span class="sb-level__bullet" aria-hidden="true">G</span>
+          <span class="sb-level__text"><span class="sb-level__name">Normal</span><span class="sb-level__desc">Rush hour. Reads the wind, corrects its aim.</span></span>
+          <span class="sb-level__rec" data-rec="normal"></span>
+        </button>
+        <button type="button" class="sb-level" role="radio" aria-checked="false" data-level="hard">
+          <span class="sb-level__bullet sb-level__bullet--express" aria-hidden="true"><span>G</span></span>
+          <span class="sb-level__text"><span class="sb-level__name">Hard</span><span class="sb-level__desc">Express. Brackets you in two or three shots.</span></span>
+          <span class="sb-level__rec" data-rec="hard"></span>
+        </button>
+      </div>
+      <div class="sb-menu__go">
+        <button type="button" class="sb-start">Start match <span aria-hidden="true">&rarr;</span></button>
+        <p class="sb-menu__stats" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="sb-console" hidden>
+      <div class="sb-arsenal" role="radiogroup" aria-label="Weapon">
+        <button type="button" class="sb-arm" role="radio" aria-checked="true" data-weapon="standard">
+          <kbd class="sb-arm__key">1</kbd><svg class="sb-arm__icon" aria-hidden="true"><use href="#sb-i-standard"/></svg>
+          <span class="sb-arm__name">Standard</span><span class="sb-arm__ammo" aria-label="unlimited">&infin;</span>
+        </button>
+        <button type="button" class="sb-arm" role="radio" aria-checked="false" data-weapon="heavy">
+          <kbd class="sb-arm__key">2</kbd><svg class="sb-arm__icon" aria-hidden="true"><use href="#sb-i-heavy"/></svg>
+          <span class="sb-arm__name">Heavy</span><span class="sb-arm__ammo">3</span>
+        </button>
+        <button type="button" class="sb-arm" role="radio" aria-checked="false" data-weapon="splitter">
+          <kbd class="sb-arm__key">3</kbd><svg class="sb-arm__icon" aria-hidden="true"><use href="#sb-i-splitter"/></svg>
+          <span class="sb-arm__name">Splitter</span><span class="sb-arm__ammo">2</span>
+        </button>
+        <button type="button" class="sb-arm" role="radio" aria-checked="false" data-weapon="dirt">
+          <kbd class="sb-arm__key">4</kbd><svg class="sb-arm__icon" aria-hidden="true"><use href="#sb-i-dirt"/></svg>
+          <span class="sb-arm__name">Dirt</span><span class="sb-arm__ammo">2</span>
+        </button>
+      </div>
+
+      <div class="sb-dial" data-dial="angle">
+        <div class="sb-dial__head"><label class="sb-dial__label" for="sb-angle">Angle</label><output class="sb-dial__led" for="sb-angle">50&deg;</output></div>
+        <div class="sb-dial__row">
+          <button type="button" class="sb-nudge" data-dial="angle" data-dir="1" aria-label="Turn barrel left"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <input class="sb-range" type="range" id="sb-angle" min="0" max="180" step="0.1" value="50" dir="rtl" aria-describedby="sb-angle-hint">
+          <button type="button" class="sb-nudge" data-dial="angle" data-dir="-1" aria-label="Turn barrel right"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <span class="visually-hidden" id="sb-angle-hint">0 degrees points right, 90 straight up, 180 left.</span>
+      </div>
+
+      <div class="sb-dial" data-dial="power">
+        <div class="sb-dial__head"><label class="sb-dial__label" for="sb-power">Power</label><output class="sb-dial__led" for="sb-power">62</output></div>
+        <div class="sb-dial__row">
+          <button type="button" class="sb-nudge" data-dial="power" data-dir="-1" aria-label="Less power"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <input class="sb-range" type="range" id="sb-power" min="0" max="100" step="0.1" value="62">
+          <button type="button" class="sb-nudge" data-dial="power" data-dir="1" aria-label="More power"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+
+      <button type="button" class="sb-fire" disabled><span class="sb-fire__label">Fire</span><kbd class="sb-fire__key">Space</kbd></button>
+
+      <div class="sb-tools">
+        <button type="button" class="sb-tool" data-tool="sound" aria-pressed="true">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8h3l4-3.5v11L6 12H3Z" fill="currentColor"/><path class="sb-tool__on" d="M13 7.2a4 4 0 0 1 0 5.6M15.2 5a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="sb-tool__off" d="m13 7.5 5 5m0-5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Sound</span>
+        </button>
+        <button type="button" class="sb-tool" data-tool="shake" aria-pressed="true">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="4" width="8" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path class="sb-tool__on" d="M3 7v6M17 7v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Shake</span>
+        </button>
+        <button type="button" class="sb-tool sb-tool--quit" data-tool="quit">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 4H4v12h4M13 6.5 16.5 10 13 13.5M16.5 10H8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Quit match</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sb-result" hidden>
+      <div class="sb-result__head">
+        <p class="sb-result__kicker"></p>
+        <h2 class="sb-result__title" tabindex="-1"></h2>
+        <p class="sb-result__line"></p>
+      </div>
+      <div class="sb-result__actions">
+        <button type="button" class="sb-again">Rematch</button>
+        <button type="button" class="sb-change">Change difficulty</button>
+      </div>
+      <ul class="sb-result__stats"></ul>
+      <div class="sb-result__share"></div>
+    </div>
+  </div>
+
+  <p class="sb-live visually-hidden" aria-live="polite"></p>
+  <noscript><p class="sb-noscript">Scorched Borough runs in your browser and needs JavaScript turned on.</p></noscript>
+</section>
+</div>
+
+<div class="container container--text">
+<div class="prose sb-doc">
+  <h2 id="how-to-play">How to play</h2>
+  <p>You and the CPU each get a tank on opposite sides of a patch of the city. Take turns firing. Set the barrel angle and the power, check the wind, and let it fly. Hits knock off armor, and a tank at zero is out. Win two rounds to take the match. You shoot first in rounds 1 and 3; the CPU opens round 2.</p>
+  <p>The ground is soft. Every blast digs a crater, loose dirt drops into the hole, and a tank parked on the edge can slide in and take a little fall damage on the way down.</p>
+  <p>A faint line shows where your barrel points, but only for the first stretch. There is no trajectory preview. After each shot a marker stays where your shell landed, with a spotter call like &ldquo;12&nbsp;m short,&rdquo; so you can walk the next one in.</p>
+
+  <h2 id="controls">Controls</h2>
+  <div class="sb-table">
+    <table>
+      <thead><tr><th scope="col">To</th><th scope="col">Mouse or touch</th><th scope="col">Keyboard</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Swing the barrel</th><td>Drag back from your tank like a slingshot, or use the angle slider</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+        <tr><th scope="row">Set power</th><td>Pull the slingshot farther, or use the power slider</td><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td></tr>
+        <tr><th scope="row">Fine adjust</th><td>Tap the arrow and plus/minus buttons</td><td>Hold <kbd>Shift</kbd> for 0.1 steps</td></tr>
+        <tr><th scope="row">Pick a weapon</th><td>Tap a weapon</td><td><kbd>1</kbd>&ndash;<kbd>4</kbd></td></tr>
+        <tr><th scope="row">Fire</th><td>The red Fire button</td><td><kbd>Space</kbd> or <kbd>Enter</kbd></td></tr>
+        <tr><th scope="row">Skip the round result</th><td>Tap the battlefield or Next round</td><td><kbd>Space</kbd></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The keys only steer the game while the battlefield is on screen, so the arrow keys still scroll the page when you are down here reading. Holding an arrow key speeds up after a moment.</p>
+
+  <h2 id="weapons">Weapons</h2>
+  <p>Ammo resets at the start of every round, for you and for the CPU.</p>
+  <dl class="sb-arms">
+    <div><dt><svg aria-hidden="true"><use href="#sb-i-standard"/></svg>Standard shell <span>Unlimited</span></dt><dd>16&nbsp;m blast, up to 50 damage on a direct hit. Two clean hits finish a tank.</dd></div>
+    <div><dt><svg aria-hidden="true"><use href="#sb-i-heavy"/></svg>Heavy shell <span>3 per round</span></dt><dd>26&nbsp;m blast, up to 70 damage, and a crater big enough to drop a tank into. Save it for when your last shot was close.</dd></div>
+    <div><dt><svg aria-hidden="true"><use href="#sb-i-splitter"/></svg>Five-Borough Splitter <span>2 per round</span></dt><dd>Breaks into five bomblets at the top of its arc, one for each borough. Each does up to 24. Handy when you are not sure of the wind.</dd></div>
+    <div><dt><svg aria-hidden="true"><use href="#sb-i-dirt"/></svg>Dirt Bomb <span>2 per round</span></dt><dd>No damage. Drops a ball of earth that settles into a mound. Build a wall in front of you, or bury the other tank. A buried tank can still fire; its shell pushes up through the loose dirt.</dd></div>
+  </dl>
+
+  <h2 id="physics">The physics</h2>
+  <ul>
+    <li><strong>Gravity</strong> is constant and the same for both tanks. With no wind, 45&deg; carries farthest for a given power.</li>
+    <li><strong>Wind</strong> changes every turn. The gauge in the scoreboard shows which way it blows and how hard, from 0 to 10 (the cap is 4 on Easy, 8 on Normal, 10 on Hard). It pushes on the shell the whole time it is in the air, so a high, slow lob drifts much more than a flat, fast shot. The clouds and the steam from the stack on the skyline drift with it.</li>
+    <li><strong>Edges are walls.</strong> A shell that reaches the left or right side bursts against it, so every shot lands somewhere you can see, and a tank parked near a wall can still get caught by the blast. There is no ceiling: a shell that climbs off the top of the screen comes back down, and a small marker follows it along the top edge.</li>
+    <li><strong>Fixed timestep.</strong> Flight is simulated at 240 steps per second whatever your frame rate, so the same angle, power and wind always land in the same place. The CPU plans with that exact simulation.</li>
+    <li><strong>Damage</strong> falls off with distance from the center of the blast. A direct hit does the full amount. Falling more than a few meters costs a little armor too.</li>
+  </ul>
+
+  <h2 id="cpu">How the CPU aims</h2>
+  <p>Since the CPU runs the same simulation you are watching, it could hit you every time. It doesn&rsquo;t. It plays more like a person: it picks a spot that is off by some random amount, reads the wind imperfectly, and after a miss it aims for the other side of you with a smaller error. Long, short, hit. On Easy that error starts large and shrinks slowly. On Hard it usually finds you by the second or third shot, so make your early shots count.</p>
+
+  {% include billboard.html format="rectangle" %}
+
+  <h2 id="tips">Tips</h2>
+  <ul>
+    <li>Watch the marker, not the shell. Change one thing at a time: power for distance, angle when a hill is in the way.</li>
+    <li>Into a headwind, go flatter and harder. With the wind behind you, ease off the power.</li>
+    <li>A crater right next to a tank can drop it in. That is free damage, and it throws off the CPU&rsquo;s range.</li>
+    <li>A dirt mound in front of you blocks flat shots, which forces the CPU to lob, and lobs drift.</li>
+    <li>When your marker says you were close, switch to the Heavy before you fire again.</li>
+  </ul>
+
+  <h2 id="faq">FAQ</h2>
+  <details>
+    <summary>Is it free? Do I need an account?</summary>
+    <p>Free, no account, nothing to install. It runs in the browser on desktop and phones.</p>
+  </details>
+  <details>
+    <summary>Where are my stats kept?</summary>
+    <p>In this browser&rsquo;s local storage: wins and losses for each difficulty, your best win streak, and your fastest win in shots. Nothing is uploaded. Clearing site data resets them. Quitting or leaving a match once you have fired a shot counts as a loss.</p>
+  </details>
+  <details>
+    <summary>How do I play on a phone?</summary>
+    <p>Drag back from your tank to aim, then tap Fire. You can also start the drag anywhere on the battlefield. Portrait works fine; turning the phone sideways gives you a bigger battlefield with the controls on the side.</p>
+  </details>
+  <details>
+    <summary>Why can&rsquo;t I see the whole trajectory?</summary>
+    <p>Because judging it is the game. The aim line only shows direction. The marker and the spotter call tell you how far off you were.</p>
+  </details>
+  <details>
+    <summary>What if one shot takes out both tanks?</summary>
+    <p>The tank that fired loses the round. There are no draws.</p>
+  </details>
+  <details>
+    <summary>Can I turn off the sound or the screen shake?</summary>
+    <p>Yes, with the buttons under the controls. Both settings are remembered. Shake starts off if your device asks for reduced motion.</p>
+  </details>
+
+  <h2 id="scorched-earth">A nod to Scorched Earth</h2>
+  <p>This is a small tribute to <em>Scorched Earth</em>, the DOS artillery game Wendell Hicken released as shareware in 1991 and billed as &ldquo;The Mother of All Games.&rdquo; It had dozens of weapons, shields, a shop between rounds, computer players with names like Moron, Shooter and Cyborg, and room for up to ten people around one keyboard. Scorched Borough keeps only the core of it: angle, power, wind, and dirt that falls. No code or art from the original is used. If you never played it, it is worth looking up.</p>
+</div>
+</div>
