@@ -1,0 +1,62 @@
+# The apps that run on this site. Keys match `app_id` in each app page and _data/lines.yml.
+# `color` is a CSS value (custom property), `hex` the raw color.
+
+leadership:
+  title: "LQ Test"
+  short: "LQ"
+  name: "Leadership Quotient Test"
+  tagline: "What’s your Leadership Quotient?"
+  description: "A 7-minute personality test on the traits that research links to leadership. Get your Leadership Quotient, a percentile rank and a trait profile, in English, 한국어, Español, 日本語 or 中文."
+  url: /apps/leadership/
+  bullet: "1"
+  shape: circle
+  color: var(--line-red)
+  hex: "#EE352E"
+  image: /assets/apps/leadership/og.png
+  kind: "Personality test"
+  stops: ["5 languages", "Trait profile", "Percentile rank", "Weekly board"]
+  promo:
+    kicker: "Now boarding"
+    headline: "Are you leadership material?"
+    body: "Take the 1 to your Leadership Quotient and see where you rank."
+    cta: "Board the 1"
+
+rush-hour:
+  title: "Rush Hour"
+  short: "Rush Hour"
+  name: "Rush Hour"
+  tagline: "Type the words before they hit the platform."
+  description: "A falling-words typing game. Clear each word before it reaches the platform; every stage the trains run faster."
+  url: /apps/rush-hour/
+  bullet: "7"
+  shape: diamond
+  color: var(--line-purple)
+  hex: "#B933AD"
+  image: /assets/apps/rush-hour/og.png
+  kind: "Typing game"
+  stops: ["Falling words", "Faster every stage", "Share your score", "Weekly high scores"]
+  promo:
+    kicker: "Express service"
+    headline: "Now boarding: Rush Hour"
+    body: "Words fall, you type. The 7 Express gets faster every stage."
+    cta: "Ride the 7"
+
+scorched-borough:
+  title: "Scorched Borough"
+  short: "Scorched"
+  name: "Scorched Borough"
+  tagline: "Angle, power, wind. One shot at a time."
+  description: "A turn-based artillery duel against the CPU. Set your angle and power, read the wind, and flatten the other tank before it flattens you."
+  url: /apps/scorched-borough/
+  bullet: G
+  shape: circle
+  color: var(--line-lime)
+  hex: "#6CBE45"
+  image: /assets/apps/scorched-borough/og.png
+  kind: "Artillery game"
+  stops: ["1 vs CPU", "Angle & power", "Wind & gravity", "Turn based"]
+  promo:
+    kicker: "Weekend service change"
+    headline: "Artillery duels on the G"
+    body: "Set the angle, mind the wind, and take out the CPU’s tank."
+    cta: "Take the G"

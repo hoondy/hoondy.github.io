@@ -1,0 +1,30 @@
+{%- assign pc = include.post -%}
+{%- comment -%} normalize_whitespace, not strip_newlines: paragraphs must stay apart by a space. {%- endcomment -%}
+{%- assign pc_excerpt = pc.excerpt | strip_html | normalize_whitespace | strip -%}
+{%- assign pc_kind = "" -%}
+{%- if pc_excerpt == "" -%}
+  {%- comment -%} Posts that open with a photo or video: fall back to the body text, or say what the post is. {%- endcomment -%}
+  {%- assign pc_excerpt = pc.content | strip_html | normalize_whitespace | strip -%}
+  {%- if pc_excerpt.size < 60 -%}
+    {%- assign pc_excerpt = "" -%}
+    {%- if pc.content contains "<iframe" -%}{%- assign pc_kind = "Video" -%}{%- elsif pc.content contains "<img" -%}{%- assign pc_kind = "Photos" -%}{%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+<li class="post-card">
+  <time class="post-card__date" datetime="{{ pc.date | date_to_xmlschema }}"><span class="m">{{ pc.date | date: "%b" }}</span><span class="d">{{ pc.date | date: "%-d" }}</span><span class="y">{{ pc.date | date: "%Y" }}</span></time>
+  <div>
+    <h3 class="post-card__title"><a href="{{ pc.url | relative_url }}">{{ pc.title }}</a></h3>
+    {%- if pc_excerpt != "" %}
+    <p class="post-card__excerpt">{{ pc_excerpt | truncatewords: 32 }}</p>
+    {%- elsif pc_kind != "" %}
+    <p class="post-card__excerpt">{{ pc_kind }}</p>
+    {%- endif %}
+    {%- if pc.categories.size > 0 %}
+    <ul class="chips" aria-label="Categories">
+      {%- for cat in pc.categories limit: 3 %}
+      <li><a class="chip" href="{{ '/categories/' | relative_url }}#{{ cat | slugify }}">{{ cat }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+</li>

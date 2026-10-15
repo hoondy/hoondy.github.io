@@ -1,0 +1,38 @@
+<header class="page-head page-head--sign">
+  <div class="sign page-head__band">
+    <div class="container">
+      {% include bullet.html line="blog" %}
+      <div>
+        <nav class="page-head__crumbs" aria-label="Breadcrumb">
+          <a href="{{ '/blog/' | relative_url }}">Blog</a>
+          <span class="sep" aria-hidden="true">/</span>
+          <span aria-current="page">{{ include.title }}</span>
+        </nav>
+        <h1 class="page-head__title">{{ include.title }}</h1>
+        <p class="lede">{{ include.intro }}</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container section">
+  <ul class="chips index-cloud" aria-label="{{ include.title }}">
+    {%- for name in include.names %}
+    <li><a class="chip" href="#{{ name | slugify }}">{{ name }} <span class="chip__count">{{ include.source[name].size }}</span></a></li>
+    {%- endfor %}
+  </ul>
+  <div class="index-groups">
+    {%- for name in include.names %}
+    {%- assign posts = include.source[name] %}
+    <section class="index-group" id="{{ name | slugify }}" aria-labelledby="h-{{ name | slugify }}">
+      <h2 id="h-{{ name | slugify }}">{{ name }} <span class="timeline__count">{{ posts.size }}</span></h2>
+      <ul>
+        {%- for post in posts %}
+        <li><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endfor %}
+  </div>
+  {% include billboard.html format="horizontal" %}
+</div>

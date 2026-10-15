@@ -1,17 +1,135 @@
 ---
-layout: archive
-author_profile: false
-header:
-  image: hoondy_banner.png
+layout: page
+body_class: layout-home
+seo:
+  name: "Hoondy.com"
 ---
+{%- assign apps_list = "" | split: "" -%}
+{%- for pair in site.data.apps -%}{%- assign apps_list = apps_list | push: pair[0] -%}{%- endfor -%}
+{%- assign recent = site.posts | slice: 0, 5 -%}
+{%- comment -%} Trains for the arrivals board: apps and recent posts, interleaved. {%- endcomment -%}
+{%- capture order -%}a0 p0 a1 p1 a2 p2 p3 p4{%- endcapture -%}
+{%- assign order = order | split: " " -%}
+{%- assign minutes = "2,4,7,9,12" | split: "," -%}
 
-{% include base_path %}
+<section class="hero tiles" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__intro">
+      {% include mosaic.html sub="New York · Est. 2010" %}
+      <div class="hero__plate wall-plate">
+        <h1 class="hero__title" id="hero-title">Donghoon Lee, <span>computational biologist in NYC.</span></h1>
+        <p class="hero__text">I study the human brain one cell at a time at Mount Sinai. This is my personal station: a blog that goes back to 2010, plus a few small games and tests worth a second ride.</p>
+      </div>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg" href="{{ '/apps/' | relative_url }}">See the lines {% include icon.html name="arrow" %}</a>
+        <a class="btn btn--ghost btn--lg" href="{{ '/about/' | relative_url }}">About me</a>
+      </div>
+    </div>
 
-<h3 class="archive__subtitle">Recent Posts</h3>
+    <div class="arrivals led" data-arrivals>
+      <div class="arrivals__head"><span>Hoondy Sq</span><time data-nyc-clock>--:--</time></div>
+      <ol class="arrivals__list" data-arrivals-list aria-label="Next trains">
+        {%- for slot in order limit: 5 %}
+        {%- assign kind = slot | slice: 0 -%}
+        {%- assign n = slot | slice: 1 | plus: 0 -%}
+        {%- if kind == "a" -%}
+          {%- assign t_key = apps_list[n] -%}{%- assign t_app = site.data.apps[t_key] -%}
+          {%- assign t_bullet = t_app.bullet -%}{%- assign t_color = t_app.color -%}{%- assign t_shape = t_app.shape -%}
+          {%- assign t_title = t_app.title -%}{%- assign t_sub = t_app.kind -%}{%- assign t_url = t_app.url -%}
+        {%- else -%}
+          {%- assign t_post = recent[n] -%}
+          {%- assign t_bullet = "B" -%}{%- assign t_color = "var(--line-orange)" -%}{%- assign t_shape = "circle" -%}
+          {%- assign t_title = t_post.title -%}{%- assign t_sub = t_post.date | date: "%Y" -%}{%- assign t_url = t_post.url -%}
+        {%- endif %}
+        <li class="arrivals__row" data-min="{{ minutes[forloop.index0] }}">
+          <a href="{{ t_url | relative_url }}">{% include bullet.html letter=t_bullet color=t_color shape=t_shape %}<span class="arrivals__dest">{{ t_title }} <small>{{ t_sub }}</small></span><span class="arrivals__min">{{ minutes[forloop.index0] }} min</span></a>
+        </li>
+        {%- endfor %}
+      </ol>
+      <div class="arrivals__ticker" aria-hidden="true"><span>Welcome to Hoondy Sq &middot; Transfer here for the 1, 7 and G &middot; B trains run on a relaxed schedule &middot; Stand clear of the closing doors, please</span></div>
+      <script type="application/json" data-arrivals-data>
+      [
+      {%- for slot in order -%}
+        {%- assign kind = slot | slice: 0 -%}
+        {%- assign n = slot | slice: 1 | plus: 0 -%}
+        {%- if kind == "a" -%}
+          {%- assign t_key = apps_list[n] -%}{%- assign t_app = site.data.apps[t_key] -%}
+          {"bullet": {{ t_app.bullet | jsonify }}, "color": {{ t_app.color | jsonify }}, "shape": {{ t_app.shape | jsonify }}, "title": {{ t_app.title | jsonify }}, "sub": {{ t_app.kind | jsonify }}, "url": {{ t_app.url | relative_url | jsonify }}}
+        {%- else -%}
+          {%- assign t_post = recent[n] -%}
+          {"bullet": "B", "color": "var(--line-orange)", "shape": "circle", "title": {{ t_post.title | strip_html | jsonify }}, "sub": {{ t_post.date | date: "%Y" | jsonify }}, "url": {{ t_post.url | relative_url | jsonify }}}
+        {%- endif -%}
+        {%- unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+      ]
+      </script>
+    </div>
+  </div>
+</section>
 
-{% for post in paginator.posts %}
-  {% include archive-single.html %}
-{% endfor %}
+<section class="section" aria-labelledby="lines-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="signpost sign" id="lines-title">
+        <span class="bullets">{%- for key in apps_list %}{% assign a = site.data.apps[key] %}{% include bullet.html letter=a.bullet color=a.color shape=a.shape scale="sm" %}{% endfor -%}</span>
+        Lines in service
+      </h2>
+      <a class="section-head__link" href="{{ '/apps/' | relative_url }}">Service map {% include icon.html name="arrow" %}</a>
+    </div>
+    <div class="lines-grid">
+      {%- for key in apps_list %}
+      {%- assign app = site.data.apps[key] %}
+      <article class="card card--hover line-card" style="--line: {{ app.color }}">
+        <div class="line-card__art">{% include app-art.html id=key %}</div>
+        <div class="line-card__body">
+          <div class="line-card__head">
+            {% include bullet.html letter=app.bullet color=app.color shape=app.shape scale="md" %}
+            <div>
+              <h3><a class="line-card__title" href="{{ app.url | relative_url }}">{{ app.title }}</a></h3>
+              <p class="line-card__kind">{{ app.kind }}</p>
+            </div>
+          </div>
+          <p class="line-card__tagline">{{ app.tagline }}</p>
+          <ol class="stops" style="--line: {{ app.color }}" aria-label="Features">
+            {%- for stop in app.stops %}<li>{{ stop }}</li>{% endfor -%}
+          </ol>
+          <span class="line-card__cta" aria-hidden="true">{{ app.promo.cta }} {% include icon.html name="arrow" %}</span>
+        </div>
+      </article>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
 
-{% include paginator.html %}
+<section class="container platform" aria-label="Platform screen">
+  {% include billboard.html format="horizontal" variant="large" %}
+</section>
 
+<section class="section" aria-labelledby="posts-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="signpost sign" id="posts-title">{% include bullet.html line="blog" scale="sm" %} From the blog</h2>
+      <a class="section-head__link" href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts {% include icon.html name="arrow" %}</a>
+    </div>
+    <ol class="post-list post-list--grid">
+      {%- for post in site.posts limit: 6 %}
+      {% include post-card.html post=post %}
+      {%- endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="about-title">
+  <div class="container about-strip">
+    <div class="card about-strip__card">
+      <p class="eyebrow">{% include bullet.html line="about" scale="sm" %} About the stationmaster</p>
+      <h2 id="about-title">Hi, I’m Donghoon.</h2>
+      <p>I’m an Assistant Professor of Psychiatry and of Genetics and Genomic Sciences at the Icahn School of Medicine at Mount Sinai, where my lab builds single-cell maps of the human brain to learn what makes it vulnerable to disease. This site is where I keep my side projects.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="{{ '/about/' | relative_url }}">More about me {% include icon.html name="arrow" %}</a>
+        <a class="btn btn--ghost" href="{{ site.author.lab }}">Lee Lab {% include icon.html name="external" %}</a>
+      </div>
+    </div>
+    {% include billboard.html format="rectangle" %}
+  </div>
+</section>

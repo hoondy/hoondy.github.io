@@ -1,0 +1,55 @@
+---
+layout: default
+body_class: layout-app
+---
+{%- assign app = site.data.apps[page.app_id] -%}
+{%- assign page_lang = page.lang | default: site.lang | default: 'en' -%}
+{%- assign ui = site.data.i18n[page_lang] | default: site.data.i18n.en -%}
+{%- capture en_attr -%}{% unless page_lang == 'en' %} lang="en"{% endunless %}{%- endcapture -%}
+{%- comment -%}
+  The header shows the app's short name. page.title is the longer search title for
+  <title>. A translated app can name itself in _data/<app_id>/<lang>.json (ui.app_name);
+  page.header_title overrides both.
+{%- endcomment -%}
+{%- assign app_strings = site.data[page.app_id][page_lang] -%}
+{%- assign app_name = page.header_title | default: app_strings.ui.app_name | default: app.title -%}
+{%- comment -%} Count the panels already in the page so the ones here open on other promos. {%- endcomment -%}
+{%- assign bb_count = content | split: ' data-billboard data-format=' | size | minus: 1 -%}
+{%- assign rails = true -%}
+{%- if page.rails == false -%}{%- assign rails = false -%}{%- endif -%}
+{%- unless page.header == false %}
+<div class="app-header sign">
+  <div class="container">
+    <div class="app-header__id">
+      {% include bullet.html letter=app.bullet color=app.color shape=app.shape scale="lg" %}
+      <div>
+        <h1 class="app-header__title">{{ app_name }}</h1>
+        <p class="app-header__tagline">{{ page.tagline | default: app.tagline }}</p>
+      </div>
+    </div>
+    <nav class="app-header__nav" aria-label="{{ ui.other_lines }}">
+      {%- for pair in site.data.apps %}
+      {%- unless pair[0] == page.app_id %}
+      {%- assign other = pair[1] %}
+      <a href="{{ other.url | relative_url }}">{% include bullet.html letter=other.bullet color=other.color shape=other.shape %}<span class="app-header__label"{{ en_attr }}>{{ other.title }}</span></a>
+      {%- endunless %}
+      {%- endfor %}
+      <a href="{{ '/apps/' | relative_url }}">{% include bullet.html line="apps" %}<span class="app-header__label">{{ ui.all_lines }}</span></a>
+    </nav>
+  </div>
+</div>
+{%- endunless %}
+<div class="app-shell{% if rails %} app-shell--rails{% endif %}">
+  <main id="main" class="app-main" data-app="{{ page.app_id }}">
+{{ content }}
+  </main>
+  {%- if rails %}
+  <div class="app-rail"><div class="kiosk">{% include billboard.html format="vertical" %}</div></div>
+  {%- endif %}
+</div>
+<div class="container app-platform">
+  {% include billboard.html format="horizontal" variant="large" %}
+</div>
+{%- if page.app_js %}
+<script type="module" src="{{ page.app_js | relative_url }}"></script>
+{%- endif %}

@@ -1,23 +1,47 @@
-{% include base_path %}
-
-<div class="masthead">
-  <div class="masthead__inner-wrap">
-    <div class="masthead__menu">
-      <nav id="site-nav" class="greedy-nav">
-        <button><div class="navicon"></div></button>
-        <ul class="visible-links">
-          <li class="masthead__menu-item masthead__menu-item--lg"><a href="{{ base_path }}/">{{ site.title }}</a></li>
-          {% for link in site.data.navigation.main %}
-            {% if link.url contains 'http' %}
-              {% assign domain = '' %}
-              {% else %}
-              {% assign domain = base_path %}
-            {% endif %}
-            <li class="masthead__menu-item"><a href="{{ domain }}{{ link.url }}">{{ link.title }}</a></li>
-          {% endfor %}
-        </ul>
-        <ul class="hidden-links hidden"></ul>
-      </nav>
+<header class="masthead sign">
+  <div class="container masthead__inner">
+    <a class="masthead__brand" href="{{ '/' | relative_url }}" aria-label="{{ ui.home }}">
+      {% include bullet.html letter="H" color="var(--line-yellow)" dark=true %}
+      <span>Hoondy Sq</span>
+      <span class="masthead__brand-sub">Donghoon Lee</span>
+    </a>
+    {%- capture nav_items -%}
+    {%- for item in site.data.navigation.main %}
+    {%- assign line = site.data.lines[item.line] %}
+    {%- assign is_here = false %}
+    {%- if page.url == line.url %}{% assign is_here = true %}{% endif %}
+    {%- if item.line == 'blog' %}
+      {%- if page.collection == 'posts' or page.url == '/tags/' or page.url == '/categories/' %}{% assign is_here = true %}{% endif %}
+    {%- endif %}
+    {%- if item.line == 'apps' and page.app_id %}{% assign is_here = true %}{% endif %}
+        <li><a href="{{ line.url | relative_url }}"{% if is_here %} aria-current="page"{% endif %}>{% include bullet.html line=item.line %}<span>{{ ui.nav[item.line] | default: line.name }}</span></a></li>
+    {%- endfor %}
+    {%- endcapture %}
+    <nav class="masthead__nav" aria-label="{{ ui.nav_main }}">
+      <ul>{{ nav_items }}
+      </ul>
+    </nav>
+    <div class="masthead__tools">
+      <span class="masthead__clock led-text" aria-hidden="true"><small>NYC</small><span data-nyc-clock>--:--</span></span>
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle data-label-dark="{{ ui.theme_dark }}" data-label-light="{{ ui.theme_light }}" aria-label="{{ ui.theme_dark }}">{% include icon.html name="moon" %}{% include icon.html name="sun" %}</button>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>{% include icon.html name="menu" %}<span>{{ ui.menu }}</span></button>
     </div>
   </div>
-</div>
+  <div class="masthead__menu" id="site-menu" hidden data-menu>
+    <nav class="container" aria-label="{{ ui.nav_menu }}">
+      <ul>{{ nav_items }}
+      </ul>
+      <p class="masthead__menu-title">{{ ui.lines_in_service }}</p>
+      <ul>
+        {%- for pair in site.data.apps %}
+        {%- assign app = pair[1] %}
+        {%- if pair[0] == page.app_id %}
+        <li><a href="{{ page.url | relative_url }}" aria-current="page">{% include bullet.html letter=app.bullet color=app.color shape=app.shape %}<span>{{ app_name | default: app.title }}<small>{% if page_lang == 'en' %}{{ app.tagline }}{% else %}{{ page.tagline | default: app.tagline }}{% endif %}</small></span></a></li>
+        {%- else %}
+        <li><a href="{{ app.url | relative_url }}">{% include bullet.html letter=app.bullet color=app.color shape=app.shape %}<span{{ en_attr }}>{{ app.title }}<small>{{ app.tagline }}</small></span></a></li>
+        {%- endif %}
+        {%- endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>

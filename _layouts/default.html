@@ -1,31 +1,24 @@
----
-layout: compress
----
-
-{% include base_path %}
-
+{%- assign page_lang = page.lang | default: site.lang | default: 'en' -%}
+{%- assign ui = site.data.i18n[page_lang] | default: site.data.i18n.en -%}
+{%- capture en_attr -%}{% unless page_lang == 'en' %} lang="en"{% endunless %}{%- endcapture -%}
+{%- if page.app_id -%}
+  {%- comment -%} The current app's name in this page's language, for the menu and footer. {%- endcomment -%}
+  {%- assign app_strings = site.data[page.app_id][page_lang] -%}
+  {%- assign app_name = page.header_title | default: app_strings.ui.app_name | default: site.data.apps[page.app_id].title -%}
+{%- endif -%}
+{%- assign ads_on = false -%}
+{%- if jekyll.environment == "production" and site.adsense.client -%}{%- assign ads_on = true -%}{%- endif -%}
+{%- if page.ads == false or page.billboards == false -%}{%- assign ads_on = false -%}{%- endif -%}
 <!doctype html>
-<html lang="{{ site.locale | slice: 0,2 }}" class="no-js">
-  <head>
-    {% include head.html %}
-    {% include head/custom.html %}
-  </head>
-
-  <body>
-
-    {% include browser-upgrade.html %}
-    {% include masthead.html %}
-
-    {{ content }}
-
-    <div class="page__footer">
-      <footer>
-        {% include footer.html %}
-      </footer>
-    </div>
-
-    {% include scripts.html %}
-    {% include footer/custom.html %}
-
-  </body>
+<html lang="{% if page_lang == 'zh' %}zh-Hans{% else %}{{ page_lang }}{% endif %}"{% if ads_on %} data-ads="on"{% endif %}>
+<head>
+{% include head.html %}
+</head>
+<body class="{% if page.body_class %}{{ page.body_class }}{% else %}layout-{{ page.layout | default: 'default' }}{% endif %}">
+<a class="skip-link" href="#main">{{ ui.skip }}</a>
+{% include masthead.html %}
+{{ content }}
+{% include footer.html %}
+<script type="module" src="{{ '/assets/js/site.js' | relative_url }}"></script>
+</body>
 </html>

@@ -1,0 +1,10 @@
+{%- comment -%}
+  Route bullet. Either pass a line key from _data/lines.yml (line="blog"),
+  or the pieces directly (letter="7" color="var(--line-purple)" shape="diamond").
+  Optional: scale="sm|md|lg|xl", class="...", label="..." for an accessible name.
+{%- endcomment -%}
+{%- assign b_line = site.data.lines[include.line] -%}
+{%- assign b_letter = include.letter | default: b_line.bullet -%}
+{%- assign b_color = include.color | default: b_line.color -%}
+{%- assign b_shape = include.shape | default: b_line.shape -%}
+<span class="bullet{% if b_shape == 'diamond' %} bullet--diamond{% endif %}{% if include.scale %} bullet--{{ include.scale }}{% endif %}{% if include.dark %} bullet--dark-text{% endif %}{% if include.class %} {{ include.class }}{% endif %}" style="--bullet: {{ b_color }}"{% if include.label %} role="img" aria-label="{{ include.label }}"{% else %} aria-hidden="true"{% endif %}>{{ b_letter }}</span>

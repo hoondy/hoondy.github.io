@@ -1,0 +1,36 @@
+---
+layout: page
+title: "Wrong platform"
+permalink: /404.html
+sitemap: false
+ads: false
+description: "This page isn’t served at this station."
+---
+<section class="lost tiles">
+  <div class="container lost__grid">
+    <div>
+      <p class="eyebrow">{% include bullet.html letter="H" color="var(--line-yellow)" dark=true scale="sm" %} Hoondy Sq</p>
+      <p class="lost__code" aria-hidden="true">404</p>
+      <div class="lost__copy wall-plate">
+        <h1 class="lost__title">Wrong platform.</h1>
+        <p class="lost__text">The page you’re looking for isn’t served at this station. It may have moved, or the link had a typo. Try one of these lines instead.</p>
+        <ul class="lost__lines">
+          {%- for item in site.data.navigation.main %}
+          {%- assign line = site.data.lines[item.line] %}
+          <li><a href="{{ line.url | relative_url }}">{% include bullet.html line=item.line %}{{ line.name }}</a></li>
+          {%- endfor %}
+          {%- for pair in site.data.apps %}
+          {%- assign app = pair[1] %}
+          <li><a href="{{ app.url | relative_url }}">{% include bullet.html letter=app.bullet color=app.color shape=app.shape %}{{ app.title }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="led lost__board" aria-hidden="true">
+      <div>Service change</div>
+      <div>No trains to this page</div>
+      <div>Please use another line</div>
+      <div><span class="blink">&#9679;</span> Watch the gap</div>
+    </div>
+  </div>
+</section>

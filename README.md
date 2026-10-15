@@ -1,47 +1,34 @@
-# hoondy.com -- based on -- Minimal Mistakes Jekyll Theme
+# hoondy.com
 
-### Credits
+Personal site of Donghoon Lee: a blog going back to 2010, plus a few small apps and games
+(the LQ leadership test, Rush Hour and Scorched Borough).
 
-#### Icons + Demo Images:
+The whole site is themed as a New York City subway station, "Hoondy Sq". It is built with
+Jekyll on GitHub Pages, with plain CSS and vanilla JavaScript modules, so there is nothing to
+compile beyond the Jekyll build that Pages already runs.
 
-- [Installation and Setup](https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/)
-- [Preview the Theme](https://mmistakes.github.io/minimal-mistakes/)
-- [The Noun Project](https://thenounproject.com) -- Garrett Knoll, Arthur Shlain, and [tracy tam](https://thenounproject.com/tracytam)
-- [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
-- [Unsplash](https://unsplash.com/)
+## Local development
 
-#### Other:
+```sh
+bundle install
+bundle exec jekyll serve
+```
 
-- [Jekyll](http://jekyllrb.com/)
-- [jQuery](http://jquery.com/)
-- [Susy](http://susy.oddbird.net/)
-- [Breakpoint](http://breakpoint-sass.com/)
-- [Magnific Popup](http://dimsemenov.com/plugins/magnific-popup/)
-- [FitVids.JS](http://fitvidsjs.com/)
-- Greedy Navigation - [lukejacksonn](http://codepen.io/lukejacksonn/pen/PwmwWV)
-- [jQuery Smooth Scroll](https://github.com/kswedberg/jquery-smooth-scroll)
-- [Stickyfill](https://github.com/wilddeer/stickyfill)
+Then open http://127.0.0.1:4000. Local builds run in development mode, so Google Analytics and
+AdSense are not loaded and the billboards show the house promos instead.
 
----
+## Layout
 
-The MIT License (MIT)
+- `_layouts/`, `_includes/`, `assets/css/main.css`, `assets/js/site.js`: the station theme
+- `_pages/`: About, the blog archive, Tags, Categories, Privacy and the 404 page
+- `_data/apps.yml`, `_data/lines.yml`: apps and route bullets used across the site
+- `_data/i18n.yml`: menu and footer wording for pages in other languages (the LQ test translations)
+- `apps/<name>/` and `assets/apps/<name>/`: one folder per app
+- `assets/js/lib/`: shared helpers for leaderboards and sharing
+- `_posts/`: blog posts
+- `server/leaderboard/`: the leaderboard worker (not part of the Jekyll build)
 
-Copyright (c) 2016 Michael Rose
+## Leaderboards
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Weekly leaderboards run on a small Cloudflare Worker. See `server/leaderboard/README.md`.
+Without it (`leaderboard_api` left empty in `_config.yml`), each visitor gets a board on their own device.

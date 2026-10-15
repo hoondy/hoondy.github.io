@@ -1,76 +1,111 @@
 ---
 layout: default
 ---
-
-{% include base_path %}
-
-{% if (page.header.overlay_color or page.header.overlay_image) or page.header.image %}
-  {% include page__hero.html %}
-{% endif %}
-
-{% if page.url != "/" and site.breadcrumbs %}
-  {% unless paginator %}
-    {% include breadcrumbs.html %}
-  {% endunless %}
-{% endif %}
-
-<div id="main" role="main">
-  {% include sidebar.html %}
-
-  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
-    {% if page.title %}<meta itemprop="headline" content="{{ page.title | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
-    {% if page.excerpt %}<meta itemprop="description" content="{{ page.excerpt | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
-    {% if page.date %}<meta itemprop="datePublished" content="{{ page.date | date: "%B %d, %Y" }}">{% endif %}
-    {% if page.modified %}<meta itemprop="dateModified" content="{{ page.modified | date: "%B %d, %Y" }}">{% endif %}
-
-    <div class="page__inner-wrap">
-      {% unless page.header.overlay_color or page.header.overlay_image %}
-        <header>
-          <h1 class="page__title" itemprop="headline">{{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}</h1>
-          {% if page.read_time %}
-            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> {% include read-time.html %}</p>
-          {% endif %}
-        </header>
-      {% endunless %}
-
-      <section class="page__content" itemprop="text">
-        {{ content }}
-        {% if page.link %}<div><a href="{{ page.link }}" class="btn">{{ site.data.ui-text[site.locale].ext_link_label }}</a></div>{% endif %}
-      </section>
-
-      <footer class="page__meta">
-        {% if site.data.ui-text[site.locale].meta_label %}
-          <h4 class="page__meta-title">{{ site.data.ui-text[site.locale].meta_label }}</h4>
-        {% endif %}
-        {% include page__taxonomy.html %}
-        {% if page.modified %}
-          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label }}</strong> <time datetime="{{ page.modified | date: "%Y-%m-%d" }}">{{ page.modified | date: "%B %d, %Y" }}</time></p>
-        {% elsif page.date %}
-          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label }}</strong> <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time></p>
-        {% endif %}
-      </footer>
-
-      {% if page.share %}{% include social-share.html %}{% endif %}
-
-      {% include post_pagination.html %}
-    </div>
-
-    {% if site.comments.provider and page.comments %}
-      {% include comments.html %}
-    {% endif %}
-  </article>
-
-  {% comment %}<!-- only show related on a post page when not disabled -->{% endcomment %}
-  {% if page.id and page.related and site.related_posts.size > 0 %}
-    <div class="page__related">
-      {% if site.data.ui-text[site.locale].related_label %}
-        <h4 class="page__related-title">{{ site.data.ui-text[site.locale].related_label }}</h4>
-      {% endif %}
-      <div class="grid__wrapper">
-        {% for post in site.related_posts limit:4 %}
-          {% include archive-single.html type="grid" %}
-        {% endfor %}
+{%- assign is_post = false -%}
+{%- if page.collection == "posts" -%}{%- assign is_post = true -%}{%- endif -%}
+{%- assign show_ads = true -%}
+{%- if page.billboards == false -%}{%- assign show_ads = false -%}{%- endif -%}
+{%- comment -%} Count the panels already in the page so the ones here open on other promos. {%- endcomment -%}
+{%- assign bb_count = content | split: ' data-billboard data-format=' | size | minus: 1 -%}
+<main id="main" class="page">
+  <article class="post{% unless show_ads %} post--solo{% endunless %}">
+    <header class="container post__header">
+      {%- if is_post %}
+      <nav class="page-head__crumbs" aria-label="Breadcrumb">
+        <a href="{{ '/blog/' | relative_url }}">{% include bullet.html line="blog" scale="sm" %}Blog</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="{{ '/blog/' | relative_url }}#y{{ page.date | date: '%Y' }}">{{ page.date | date: '%Y' }}</a>
+      </nav>
+      {%- elsif page.crumb %}
+      <nav class="page-head__crumbs" aria-label="Breadcrumb">
+        <a href="{{ '/' | relative_url }}">{% include bullet.html letter="H" color="var(--line-yellow)" dark=true scale="sm" %}Hoondy Sq</a>
+      </nav>
+      {%- endif %}
+      <h1 class="post__title">{{ page.title }}</h1>
+      {%- if is_post %}
+      {%- assign words = content | strip_html | number_of_words -%}
+      {%- assign minutes = words | divided_by: 220 | plus: 1 %}
+      <div class="page-head__meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        <span class="dot" aria-hidden="true"></span>
+        <span>{{ minutes }} min read</span>
+        {%- if page.categories.size > 0 %}
+        <ul class="chips" aria-label="Categories">
+          {%- for cat in page.categories %}
+          <li><a class="chip" href="{{ '/categories/' | relative_url }}#{{ cat | slugify }}">{{ cat }}</a></li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
       </div>
+      {%- elsif page.description %}
+      <p class="lede">{{ page.description }}</p>
+      {%- endif %}
+      {%- if page.updated %}
+      <p class="page-head__meta">Last updated <time datetime="{{ page.updated | date_to_xmlschema }}">{{ page.updated | date: "%B %-d, %Y" }}</time></p>
+      {%- endif %}
+    </header>
+
+    <div class="container">
+      <div class="post__layout{% if show_ads %} post__layout--kiosk{% endif %}">
+        <div class="post__main">
+          <div class="prose">
+{{ content }}
+          </div>
+          {%- if is_post %}
+          <footer class="post__footer">
+            {%- if page.tags.size > 0 %}
+            <div>
+              <p class="post__footer-label">Tags</p>
+              <ul class="chips">
+                {%- for tag in page.tags %}
+                <li><a class="chip" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+                {%- endfor %}
+              </ul>
+            </div>
+            {%- endif %}
+            {%- if page.share %}
+            <div>
+              <p class="post__footer-label">Share this post</p>
+              <div data-post-share data-share-title="{{ page.title | strip_html | escape_once }}" data-share-url="{{ page.url | absolute_url }}"></div>
+            </div>
+            {%- endif %}
+          </footer>
+          {%- endif %}
+        </div>
+        {%- if show_ads %}
+        <div class="post__aside">
+          <div class="kiosk">{% include billboard.html format="vertical" %}</div>
+        </div>
+        {%- endif %}
+      </div>
+
+      {%- if show_ads %}
+      {% include billboard.html format="horizontal" %}
+      {%- endif %}
+
+      {%- if is_post %}
+      {%- if page.previous or page.next %}
+      <nav class="stops-nav" aria-label="More posts">
+        {%- if page.previous %}
+        <a href="{{ page.previous.url | relative_url }}" rel="prev">
+          <span class="stops-nav__label">{% include icon.html name="arrow-left" %}Previous stop</span>
+          <span class="stops-nav__title">{{ page.previous.title }}</span>
+        </a>
+        {%- else %}
+        <span></span>
+        {%- endif %}
+        {%- if page.next %}
+        <a class="stops-nav__next" href="{{ page.next.url | relative_url }}" rel="next">
+          <span class="stops-nav__label">Next stop{% include icon.html name="arrow" %}</span>
+          <span class="stops-nav__title">{{ page.next.title }}</span>
+        </a>
+        {%- endif %}
+      </nav>
+      {%- endif %}
+      {%- if page.comments %}
+      {% include comments.html %}
+      {%- endif %}
+      {%- endif %}
     </div>
-  {% endif %}
-</div>
+  </article>
+</main>

@@ -1,0 +1,68 @@
+---
+layout: page
+title: Blog
+permalink: /blog/
+description: "Every post on hoondy.com since 2010, grouped by year."
+# an index of links, not content of its own: house promos only, no Google ads
+ads: false
+redirect_from:
+  - /year-archive/
+  - /page2/
+  - /page3/
+  - /collection-archive/
+---
+{%- assign years = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
+{%- assign first = site.posts | last -%}
+{%- assign latest = site.posts | first -%}
+<header class="page-head page-head--sign">
+  <div class="sign page-head__band">
+    <div class="container">
+      {% include bullet.html line="blog" %}
+      <div>
+        <h1 class="page-head__title">Blog</h1>
+        <p class="lede">{{ site.posts.size }} posts from {{ first.date | date: "%Y" }} to {{ latest.date | date: "%Y" }}: gadgets, cars, puzzles, a little science, and a wedding.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container section">
+  <div class="post__layout post__layout--kiosk">
+    <div class="post__main">
+      <nav class="archive-tools" aria-label="Browse">
+        <ul class="chips" aria-label="Years">
+          {%- for y in years %}
+          <li><a class="chip" href="#y{{ y.name }}">{{ y.name }} <span class="chip__count">{{ y.size }}</span></a></li>
+          {%- endfor %}
+        </ul>
+        <p class="archive-tools__more">
+          <a href="{{ '/tags/' | relative_url }}">Tags {% include icon.html name="arrow" %}</a>
+          <a href="{{ '/categories/' | relative_url }}">Categories {% include icon.html name="arrow" %}</a>
+        </p>
+      </nav>
+      <ol class="timeline">
+        {%- for y in years %}
+        <li class="timeline__year">
+          <h2 id="y{{ y.name }}">{{ y.name }} <span class="timeline__count">{{ y.size }} {% if y.size == 1 %}post{% else %}posts{% endif %}</span></h2>
+          <ol class="timeline__posts">
+            {%- for post in y.items %}
+            <li class="timeline__post">
+              <time class="timeline__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d" }}</time>
+              <div>
+                <h3 class="timeline__title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+                {%- if post.categories.size > 0 %}
+                <span class="timeline__cats">{{ post.categories | join: " · " }}</span>
+                {%- endif %}
+              </div>
+            </li>
+            {%- endfor %}
+          </ol>
+        </li>
+        {%- endfor %}
+      </ol>
+    </div>
+    <div class="post__aside">
+      <div class="kiosk">{% include billboard.html format="vertical" %}</div>
+    </div>
+  </div>
+</div>

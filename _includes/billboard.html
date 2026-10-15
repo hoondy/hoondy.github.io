@@ -1,0 +1,45 @@
+{%- comment -%}
+  Digital ad panel.
+  {% include billboard.html format="horizontal|rectangle|vertical" variant="large" %}
+  The AdSense unit sits on top of a house-ad layer (promos for the apps). In production
+  site.js requests an ad once the panel is visible; the promos appear only once AdSense
+  reports no fill (or never answers). Sizes are fixed per format and container width
+  (see main.css) so nothing shifts. The panel stays in English on translated pages.
+  bb_count numbers the panels on a page so neighbours open on different promos; a
+  layout that adds panels after the page content sets it from the panels in content.
+  Pages with `ads: false` get the promos only.
+{%- endcomment -%}
+{%- assign bb_format = include.format | default: "horizontal" -%}
+{%- assign bb_slot = site.adsense.slots[bb_format] | default: site.adsense.slots.default -%}
+{%- assign bb_count = bb_count | default: 0 | plus: 1 -%}
+{%- assign bb_apps = "" | split: "" -%}
+{%- for pair in site.data.apps -%}
+  {%- unless pair[0] == page.app_id -%}{%- assign bb_apps = bb_apps | push: pair[0] -%}{%- endunless -%}
+{%- endfor -%}
+{%- assign bb_active = bb_count | modulo: bb_apps.size -%}
+{%- assign bb_lang = page.lang | default: site.lang | default: 'en' -%}
+<aside class="billboard billboard--{{ bb_format }}{% if include.variant %} billboard--{{ include.variant }}{% endif %}{% if include.class %} {{ include.class }}{% endif %}" aria-label="Advertisements"{% unless bb_lang == 'en' %} lang="en"{% endunless %} data-billboard data-format="{{ bb_format }}">
+  <div class="billboard__frame">
+    <div class="billboard__bar" aria-hidden="true"><span class="billboard__label">Advertisements</span><span class="billboard__power"></span></div>
+    <div class="billboard__screen">
+      <div class="billboard__house" data-house>
+        {%- for key in bb_apps %}
+        {%- assign app = site.data.apps[key] %}
+        {%- assign on = false %}{% if forloop.index0 == bb_active %}{% assign on = true %}{% endif %}
+        <a class="house{% if on %} is-active{% endif %}" href="{{ app.url | relative_url }}" style="--line: {{ app.color }}" data-app="{{ key }}"{% unless on %} tabindex="-1" aria-hidden="true"{% endunless %}>
+          {% include bullet.html letter=app.bullet color=app.color shape=app.shape class="house__bullet" %}
+          <span class="house__kicker">{{ app.promo.kicker }}</span>
+          <strong class="house__headline">{{ app.promo.headline }}</strong>
+          <span class="house__body">{{ app.promo.body }}</span>
+          <span class="house__stops" aria-hidden="true">{% for stop in app.stops %}<span>{{ stop }}</span>{% endfor %}</span>
+          <span class="house__cta">{{ app.promo.cta }} <span aria-hidden="true">&rarr;</span></span>
+          <span class="house__board led" aria-hidden="true"><span><span>{{ app.short }}</span><span>Boarding</span></span><span><span>Wait</span><span>0 min</span></span><span><span>Fare</span><span>Free</span></span></span>
+        </a>
+        {%- endfor %}
+      </div>
+      {%- if site.adsense.client and bb_slot and page.ads != false and page.billboards != false %}
+      <ins class="adsbygoogle billboard__ad" data-ad-client="{{ site.adsense.client }}" data-ad-slot="{{ bb_slot }}"></ins>
+      {%- endif %}
+    </div>
+  </div>
+</aside>

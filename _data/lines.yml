@@ -1,0 +1,50 @@
+# Route bullets used across the site. `color` is the CSS token, `hex` the raw value
+# (for places where a custom property can't reach, like canvas or meta tags).
+
+about:
+  bullet: A
+  name: About
+  url: /about/
+  color: var(--line-blue)
+  hex: "#0039A6"
+  shape: circle
+
+blog:
+  bullet: B
+  name: Blog
+  url: /blog/
+  color: var(--line-orange)
+  hex: "#FF6319"
+  shape: circle
+
+apps:
+  bullet: S
+  name: Apps
+  url: /apps/
+  color: var(--line-shuttle)
+  hex: "#808183"
+  shape: circle
+
+leadership:
+  bullet: "1"
+  name: LQ Test
+  url: /apps/leadership/
+  color: var(--line-red)
+  hex: "#EE352E"
+  shape: circle
+
+rush-hour:
+  bullet: "7"
+  name: Rush Hour
+  url: /apps/rush-hour/
+  color: var(--line-purple)
+  hex: "#B933AD"
+  shape: diamond
+
+scorched-borough:
+  bullet: G
+  name: Scorched Borough
+  url: /apps/scorched-borough/
+  color: var(--line-lime)
+  hex: "#6CBE45"
+  shape: circle

@@ -1,16 +1,5 @@
-# main links links
+# Masthead links. `line` points at _data/lines.yml for the bullet.
 main:
-  - title: "About"
-    url: /about/
-
-  - title: "Posts by Year"
-    url: /year-archive/
-
-  - title: "Posts by Tags"
-    url: /tags/
-
-  - title: "Posts by Category"
-    url: /categories/
-
-#   - title: "WordPress Site"
-#     url: http://wp.hoondy.com
+  - line: about
+  - line: blog
+  - line: apps

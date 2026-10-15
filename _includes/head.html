@@ -1,21 +1,43 @@
-{% include base_path %}
-
 <meta charset="utf-8">
-
-{% include seo.html %}
-
-<link href="{{ base_path }}/feed.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Feed">
-
-<!-- http://t.co/dKP3o1e -->
-<meta name="HandheldFriendly" content="True">
-<meta name="MobileOptimized" content="320">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
-  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  (function () {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
 </script>
-
-<!-- For all browsers -->
-<link rel="stylesheet" href="{{ base_path }}/assets/css/main.css">
-
-<meta http-equiv="cleartype" content="on">
+{% seo %}
+{% feed_meta %}
+{%- if page.alternates %}
+{%- for alt in page.alternates %}
+<link rel="alternate" hreflang="{{ alt.lang }}" href="{{ alt.url | absolute_url }}">
+{%- if alt.lang == 'en' %}
+<link rel="alternate" hreflang="x-default" href="{{ alt.url | absolute_url }}">
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+<meta name="leaderboard-api" content="{{ site.leaderboard_api }}">
+<meta name="theme-color" content="#111111">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{%- comment %} Japanese pages also get DotGothic16 so kana on the LED boards stay dot-matrix. {% endcomment %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:ROND,wght@100,600..900{% if page.lang == 'ja' %}&family=DotGothic16{% endif %}&family=Inter+Tight:wght@500..800&family=Inter:ital,opsz,wght@0,14..32,400..700;1,14..32,400..600&display=swap">
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+{%- if page.app_css %}
+<link rel="stylesheet" href="{{ page.app_css | relative_url }}">
+{%- endif %}
+<link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="32x32">
+<link rel="icon" href="{{ '/assets/img/favicon-32.png' | relative_url }}" type="image/png" sizes="32x32">
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}">
+<link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
+{%- if jekyll.environment == "production" %}
+{% include ga4.html %}
+{%- endif %}
+{%- comment %} The ad loader only goes on pages that run Google ads (not the 404, privacy or index pages). {% endcomment %}
+{%- if ads_on %}
+{% include adsense.html %}
+{%- endif %}

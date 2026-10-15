@@ -1,0 +1,8 @@
+<div class="mosaic{% if include.class %} {{ include.class }}{% endif %}"{% if include.hidden %} aria-hidden="true"{% endif %}>
+  <div class="mosaic__field">
+    <span class="mosaic__name">{{ include.name | default: "Hoondy Sq" }}</span>
+    {%- if include.sub %}
+    <span class="mosaic__sub">{{ include.sub }}</span>
+    {%- endif %}
+  </div>
+</div>

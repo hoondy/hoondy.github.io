@@ -1,15 +1,12 @@
-{% include base_path %}
-
-<div class="page__comments">
-  <h4 class="page__comments-title">{{ site.data.ui-text[site.locale].comments_label }}</h4>
-  {% case site.comments.provider %}
-  {% when "disqus" %}
-    <section id="disqus_thread"></section>
-  {% when "facebook" %}
-    <section class="fb-comments" data-href="{{ base_path }}{{ page.url }}" data-mobile="true" data-num-posts="{{ site.comments.facebook.num_posts | default: 5 }}" data-width="100%" data-colorscheme="{{ site.comments.facebook.colorscheme | default: 'light' }}"></section>
-  {% when "google-plus" %}
-    <section class="g-comments" data-href="{{ base_path }}{{ page.url }}" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD">Loading Google+ Comments ...</section>
-  {% when "custom" %}
-    <section id="comments"></section>
-  {% endcase %}
-</div>
+{%- if site.comments.disqus.shortname -%}
+<section class="comments" id="comments" aria-labelledby="comments-title" data-disqus="{{ site.comments.disqus.shortname }}" data-url="{{ page.url | absolute_url }}">
+  <div class="comments__head">
+    <div>
+      <h2 id="comments-title">Comments</h2>
+      <p class="comments__note">Comments are hosted by Disqus and load only when you ask for them.</p>
+    </div>
+    <button class="btn btn--ghost" type="button" data-disqus-load>{% include icon.html name="chat" %}Show comments</button>
+  </div>
+  <div id="disqus_thread"></div>
+</section>
+{%- endif -%}

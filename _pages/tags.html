@@ -1,0 +1,11 @@
+---
+layout: page
+title: Tags
+permalink: /tags/
+description: "Posts on hoondy.com grouped by tag."
+# an index of links, not content of its own: house promos only, no Google ads
+ads: false
+---
+{%- capture names -%}{%- for t in site.tags -%}{{ t[0] }}{%- unless forloop.last -%}|{%- endunless -%}{%- endfor -%}{%- endcapture -%}
+{%- assign names = names | split: "|" | sort_natural -%}
+{% include taxonomy.html title="Tags" names=names source=site.tags intro="Every tag used on the blog. Pick one to jump to its posts." %}

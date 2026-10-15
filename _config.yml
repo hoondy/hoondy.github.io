@@ -1,238 +1,108 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your entire site, values
-# which you are expected to set up once and rarely need to edit after that.
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# `jekyll serve`. If you change this file, please restart the server process.
+# Site
+locale         : "en-US"
+lang           : "en"
+title          : "Hoondy.com"
+tagline        : "Notes, games & experiments from NYC"
+description    : "Donghoon Lee's corner of the internet: a leadership test, a subway typing game, an artillery duel, and a blog going back to 2010."
+url            : "https://hoondy.com"
+baseurl        : ""
+# Post permalinks are built from dates in UTC; changing this would move old post URLs.
+timezone       : UTC
+logo           : /assets/img/icon-512.png
 
-# Site Settings
-locale                   : "en-US"
-title                    : "Hoondy.com"
-title_separator          : "-"
-name                     :
-description              : "Hoondy's Stochastic Life"
-url                      : "https://hoondy.com" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
-baseurl                  : # the subpath of your site, e.g. "/blog"
-gh_repo                  :
-teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
-# breadcrumbs              : true # false # true, false (default)
-words_per_minute         : 200
-comments:
-  provider               : "disqus" # false (default), "disqus", "facebook", "google-plus", custom"
-  disqus:
-    shortname            : "hoondy" # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
-  facebook:
-    # https://developers.facebook.com/docs/plugins/comments
-    appid                :
-    num_posts            : # 5 (default)
-    colorscheme          : # "light" (default), "dark"
-
-# SEO Related
-google_site_verification :
-bing_site_verification   :
-alexa_site_verification  :
-yandex_site_verification :
-
-# Social Sharing
-twitter:
-  username               :
-facebook:
-  username               :
-  app_id                 :
-  publisher              :
-og_image                 : # Open Graph/Twitter default site image
-# For specifying social profiles
-# - https://developers.google.com/structured-data/customize/social-profiles
-social:
-  type                   : # Person or Organization (defaults to Person)
-  name                   : # If the user or organization name differs from the site's name
-  links: # An array of links to social media profiles
-
-# Analytics
-analytics:
-  provider               : "google-universal" # false (default), "google", "google-universal", "custom"
-  google:
-    tracking_id          : "UA-25206456-3"
-
-# Google AdSense
-google_ad_client         :
-google_ad_slot           :
-
-
-# Site Author
 author:
-  name             : "Donghoon Lee"
-  avatar           : "bio-photo.jpg"
-  bio              : #"I am an amazing person."
-  location         : "New York, NY"
-  email            : "admin@hoondy.com"
-  uri              :
-  bitbucket        :
-  codepen          :
-  dribbble         :
-  flickr           :
-  facebook         :
-  foursquare       :
-  github           : "hoondy"
-  google_plus      :
-  keybase          :
-  instagram        :
-  lastfm           :
-  linkedin         : "hoondy"
-  pinterest        :
-  soundcloud       :
-  stackoverflow    : # http://stackoverflow.com/users/123456/username
-  steam            :
-  tumblr           :
-  twitter          : "hoondy"
-  vine             :
-  weibo            :
-  xing             :
-  youtube          :
+  name         : "Donghoon Lee"
+  handle       : "hoondy"
+  location     : "New York, NY"
+  email        : "admin@hoondy.com"
+  github       : "hoondy"
+  twitter      : "hoondy"
+  linkedin     : "hoondy"
+  scholar      : "https://scholar.google.com/citations?user=_a8xSwwAAAAJ"
+  orcid        : "0000-0003-0453-6059"
+  lab          : "https://leelab.us"
+  # avatar     : /assets/img/avatar.jpg   # optional square photo for /about/; the monogram bullet is used without it
 
+twitter:
+  username     : hoondy
+social:
+  name         : "Donghoon Lee"
+  links:
+    - "https://twitter.com/hoondy"
+    - "https://www.linkedin.com/in/hoondy"
+    - "https://github.com/hoondy"
+    - "https://leelab.us"
 
-# Reading Files
+# Google AdSense. Every billboard falls back to `default` when its own slot is empty.
+# Create extra display units in AdSense and paste their slot ids to tune each size.
+adsense:
+  client       : "ca-pub-2034343186994327"
+  slots:
+    default    : "7644190892"
+    horizontal : ""
+    rectangle  : ""
+    vertical   : ""
+
+# Google Analytics 4 measurement id (loaded only in production builds).
+ga4_id         : "G-BPDW4JEWCM"
+
+# Weekly leaderboards. Leave empty to keep boards on each visitor's device;
+# set to the deployed worker URL (see server/leaderboard) to make them global.
+leaderboard_api: ""
+
+comments:
+  provider     : "disqus"
+  disqus:
+    shortname  : "hoondy"
+
+# Content
+permalink      : /:year/:month/:day/:title/
+markdown       : kramdown
+highlighter    : rouge
+excerpt_separator: "\n\n"
+kramdown:
+  input        : GFM
+  hard_wrap    : false
+  auto_ids     : true
+  entity_output: as_char
+  smart_quotes : lsquo,rsquo,ldquo,rdquo
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-redirect-from
+  - jemoji
+
 include:
-  - .htaccess
   - _pages
 exclude:
-  - "*.sublime-project"
-  - "*.sublime-workspace"
-  - .asset-cache
-  - .bundle
-  - .jekyll-assets-cache
-  - .sass-cache
-  - assets/js/plugins
-  - assets/js/_main.js
-  - assets/js/vendor
-  - Capfile
-  - CHANGELOG
-  - config
+  - README.md
   - Gemfile
-  - Gruntfile.js
-  - gulpfile.js
-  - LICENSE
-  - log
-  - node_modules
+  - Gemfile.lock
   - package.json
-  - Rakefile
-  - README
-  - tmp
-keep_files:
-  - .git
-  - .svn
-encoding: "utf-8"
-markdown_ext: "markdown,mkdown,mkdn,mkd,md"
-
-
-# Conversion
-markdown: kramdown
-highlighter: rouge
-lsi: false
-excerpt_separator: "\n\n"
-incremental: false
-
-
-# Markdown Processing
-kramdown:
-  input: GFM
-  hard_wrap: false
-  auto_ids: true
-  footnote_nr: 1
-  entity_output: as_char
-  toc_levels: 1..6
-  smart_quotes: lsquo,rsquo,ldquo,rdquo
-  enable_coderay: false
-
-
-# Outputting
-permalink: /:year/:month/:day/:title/
-paginate: 10 # amount of posts to show
-paginate_path: /page:num/
-timezone: US # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-
-
-# Plugins
-gems:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jemoji
-
-# mimic GitHub Pages with --safe
-whitelist:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jemoji
-
-
-# Archives
-#  Type
-#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
-#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
-#  Path (examples)
-#  - Archive page should exist at path when using Liquid method or you can
-#    expect broken links (especially with breadcrumbs enabled)
-#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
-#  - <base_path/categories/my-awesome-category/index.html ~> path: /categories/
-#  - <base_path/my-awesome-category/index.html ~> path: /
-categories:
-  type: liquid
-  path: /categories/
-tags:
-  type: liquid
-  path: /tags/
-# https://github.com/jekyll/jekyll-archives
-# jekyll-archives:
-#   enabled:
-#     - categories
-#     - tags
-#   layouts:
-#     category: archive-taxonomy
-#     tag: archive-taxonomy
-#   permalinks:
-#     category: /categories/:name/
-#     tag: /tags/:name/
-
-# HTML Compression
-# - http://jch.penibelst.de/
-compress_html:
-  clippings: all
-  ignore:
-    envs: development
-
-collections:
-  portfolio:
-    output: true
-    permalink: /:collection/:path/
+  - package-lock.json
+  - node_modules
+  - vendor
+  - server
+  - .github
+  - .sass-cache
+  - .jekyll-cache
 
 defaults:
-  # _posts
+  - scope:
+      path: ""
+    values:
+      image: /assets/img/og-default.png
   - scope:
       path: ""
       type: posts
     values:
       layout: single
-      author_profile: true
-      read_time: false
       comments: true
       share: true
-      related: true
-  # _pages
   - scope:
       path: ""
       type: pages
     values:
       layout: single
-      author_profile: false
-  # _portfolio
-  - scope:
-      path: ""
-      type: portfolio
-    values:
-      layout: single
-      author_profile: false
-      share: true
