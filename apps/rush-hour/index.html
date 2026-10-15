@@ -1,0 +1,223 @@
+---
+layout: app
+title: "Rush Hour"
+description: "A falling-words typing game on the 7 train. Type each word before it reaches the platform edge, ride from Hudson Yards to Flushing, and post your score to the weekly high score board."
+app_id: rush-hour
+app_css: /assets/apps/rush-hour/rush-hour.css
+app_js: /assets/apps/rush-hour/main.js
+image: /assets/apps/rush-hour/og.png
+lang: en
+---
+{%- assign stations = "34 St–Hudson Yards|Times Sq–42 St|5 Av|Grand Central–42 St|Vernon Blvd–Jackson Av|Hunters Point Av|Court Sq|Queensboro Plaza|33 St–Rawson St|40 St–Lowery St|46 St–Bliss St|52 St|61 St–Woodside|69 St|74 St–Broadway|82 St–Jackson Hts|90 St–Elmhurst Av|Junction Blvd|103 St–Corona Plaza|111 St|Mets–Willets Point|Flushing–Main St" | split: "|" -%}
+<section class="rh" data-rush-hour aria-label="Rush Hour typing game">
+  <header class="rh__sign">
+    <span class="rh__bullet" aria-hidden="true">7</span>
+    <div class="rh__where">
+      <span class="rh__label" data-rh-where-label>Flushing-bound</span>
+      <strong class="rh__station" data-rh-station>{{ stations[0] }}</strong>
+    </div>
+    <div class="rh__next">
+      <span class="rh__label">Next stop</span>
+      <strong data-rh-next>{{ stations[1] }}</strong>
+    </div>
+    <div class="rh__line" aria-hidden="true">
+      <span class="rh__rail"><span class="rh__rail-done" data-rh-rail></span></span>
+      <span class="rh__stops" data-rh-stops></span>
+      <span class="rh__car" data-rh-car></span>
+    </div>
+  </header>
+
+  <div class="rh__hud" role="group" aria-label="Score board">
+    <div class="rh__stat rh__stat--score"><span class="rh__k">Score</span><span class="rh__v" data-rh-score>0</span></div>
+    <div class="rh__stat rh__stat--combo"><span class="rh__k">Combo</span><span class="rh__v"><span data-rh-combo>×1</span><span class="rh__pips" data-rh-pips title="Clean words toward the next multiplier" aria-hidden="true"></span></span></div>
+    <div class="rh__stat rh__stat--opt"><span class="rh__k">WPM</span><span class="rh__v" data-rh-wpm>–</span></div>
+    <div class="rh__stat rh__stat--opt"><span class="rh__k">Accuracy</span><span class="rh__v" data-rh-acc>–</span></div>
+    <div class="rh__stat rh__stat--service">
+      <span class="rh__k">Service <span class="rh__status" data-rh-status>Good service</span></span>
+      <span class="rh__meter" data-rh-meter role="meter" aria-label="Service" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"></span>
+    </div>
+    <div class="rh__tools">
+      <button type="button" class="rh__tool" data-rh-pause aria-label="Pause" title="Pause (Esc)" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
+      </button>
+      <button type="button" class="rh__tool" data-rh-mute aria-pressed="false" aria-label="Mute sound" title="Sound">
+        <svg class="rh__icon-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" /></svg>
+        <svg class="rh__icon-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path d="M17 9.5l5 5M22 9.5l-5 5" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="rh__field" data-rh-field>
+    <canvas class="rh__canvas" data-rh-canvas role="img" aria-label="Station wall with falling word signs"></canvas>
+    <input class="rh__input" data-rh-input type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="go" aria-label="Type the falling words" tabindex="-1">
+
+    <div class="rh__screen rh__screen--start" data-rh-screen="start">
+      <div class="rh__panel">
+        <div class="rh__intro">
+          <p class="rh__kicker"><span class="rh__dot" aria-hidden="true"></span> Now boarding · Flushing-bound</p>
+          <h2 class="rh__title">Words are falling on the 7.</h2>
+          <p class="rh__lede">Type each word before it reaches the platform edge. Clear enough and the train pulls into the next station, a little faster every time.</p>
+          <div class="rh__go-row">
+            <button type="button" class="rh__btn rh__btn--go" data-rh-start>Board the 7 <span class="rh__kbd" aria-hidden="true">Enter</span></button>
+            <p class="rh__pb" data-rh-pb hidden></p>
+          </div>
+          <fieldset class="rh__packs">
+            <legend>Word pack</legend>
+            <div class="rh__pack-grid" data-rh-packs></div>
+          </fieldset>
+          <p class="rh__hint" data-rh-hint-keys>No clicking needed: type a word and it clears. <kbd>Esc</kbd> pauses, <kbd>Backspace</kbd> undoes a letter.</p>
+          <p class="rh__hint" data-rh-hint-touch hidden>Tap the platform any time to bring the keyboard back.</p>
+        </div>
+        <aside class="rh__board" aria-labelledby="rh-board-start">
+          <h3 class="rh__board-title" id="rh-board-start">Weekly high scores</h3>
+          <div data-rh-board="start"><p class="rh__loading">Loading…</p></div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="rh__screen rh__screen--pause" data-rh-screen="pause" hidden>
+      <div class="rh__card">
+        <p class="rh__kicker"><span class="rh__dot rh__dot--red" aria-hidden="true"></span> Train held</p>
+        <h2 class="rh__title">We are being held momentarily.</h2>
+        <p class="rh__lede">We should be moving shortly. Thank you for your patience.</p>
+        <div class="rh__actions">
+          <button type="button" class="rh__btn rh__btn--go" data-rh-resume>Resume <span class="rh__kbd" aria-hidden="true">Esc</span></button>
+          <button type="button" class="rh__btn rh__btn--ghost" data-rh-quit>End ride</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rh__screen rh__screen--over" data-rh-screen="over" hidden>
+      <div class="rh__panel">
+        <div class="rh__result">
+          <p class="rh__kicker" data-rh-r-kicker><span class="rh__dot rh__dot--red" aria-hidden="true"></span> Service suspended</p>
+          <h2 class="rh__title rh__title--result" data-rh-r-title tabindex="-1">You reached <span data-rh-r-station>Queensboro Plaza</span></h2>
+          <div class="rh__score-row">
+            <div class="rh__bigscore" data-rh-r-score>0</div>
+            <p class="rh__badge" data-rh-r-best hidden>New personal best</p>
+          </div>
+          <dl class="rh__stats">
+            <div><dt>WPM</dt><dd data-rh-r-wpm>0</dd></div>
+            <div><dt>Accuracy</dt><dd data-rh-r-acc>0%</dd></div>
+            <div><dt>Words</dt><dd data-rh-r-words>0</dd></div>
+            <div><dt>Missed</dt><dd data-rh-r-misses>0</dd></div>
+            <div><dt>Best streak</dt><dd data-rh-r-streak>0</dd></div>
+            <div><dt>Time</dt><dd data-rh-r-time>0:00</dd></div>
+          </dl>
+          <p class="rh__pb rh__pb--over" data-rh-r-pb></p>
+          <div class="rh__actions">
+            <button type="button" class="rh__btn rh__btn--go" data-rh-again>Ride again <span class="rh__kbd" aria-hidden="true">Enter</span></button>
+            <button type="button" class="rh__btn rh__btn--ghost" data-rh-menu>Change pack</button>
+          </div>
+          <div class="rh__share" data-rh-share></div>
+        </div>
+        <aside class="rh__board" aria-labelledby="rh-board-over">
+          <form class="rh__post" data-rh-post novalidate>
+            <label class="rh__post-label" for="rh-name">Post to this week's board</label>
+            <div class="rh__post-row">
+              <input class="rh__name" id="rh-name" name="name" type="text" autocomplete="nickname" maxlength="16" placeholder="Nickname" spellcheck="false" required>
+              <button type="submit" class="rh__btn rh__btn--post" data-rh-post-btn>Post score</button>
+            </div>
+            <p class="rh__post-msg" data-rh-post-msg role="status" aria-live="polite"></p>
+          </form>
+          <h3 class="rh__board-title" id="rh-board-over">Weekly high scores</h3>
+          <div data-rh-board="over"></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <p class="visually-hidden" data-rh-live aria-live="polite"></p>
+</section>
+
+<div class="rh-guide">
+  <div class="prose">
+    <h2 id="how-to-play">How to play</h2>
+    <p>Words slide down the station wall toward the edge of the platform. Type one to clear it. There is nothing to click and no need to press Enter: as soon as you type a letter, the game locks onto the matching word, closest to the edge first, and the letters you have typed light up yellow.</p>
+    <p>Every word that reaches the yellow strip costs you points and knocks a chunk off the <strong>service meter</strong>. Each word you clear repairs it a little. Let it run out (five misses in a row will do it) and service is suspended. That is the end of the ride.</p>
+    <p>Clear enough words and the train pulls into the next station on the 7. Every stop, the words fall faster, show up more often and get longer.</p>
+
+    <h2 id="controls">Controls</h2>
+    <ul class="rh-keys">
+      <li><span class="rh-keys__k"><kbd>a</kbd>–<kbd>z</kbd></span> <span>Type a word to clear it</span></li>
+      <li><span class="rh-keys__k"><kbd>Backspace</kbd></span> <span>Undo a letter, or switch to another word</span></li>
+      <li><span class="rh-keys__k"><kbd>Space</kbd></span> <span>Drop what you have typed and start over</span></li>
+      <li><span class="rh-keys__k"><kbd>Esc</kbd></span> <span>Pause and resume</span></li>
+    </ul>
+    <p>On a phone or tablet, tap the platform to bring up the keyboard. The playing field shrinks to stay above it. A real keyboard is still the fastest way to ride.</p>
+
+    <h2 id="scoring">Scoring</h2>
+    <div class="rh-table">
+      <table>
+        <thead><tr><th scope="col">What</th><th scope="col">Points</th></tr></thead>
+        <tbody>
+          <tr><td>Each letter of a cleared word</td><td>10, plus 2 for every station after the first</td></tr>
+          <tr><td>Combo</td><td>×1.5 after 5 clean words in a row, up to ×4 at 30</td></tr>
+          <tr><td>Express word</td><td>Double points, plus 100</td></tr>
+          <tr><td>Word cleared by an All Clear</td><td>Its letters, no multiplier</td></tr>
+          <tr><td>Word that reaches the platform</td><td>−50 × the station number</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A wrong key or a missed word resets your combo to ×1. Words are scored on the letters in them, so long words pay more.</p>
+
+    <h2 id="specials">Special words</h2>
+    <ul class="rh-specials">
+      <li><span class="rh-tag rh-tag--express">Express ×2</span> Marked with the diamond 7. Double points and a 100-point bonus.</li>
+      <li><span class="rh-tag rh-tag--delay">Signal delay</span> Holds every train to a crawl for a few seconds and stops new words from arriving. Use it to catch your breath.</li>
+      <li><span class="rh-tag rh-tag--clear">All clear</span> An express train rushes through the station and takes every word on screen with it.</li>
+    </ul>
+
+    <h2 id="word-packs">Word packs</h2>
+    <dl class="rh-packs">
+      <div><dt>Everyday</dt><dd>Familiar words, from <em>cat</em> and <em>lamp</em> up to <em>encyclopedia</em>. The fairest test of plain typing speed.</dd></div>
+      <div><dt>NYC</dt><dd>Neighborhoods, streets, food and landmarks: <em>bodega</em>, <em>bleecker</em>, <em>pastrami</em>, <em>verrazzano</em>. Spelling counts.</dd></div>
+      <div><dt>Science</dt><dd>Biology and genomics, from <em>gene</em> to <em>oligodendrocyte</em>. A nod to the day job.</dd></div>
+      <div><dt>Code</dt><dd>Programming terms: <em>lambda</em>, <em>mutex</em>, <em>refactor</em>, <em>asynchronous</em>.</dd></div>
+    </dl>
+
+    {% include billboard.html format="rectangle" %}
+
+    <h2 id="the-line">The line</h2>
+    <p>Each stage is a stop on the 7, from 34 St–Hudson Yards under Manhattan, through the tunnel to Long Island City, then up on the elevated tracks over Queens Boulevard and Roosevelt Avenue to Flushing–Main St. Reach the end of the line and the train turns around for Manhattan.</p>
+    <ol class="rh-stops">
+      {%- for s in stations %}
+      <li><span>{{ s }}</span></li>
+      {%- endfor %}
+    </ol>
+
+    <h2 id="tips">Tips</h2>
+    <ul>
+      <li><strong>Watch the bottom.</strong> The game always works on the word nearest the edge when two words start alike, so read from the platform up.</li>
+      <li><strong>Accuracy beats speed.</strong> One wrong key resets the combo, and the combo is where big scores come from.</li>
+      <li><strong>Time your All Clear.</strong> You don't have to type it the moment it appears. Let a few more words arrive first, just not too many.</li>
+      <li><strong>Save a delay for a crowd.</strong> A signal delay is most useful when the platform is filling up.</li>
+      <li><strong>Turn off swipe typing</strong> on phones. Tapping one letter at a time is faster here than it sounds.</li>
+    </ul>
+
+    <h2 id="faq">FAQ</h2>
+    <details>
+      <summary>How is WPM worked out?</summary>
+      <p>The usual way: every five letters count as one word, divided by the minutes you spent playing. Pauses don't count, and neither do letters in words that got away.</p>
+    </details>
+    <details>
+      <summary>When does the weekly board reset?</summary>
+      <p>Every Monday at midnight, New York time. Each nickname keeps its best score of the week.</p>
+    </details>
+    <details>
+      <summary>How do you stop people faking scores?</summary>
+      <p>The game keeps a short record of when each word was cleared, how long it was and your combo at the time. The board replays that record and recalculates the score itself. It also turns away rides the game couldn't have produced: words longer than that station deals out, more words than the trains could have brought, or typing speeds no human could keep up.</p>
+    </details>
+    <details>
+      <summary>Does it work on a phone?</summary>
+      <p>Yes. Tap the platform to open the keyboard, and the game keeps the words above it. If the keyboard closes, the game pauses until you tap Resume.</p>
+    </details>
+    <details>
+      <summary>Can I turn the sound off?</summary>
+      <p>Use the speaker button next to the score. The game remembers your choice. Every sound is synthesized right in the browser, so there is nothing extra to download.</p>
+    </details>
+    <details>
+      <summary>Why the 7?</summary>
+      <p>It runs from the west side of Manhattan to Flushing, past Times Square, Grand Central and some of the best food in the city. During rush hour it also runs express, which is what the purple diamond means.</p>
+    </details>
+  </div>
+</div>
