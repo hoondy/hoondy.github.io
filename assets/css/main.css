@@ -1365,6 +1365,9 @@ a.chip:hover {
   position: relative;
   width: var(--ad-w);
   height: var(--ad-h);
+  /* When a slot goes unfilled, AdSense writes height: 0 inline on the ad's parent too.
+     min-height wins over that, so the house promo still gets the full screen. */
+  min-height: var(--ad-h);
   background: #000;
   border-radius: 3px;
   box-shadow: 0 0 0 1px #000;
