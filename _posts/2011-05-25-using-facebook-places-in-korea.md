@@ -56,5 +56,3 @@ Ta-da!! It works. You also get a &#8220;check-in&#8221; option in News Feed. Now
 By the way, it seems like you just need to access Facebook Places via VPN once, then it works without VPN the next time (I could be wrong.)
 
 Enjoy!
-
-permalink: /2011/05/25/using-facebook-places-in-korea/

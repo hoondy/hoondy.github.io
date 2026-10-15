@@ -173,5 +173,3 @@ MANUAL TRANSMISSION Drain/Fill Plug
 <p dir="ltr">
   ENGINE OIL FILTER
 </p>
-
-permalink: /2012/06/19/bmw-1m-maintenance-requirements-and-part-number/

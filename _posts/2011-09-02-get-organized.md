@@ -24,6 +24,4 @@ Let&#8217;s get organized!
 
 [<img src="/wp-content/uploads/2011/09/dbck1314928224.jpg" alt="" title="dbck1314928224" width="520" height="444" class="aligncenter size-full wp-image-202" srcset="/wp-content/uploads/2011/09/dbck1314928224-300x256.jpg 300w, /wp-content/uploads/2011/09/dbck1314928224.jpg 520w" sizes="(max-width: 520px) 100vw, 520px" />](/wp-content/uploads/2011/09/dbck1314928224.jpg)
 
-Try this at home if you are really bored. <img src="http://hoondy.com/wp-includes/images/smilies/rolleyes.png" alt=":roll:" class="wp-smiley" style="height: 1em; max-height: 1em;" />
-
-permalink: /2011/09/02/get-organized/
+Try this at home if you are really bored. 🙄

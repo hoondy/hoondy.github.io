@@ -1,5 +1,6 @@
 ---
 title: Driving in Korea (강원도편)
+description: "GoPro footage from behind the wheel of a BMW 1M on the roads of Gangwon-do, Korea."
 date: 2013-04-24T23:40:11+00:00
 author: Hoondy
 layout: single
@@ -17,5 +18,3 @@ tags:
 ---
 
 <iframe width="640" height="360" src="https://www.youtube.com/embed/Ya3nh7OWXzk" frameborder="0" allowfullscreen></iframe>
-
-permalink: /2013/04/24/driving-in-korea-%ea%b0%95%ec%9b%90%eb%8f%84%ed%8e%b8/

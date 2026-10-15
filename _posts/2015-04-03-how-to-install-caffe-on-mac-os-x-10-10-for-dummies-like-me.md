@@ -1,5 +1,6 @@
 ---
 title: How to install Caffe on Mac OS X 10.10 for dummies (like me)
+description: "A step-by-step guide to building the Caffe deep learning framework on Mac OS X 10.10, with Homebrew, Anaconda, CUDA and cuDNN."
 date: 2015-04-03T15:45:02+00:00
 author: Hoondy
 layout: single
@@ -249,5 +250,3 @@ export CPATH=/opt/intel/composer_xe_2015.2.132/mkl/include:/opt/intel/composer_x
   4. <https://aisgit.informatik.uni-freiburg.de/zhang/caffe_future/blob/ais-master/docs/installation.md>
   5. <https://haduonght.wordpress.com/2015/02/21/install-caffe-on-mac-os-x-10-10/>
   6. <http://smrmkt.hatenablog.jp/entry/2015/02/11/195213>
-
-permalink: /2015/04/03/how-to-install-caffe-on-mac-os-x-10-10-for-dummies-like-me/

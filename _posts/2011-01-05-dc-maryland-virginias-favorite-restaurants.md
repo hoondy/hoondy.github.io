@@ -316,5 +316,3 @@ categories:
 <div>
   <strong> </strong>
 </div>
-
-permalink: /2011/01/05/dc-maryland-virginias-favorite-restaurants/

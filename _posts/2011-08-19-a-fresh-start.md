@@ -15,5 +15,3 @@ Also, I made this site supported by Google AdSense. In internet universe, traffi
 I hope you to subscribe or check back this site periodically as I will post some useful tech/lifestyle/food/car/photography info. Adios!
 
 -Hoondy
-
-permalink: /2011/08/19/a-fresh-start/

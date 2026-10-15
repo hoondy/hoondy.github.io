@@ -18,5 +18,3 @@ Apple just released iOS 5 beta 6 to iOS developers. Among many other changes and
   <div id="fb-root">
   </div><fb:like href="/2011/08/21/ios-5-beta-6-is-released-to-developers/" send="true" layout="standard" show_faces="true" share="true" width="450" action="like" font="arial" colorscheme="light" ref="AL2FB"></fb:like>
 </div>
-
-permalink: /2011/08/21/ios-5-beta-6-is-released-to-developers/

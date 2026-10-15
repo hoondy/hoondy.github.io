@@ -1,5 +1,6 @@
 ---
 title: Snoopy Party Rock Anthem
+description: "Snoopy and the Peanuts gang dancing to LMFAO’s Party Rock Anthem."
 date: 2012-07-30T13:54:18+00:00
 author: Hoondy
 layout: single
@@ -10,5 +11,3 @@ tags:
   - Snoopy
 ---
 <iframe width="640" height="360" src="https://www.youtube.com/embed/E3Ukp86WQic" frameborder="0" allowfullscreen></iframe>
-
-permalink: /2012/07/30/snoopy-party-rock-anthem/

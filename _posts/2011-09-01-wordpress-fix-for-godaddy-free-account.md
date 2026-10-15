@@ -69,5 +69,3 @@ and add the following line at the end
 **`#conash3D0{display:none;}`**
 
 Enjoy!
-
-permalink: /2011/09/01/wordpress-fix-for-godaddy-free-account/

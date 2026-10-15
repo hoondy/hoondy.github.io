@@ -54,5 +54,3 @@ Save the file as *.txt and you will find that this is a tab-delimited format, wh
 There are many advantages of using command line plink and using custom scripts and shell commands to modify outputs since it fulfills individual&#8217;s need. However, this is a good quick and dirty trick if you want to simply convert plink result to a much readable format. Enjoy!
 
 -Hoondy
-
-permalink: /2011/08/26/exporting-plink-result-to-excel-file/

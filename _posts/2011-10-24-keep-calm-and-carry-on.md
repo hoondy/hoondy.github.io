@@ -1,5 +1,6 @@
 ---
 title: Keep.Calm.And.Carry.On
+description: "The original Keep Calm and Carry On poster and a handful of the parodies it inspired."
 date: 2011-10-24T11:33:00+00:00
 author: Hoondy
 layout: single
@@ -28,5 +29,3 @@ tags:
 [<img src="/wp-content/uploads/2011/10/309378_284258648259698_100000266949766_1156553_69855161_n.jpg" alt="" title="309378_284258648259698_100000266949766_1156553_69855161_n" width="260" height="290" class="aligncenter size-full wp-image-261" />](/wp-content/uploads/2011/10/309378_284258648259698_100000266949766_1156553_69855161_n.jpg)
 
 [<img src="/wp-content/uploads/2011/10/3570658938_7da6d70454.jpg" alt="" title="3570658938_7da6d70454" width="520" height="416" class="aligncenter size-full wp-image-262" />](/wp-content/uploads/2011/10/3570658938_7da6d70454.jpg)
-
-permalink: /2011/10/24/keep-calm-and-carry-on/

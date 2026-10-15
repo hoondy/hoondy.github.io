@@ -1,5 +1,6 @@
 ---
 title: 2010 Joint Service Open House and Airshow
+description: "Video from the 2010 Joint Service Open House and air show at Andrews Air Force Base, Maryland, on May 15, 2010."
 date: 2010-05-18T03:16:26+00:00
 author: Hoondy
 layout: single
@@ -13,5 +14,3 @@ format: video
 Andrews Air Force Base, MD
 
 5.15.2010
-
-# permalink: /2010/05/18/2010-joint-service-open-house-and-airshow/

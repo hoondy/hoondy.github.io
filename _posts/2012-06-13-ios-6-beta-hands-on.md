@@ -57,5 +57,3 @@ I had a chance to try Apple&#8217;s new iOS 6 beta software on my iPhone. Here&#
 [<img class="aligncenter size-full wp-image-308" title="IMG_3462" src="/wp-content/uploads/2012/06/IMG_3462.png" alt="" width="520" height="780" srcset="/wp-content/uploads/2012/06/IMG_3462-200x300.png 200w, /wp-content/uploads/2012/06/IMG_3462.png 520w" sizes="(max-width: 520px) 100vw, 520px" />](/wp-content/uploads/2012/06/IMG_3462.png)
 
 Since my phone is iPhone 4, which doesn&#8217;t support Siri, I wasn&#8217;t able to try out Siri in Korean. Overall, to put it simply, I feel like I just got a gift from Apple. In the next update or so, I really hope that they gradually expand supports for users in Korea especially Map stuff. I can&#8217;t wait to see the next iPhone.
-
-permalink: /2012/06/13/ios-6-beta-hands-on/
