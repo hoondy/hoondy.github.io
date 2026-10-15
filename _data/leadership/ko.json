@@ -1,0 +1,599 @@
+{
+  "lang": "ko",
+  "locale": "ko-KR",
+  "dir": "ltr",
+  "meta": {
+    "title": "LQ 테스트: 나의 리더십 지수는?",
+    "short_title": "LQ 테스트",
+    "description": "수십 년간의 연구를 바탕으로 만든, 7분이면 끝나는 무료 리더십 성격 테스트. 나의 LQ 점수와 백분위, 리더 유형, 8가지 특성별 분석을 확인해 보세요.",
+    "og_title": "나의 리더십 지수(LQ)는 몇 점일까?",
+    "og_description": "49문항, 약 7분, 결과는 숫자 하나. 내 리더십 지수가 다른 사람들과 비교해 어느 정도인지 확인해 보세요. 연구 기반 무료 테스트, 5개 언어 지원.",
+    "og_image_alt": "LQ 점수와 백분위가 표시된 주황빛 LED 전광판",
+    "keywords": "리더십 테스트, 리더십 지수, LQ 테스트, 리더십 성격 검사, 리더 유형 테스트, 리더십 자가진단, 성격과 리더십"
+  },
+  "ui": {
+    "app_name": "LQ 테스트",
+    "landing": {
+      "kicker": "1호선 · 리더십",
+      "title": "나의 리더십 지수(LQ)는?",
+      "lede": "1940년대부터 학자들은 누가, 왜 앞에 나서서 이끄는지를 연구해 왔어요. 그중 상당수는 군과 손잡고 일했죠. 이 테스트는 그 연구가 성격에 관해 밝혀낸 것을 숫자 하나로 담아냈어요.",
+      "facts": ["49문항", "약 7분", "가입 없이 무료"],
+      "points": [
+        "IQ처럼 100이 평균인 척도로 나타낸 나의 LQ",
+        "백분위: 내 LQ가 다른 사람들과 비교해 어느 정도인지",
+        "나의 리더 유형과 8가지 특성 프로필",
+        "원한다면 다른 사람과 겨뤄 볼 수 있는 주간 리더보드"
+      ],
+      "steps_title": "이렇게 진행돼요",
+      "steps": [
+        { "title": "49문항에 답하기", "body": "나에 관한 짧은 문장 40개와 짧은 상황 8개가 나와요. 처음 떠오르는 대로 답해 주세요." },
+        { "title": "LQ 확인하기", "body": "점수와 백분위, 리더 유형, 그리고 특성마다 내가 어디쯤 있는지 확인해 보세요." },
+        { "title": "비교하고 공유하기", "body": "이번 주 리더보드에 점수를 올리고 친구들에게 도전장을 보내 보세요." }
+      ],
+      "demo_label": "예시",
+      "start": "테스트 시작하기",
+      "resume": "이어서 하기",
+      "restart": "처음부터 다시",
+      "language": "언어",
+      "honesty_note": "되고 싶은 모습 말고 지금의 내 모습대로 답해 주세요. 너무 서두르거나 앞뒤가 맞지 않는 답변은 테스트가 잡아내요.",
+      "privacy_note": "답변은 내 브라우저 안에서 채점되고, 직접 점수를 올리기로 할 때만 밖으로 전송돼요."
+    },
+    "quiz": {
+      "progress": "{total}문항 중 {n}번째",
+      "progress_short": "{n}/{total}",
+      "time_left": "약 {min}분 남음",
+      "time_left_short": "1분도 안 남음",
+      "almost_there": "종착역까지 얼마 안 남았어요",
+      "statement_prompt": "이 문장이 나에게 얼마나 해당되나요?",
+      "scenario_label": "상황",
+      "scenario_prompt": "내가 가장 할 것 같은 행동을 골라 주세요.",
+      "attention_label": "확인 문항",
+      "back": "이전",
+      "next": "다음",
+      "finish": "결과 보기",
+      "exit": "나가기",
+      "exit_confirm": "테스트를 그만둘까요? 지금까지의 답변은 이 기기에 저장돼요.",
+      "keyboard_hint_scale": "1–5 키로 답하세요. 백스페이스를 누르면 이전 문항으로 돌아가요.",
+      "keyboard_hint_options": "A–D 키로 고르세요. 백스페이스를 누르면 이전 문항으로 돌아가요.",
+      "saved": "진행 상황이 이 기기에 저장됐어요",
+      "resume_prompt": "끝내지 못한 테스트가 있어요. 멈춘 곳부터 이어서 할까요?"
+    },
+    "loading": {
+      "title": "이번 역은 결과, 결과역입니다",
+      "steps": ["답변 확인하는 중", "8가지 특성 채점하는 중", "다른 사람들과 비교하는 중", "리더 유형 찾는 중"],
+      "doors": "출입문 닫습니다. 안전선 밖으로 물러나 주시기 바랍니다."
+    },
+    "result": {
+      "kicker": "나의 결과",
+      "lq_label": "나의 LQ",
+      "lq_scale": "100이 평균이고, 세 명 중 두 명 정도는 85에서 115 사이예요.",
+      "pct_label": "백분위",
+      "pct_value": "{pct}",
+      "pct_sentence": "100명 중 약 {pct}명보다 LQ가 높아요",
+      "emergence_label": "5인 그룹에서 리더가 될 확률",
+      "emergence_value": "{chance}%",
+      "emergence_sentence": "처음 보는 네 사람과 한 방에 모여 함께 과제를 받았다고 해 볼게요. 이 테스트의 대략적인 모델로 계산하면 그 그룹의 리더가 될 확률은 {chance}%예요. 순전히 운에 맡긴다면 20%겠죠.",
+      "archetype_label": "나의 리더 유형",
+      "band_label": "등급",
+      "traits_title": "나의 8가지 특성",
+      "traits_note": "막대는 특성마다 내가 다른 사람들과 비교해 어디쯤인지 보여줘요.",
+      "trait_value": "{pct}",
+      "trait_value_aria": "{trait}: 100명 중 {pct}명보다 높음",
+      "trait_low": "낮음",
+      "trait_high": "높음",
+      "strengths_title": "가장 강한 특성",
+      "growth_title": "성장 포인트",
+      "strength_relative": "다른 사람들과 비교하면 높은 편은 아니지만, 내 프로필 안에서는 높은 축에 속해요.",
+      "growth_relative": "이미 평균보다 높아요. 다른 특성이 더 높다 보니 성장 포인트로 꼽혔을 뿐이에요.",
+      "growth_note": "정해진 건 아무것도 없어요. 각 특성의 바탕이 되는 습관은 연습으로 기를 수 있어요.",
+      "try_this": "이렇게 해 보세요",
+      "strengths_list_title": "강점",
+      "watchouts_title": "주의할 점",
+      "motto_label": "좌우명",
+      "summary_title": "결과 풀이",
+      "retake": "테스트 다시 하기",
+      "share_title": "결과 공유하기",
+      "science_link": "점수 계산 방식 알아보기",
+      "validity_title": "이 결과는 실제 나와 다를 수 있어요",
+      "validity_body": "점수는 보여 드리지만 리더보드에는 올릴 수 없어요. 정확한 결과를 원한다면 테스트를 다시 하면서 내 속도에 맞춰 답해 보세요.",
+      "validity_reasons": "확인된 점",
+      "shared_kicker": "공유된 결과",
+      "shared_title": "친구가 LQ 결과를 공유했어요",
+      "shared_headline": "친구의 LQ는 {lq}",
+      "vs_ahead": "내가 {n}점 앞서요",
+      "vs_behind": "내가 {n}점 뒤처져요",
+      "vs_tie": "동점이에요",
+      "shared_cta": "내 LQ도 알아보기",
+      "shared_note": "공유된 결과는 받은 그대로 보여 주며, 따로 검증하지 않았어요.",
+      "shared_invalid": "결과 링크가 깨졌거나 오래됐어요. 테스트는 지금 바로 해 볼 수 있어요."
+    },
+    "leaderboard": {
+      "title": "이번 주 LQ 랭킹",
+      "board_title": "이번 주",
+      "subtitle": "이번 주 가장 높은 LQ 기록이에요. 리더보드는 매주 월요일 자정(미국 뉴욕 시간)에 초기화돼요.",
+      "empty": "이번 주에는 아직 기록이 없어요. 첫 번째 주인공이 되어 보세요.",
+      "local": "이 기기에 저장된 기록",
+      "resets": "초기화까지",
+      "units": { "d": "일", "h": "시간", "m": "분" },
+      "you": "나",
+      "score": "{lq}",
+      "row_meta": "{archetype}",
+      "join_title": "내 점수 올리기",
+      "name_label": "닉네임",
+      "name_placeholder": "최대 16자",
+      "name_hint": "모두에게 공개돼요. 실명을 쓸 필요는 없어요.",
+      "submit": "점수 올리기",
+      "submitting": "올리는 중…",
+      "posted": "이번 주 리더보드 {rank}위예요.",
+      "posted_best": "개인 최고 기록 경신! 이번 주 {rank}위예요.",
+      "posted_local": "이 기기에 저장됐어요. 여기서는 {rank}위예요.",
+      "best_only": "리더보드에는 매주 내 최고 점수만 표시돼요.",
+      "local_hint": "이 기기에만 있는 리더보드라 다른 사람은 볼 수 없어요.",
+      "invalid": "일부 답변에 문제가 있어 이 결과는 올릴 수 없어요.",
+      "view": "리더보드 보기",
+      "personal_best": "내 최고 기록: LQ {lq}",
+      "loading": "리더보드 불러오는 중…",
+      "unavailable": "리더보드가 잠시 쉬고 있어요. 조금 뒤에 다시 들러 주세요."
+    },
+    "share": {
+      "title": "공유",
+      "share": "공유하기",
+      "copy": "링크 복사",
+      "copied": "링크를 복사했어요",
+      "download": "이미지 저장",
+      "more": "{label}에 공유",
+      "targets": {"email": "이메일", "line": "라인", "naver": "네이버", "band": "밴드", "weibo": "웨이보", "qzone": "Qzone", "douban": "더우반"},
+      "image_kicker": "LQ 테스트",
+      "image_lq": "LQ",
+      "image_pct": "100명 중 약 {pct}명보다 높은 LQ",
+      "image_cta": "너의 LQ는? hoondy.com/apps/leadership/ko",
+      "image_file": "my-lq.png"
+    },
+    "validity": {
+      "incomplete": "답하지 않은 문항이 있어요.",
+      "too_fast": "문항을 읽는 데 걸리는 시간보다 더 빨리 끝냈어요.",
+      "attention": "확인 문항에 안내와 다르게 답했어요.",
+      "straightline": "대부분의 답이 똑같았어요.",
+      "inconsistent": "서로 모순되는 답이 있어요.",
+      "acquiescence": "서로 반대되는 내용의 문장까지 포함해 거의 모든 문장에 동의(또는 반대)했어요.",
+      "idealized": "실제 모습보다 이상적인 모습에 가까운 답변으로 보여요. 대부분의 사람은 자기 안에서 강점과 약점을 함께 봐요.",
+      "erratic": "같은 특성에 관한 답들이 서로 다른 방향을 가리켰어요."
+    },
+    "errors": {
+      "bad_body": "제출 과정에서 문제가 생겼어요. 테스트를 다시 해 주세요.",
+      "bad_answers": "제출 과정에서 문제가 생겼어요. 테스트를 다시 해 주세요.",
+      "bad_lang": "제출 과정에서 문제가 생겼어요. 테스트를 다시 해 주세요.",
+      "bad_duration": "제출 과정에서 문제가 생겼어요. 테스트를 다시 해 주세요.",
+      "too_fast": "너무 빨리 끝낸 결과라 올릴 수 없어요.",
+      "attention": "확인 문항을 놓친 결과라 올릴 수 없어요.",
+      "straightline": "똑같은 답이 너무 많아 이 결과는 올릴 수 없어요.",
+      "acquiescence": "서로 모순되는 답이 너무 많아 이 결과는 올릴 수 없어요.",
+      "inconsistent": "서로 모순되는 답이 너무 많아 이 결과는 올릴 수 없어요.",
+      "erratic": "답이 무작위로 보여서 이 결과는 올릴 수 없어요.",
+      "idealized": "믿기 어려울 만큼 완벽한 결과라 올릴 수 없어요.",
+      "invalid": "이 결과는 올릴 수 없어요.",
+      "name": "다른 닉네임을 정해 주세요.",
+      "rate_limited": "시도 횟수가 너무 많아요. 몇 분 뒤에 다시 해 주세요.",
+      "too_many_names": "이 네트워크에서 이번 주 리더보드에 이미 닉네임 세 개가 올라가 있어요. 그중 하나로 올리거나 다음 주에 다시 도전해 주세요.",
+      "network": "리더보드에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.",
+      "unknown": "문제가 생겼어요. 다시 시도해 주세요."
+    },
+    "common": {
+      "close": "닫기",
+      "try_again": "다시 시도",
+      "loading": "불러오는 중…",
+      "or": "또는"
+    },
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "简体中文"
+    },
+    "disclaimer": "교육과 재미를 위한 테스트입니다. LQ 테스트는 채용, 승진, 임상 또는 진단 도구가 아니며, 누군가에 관한 결정을 내리는 데 사용해서는 안 됩니다."
+  },
+  "scale": {
+    "labels": ["전혀 그렇지 않다", "그렇지 않다", "보통이다", "그렇다", "매우 그렇다"],
+    "low": "그렇지 않다",
+    "high": "그렇다"
+  },
+  "items": {
+    "drive_1": "모임이나 팀에 방향이 필요할 때 내가 나서서 이끈다.",
+    "drive_2": "다른 사람이 먼저 앞장서기를 기다린다.",
+    "drive_3": "내가 속한 모임이나 팀의 결정에 영향을 주려고 한다.",
+    "drive_4": "내 아이디어를 시도해 보자고 사람들을 설득할 수 있다.",
+    "drive_5": "여럿이 의논할 때 내 의견은 마음속에만 담아 둔다.",
+    "presence_1": "처음 만난 사람들과 함께 있어도 편안하다.",
+    "presence_2": "여럿이 모인 자리에서는 눈에 띄지 않게 조용히 있다.",
+    "presence_3": "처음 보는 사람에게 먼저 말을 건다.",
+    "presence_4": "잘 모르는 사람들 앞에서는 말수가 적다.",
+    "presence_5": "사람들의 관심이 나에게 쏠리는 것을 피한다.",
+    "dependability_1": "시작한 일은 끝까지 해낸다.",
+    "dependability_2": "일은 그럭저럭 넘어갈 정도로만 한다.",
+    "dependability_3": "번거롭더라도 약속은 지킨다.",
+    "dependability_4": "마감이 닥치기 훨씬 전에 일을 계획해 둔다.",
+    "dependability_5": "누가 재촉해야 일을 시작한다.",
+    "composure_1": "압박을 받는 상황에서도 침착하다.",
+    "composure_2": "쉽게 스트레스를 받는다.",
+    "composure_3": "좌절을 겪어도 빨리 회복한다.",
+    "composure_4": "일이 잘못되면 크게 당황해 허둥댄다.",
+    "composure_5": "자주 불안을 느낀다.",
+    "vision_1": "일을 다른 방식으로 해 보면 어떨지 상상하기를 좋아한다.",
+    "vision_2": "익숙한 방식대로 하는 편이 좋다.",
+    "vision_3": "복잡한 문제를 푸는 것을 즐긴다.",
+    "vision_4": "먼 미래에 대해 생각해 보기를 좋아한다.",
+    "vision_5": "변화가 불편하게 느껴진다.",
+    "empathy_1": "말하지 않아도 사람들의 기분을 알아챈다.",
+    "empathy_2": "다른 사람의 입장에서 생각하기가 어렵다.",
+    "empathy_3": "사람들을 편안하게 해 준다.",
+    "empathy_4": "의도치 않게 남에게 상처 주는 말을 한다.",
+    "empathy_5": "다른 사람이 고민을 털어놓으면 듣다가 금방 답답해진다.",
+    "motivation_1": "따르는 것보다 이끄는 것이 더 즐겁다.",
+    "motivation_2": "이끄는 것보다 따르는 것이 더 좋다.",
+    "motivation_3": "앞으로 리더 역할을 맡고 있는 내 모습이 그려진다.",
+    "motivation_4": "아무도 이끌겠다고 나서지 않으면 내가 나서야 한다고 느낀다.",
+    "motivation_5": "다른 사람의 일까지 책임지는 역할은 피한다.",
+    "decisiveness_1": "어려운 결정을 빠르게 내릴 수 있다.",
+    "decisiveness_2": "중요한 결정을 뒤로 미룬다.",
+    "decisiveness_3": "팀을 잘 이끌 수 있다는 자신이 있다.",
+    "decisiveness_4": "여러 선택지 중 하나를 고르기가 어렵다.",
+    "decisiveness_5": "내가 다른 사람을 이끌 능력이 있는지 의심스럽다."
+  },
+  "attention": {
+    "check_1": "잘 읽고 있는지 확인하는 문항이에요. ‘{label}’를 선택해 주세요."
+  },
+  "sjt": {
+    "sjt_1": {
+      "title": "단체 여행",
+      "stem": "친구 다섯 명과 주말여행을 함께 가기로 했다. 그런데 2주가 지나도록 예약한 것은 하나도 없고, 단톡방도 조용해졌다.",
+      "options": [
+        "기다린다. 여행에 더 관심 있는 누군가가 알아서 준비할 것이다.",
+        "단톡방에 아직 다들 갈 생각이 있는지 물어본다.",
+        "날짜 두 개와 예산을 제안하고, 금요일까지 투표해 달라고 한다.",
+        "내가 전부 예약하고 모두에게 각자 몫의 정산 요청을 보낸다."
+      ]
+    },
+    "sjt_2": {
+      "title": "한밤의 길 찾기",
+      "stem": "야간 훈련 중에 팀의 GPS가 먹통이 됐다. 사람들은 경로를 두고 말다툼을 시작했고, 팀 리더는 확신이 없어 보인다.",
+      "options": [
+        "계획을 엉망으로 세워서 길을 잃은 거라고 큰 소리로 말한다.",
+        "2분만 멈춰서 함께 지도를 확인하고 경로를 정하자고 차분하게 제안한다.",
+        "직접 지휘를 맡아 모두에게 어느 쪽으로 갈지 지시한다.",
+        "아무 말 없이 리더가 정하는 대로 따른다."
+      ]
+    },
+    "sjt_3": {
+      "title": "말수가 줄어든 팀원",
+      "stem": "평소 믿음직하던 팀원이 이번 달에만 마감을 두 번 놓쳤고, 부쩍 말수도 줄었다. 함께 맡은 프로젝트는 일정이 밀리고 있다.",
+      "options": [
+        "마감을 놓친 일을 바로 상사에게 알린다.",
+        "다음 팀 회의에서 마감을 놓친 문제를 꺼낸다.",
+        "프로젝트가 늦어지지 않도록 그 사람 몫을 조용히 대신해 둔다.",
+        "따로 만나 요즘 어떻게 지내는지 묻고, 함께 계획을 세운다."
+      ]
+    },
+    "sjt_4": {
+      "title": "퇴근 전까지 결정",
+      "stem": "작은 프로젝트를 이끌고 있다. 오늘 퇴근 전까지 공급업체 두 곳 중 하나를 골라야 하는데, 알고 싶은 정보의 70% 정도만 확보한 상태다.",
+      "options": [
+        "아는 범위에서 최선의 선택을 하고, 이유를 설명한 뒤 다시 검토할 날짜를 정한다.",
+        "시간을 더 달라고 하고, 확신이 들 때까지 계속 알아본다.",
+        "팀원 투표에 맡기고 다수의 의견을 따른다.",
+        "비용으로는 아무도 문제 삼지 못하도록 더 저렴한 업체를 고른다."
+      ]
+    },
+    "sjt_5": {
+      "title": "공원 대청소",
+      "stem": "우리 동네에서 해마다 하는 공원 대청소를 맡아 준비할 사람이 필요하다. 보수는 없고, 저녁 시간을 며칠 써야 한다.",
+      "options": [
+        "아무 말도 하지 않는다. 바쁘기도 하고, 다른 누군가가 할 것이다.",
+        "준비를 맡겠다고 자원하고, 이웃 몇 명에게 도와 달라고 부탁한다.",
+        "돕겠다고는 하지만, 다른 사람이 책임을 맡는 경우에만 돕는다.",
+        "자원하고, 제대로 되도록 일의 대부분을 직접 할 생각이다."
+      ]
+    },
+    "sjt_6": {
+      "title": "더 나은 방법",
+      "stem": "팀이 몇 년째 같은 방식으로 일하고 있고, 그럭저럭 잘 돌아간다. 매주 몇 시간씩 아낄 수 있는 새 방식을 찾았지만, 바꾸려면 품이 들고 회의적인 사람도 있다.",
+      "options": [
+        "상세한 제안서를 써서 상사에게 보낸다.",
+        "더 낫다는 걸 알기 때문에 팀 전체를 당장 새 방식으로 바꾼다.",
+        "그대로 둔다. 그럭저럭 잘 돌아가고 있다.",
+        "자원하는 몇 사람과 작게 시범 운영해 보고, 결과를 공유한 다음 함께 결정한다."
+      ]
+    },
+    "sjt_7": {
+      "title": "늦어지는 보고서",
+      "stem": "금요일까지 팀에 보고서를 주기로 약속했다. 그런데 수요일에 보니 생각보다 시간이 더 걸릴 것 같다.",
+      "options": [
+        "지금 팀에 알려 이유를 설명하고, 새 마감일이나 분량을 줄인 1차 버전을 제안한다.",
+        "부족한 부분은 언급하지 않고 금요일에 있는 그대로 제출한다.",
+        "금요일까지 얼마나 할 수 있는지 지켜본 뒤 그때 가서 설명한다.",
+        "매일 밤늦게까지 일하며 제때 끝내기를 바란다."
+      ]
+    },
+    "sjt_8": {
+      "title": "새 팀에서의 첫날",
+      "stem": "아는 사람이 아무도 없는 새 팀에 합류했다. 첫 모임에서 사람들은 주로 자기들끼리 이야기를 나눈다.",
+      "options": [
+        "조용히 듣기만 하며 사람들이 먼저 다가오기를 기다린다.",
+        "일찍 자리를 뜬다. 나중에 한 명씩 알아 가는 편이 더 쉬울 것이다.",
+        "몇몇 사람에게 먼저 자기소개를 하고, 어떤 일을 하는지 묻는다.",
+        "사람들이 내 능력을 알 수 있도록 모두에게 내 경력을 자세히 소개한다."
+      ]
+    }
+  },
+  "dimensions": {
+    "drive": {
+      "name": "주도성",
+      "tagline": "앞장서서 흐름을 이끄는 힘",
+      "high": "그룹에 방향이 필요할 때 앞으로 나서고, 생각을 분명히 말하고, 아이디어를 실행으로 옮겨요. 어느 자리에 있든 존재감이 드러나요.",
+      "low": "방향은 다른 사람에게 맡기고, 누가 묻기 전에는 의견을 잘 내지 않는 편이에요. 아이디어가 좋아도 사람들에게 늘 전달되지는 않아요.",
+      "tip": "다음 회의에서는 작은 것이라도 다음 단계를 가장 먼저 제안해 보세요."
+    },
+    "presence": {
+      "name": "존재감",
+      "tagline": "사람들 앞에서의 활력과 여유",
+      "high": "처음 보는 사람들과도, 여러 사람 앞에서도 편안해요. 그 여유 덕분에 사람들이 자연스럽게 따르고 싶어 해요.",
+      "low": "혼자 있을 때 에너지를 충전하고, 여럿이 모인 자리보다 일대일 대화를 좋아해요. 뛰어난 리더 중에도 이런 사람이 많아요. 이들은 사람들 앞에 나설 순간을 미리 계획해요.",
+      "tip": "다음 모임에서는 모르는 사람 두 명에게 먼저 자기소개를 해 보세요."
+    },
+    "dependability": {
+      "name": "책임감",
+      "tagline": "끝까지 해내며 기준을 세우는 힘",
+      "high": "약속을 지키고, 미리 계획하고, 시작한 일은 끝을 봐요. 그래서 사람들은 중요한 일일수록 믿고 맡겨요.",
+      "low": "몰아서 일하는 편이고, 마무리가 느슨해질 때가 있어요. 리더는 결국 무엇을 해냈는지로 평가받으니 이 부분은 다잡아 둘 만해요.",
+      "tip": "이번 주에 한 약속을 모두 적어 두고, 하나씩 지키며 지워 나가 보세요."
+    },
+    "composure": {
+      "name": "침착성",
+      "tagline": "압박 속에서도 흔들리지 않는 힘",
+      "high": "일이 잘못돼도 침착하고 금방 회복해요. 스트레스가 큰 상황일수록 주변 사람들이 그 침착함을 보며 마음을 다잡아요.",
+      "low": "남들보다 압박을 크게 느끼는 편이고, 주변 사람들도 그걸 느낄 수 있어요. 침착함은 연습으로 기를 수 있고, 리더다움이 가장 잘 드러나는 모습 중 하나예요.",
+      "tip": "일이 잘못됐을 때는 말하기 전에 천천히 숨을 한 번 쉬어 보세요."
+    },
+    "vision": {
+      "name": "비전",
+      "tagline": "호기심과 큰 그림을 보는 눈",
+      "high": "새로운 아이디어와 어려운 문제, 먼 앞날을 내다보는 일에 끌려요. 앞으로 어디로 나아가야 할지도 그려 낼 수 있어요.",
+      "low": "검증된 길과 눈앞의 일을 선호해요. 덕분에 일이 잘 굴러가지만, 변화를 이끌려면 더 멀리 내다봐야 해요.",
+      "tip": "일주일에 한 번, ‘오늘 처음부터 다시 시작한다면 무엇을 다르게 할까?’ 하고 물어보세요."
+    },
+    "empathy": {
+      "name": "공감력",
+      "tagline": "사람을 읽고 마음을 들어 주는 힘",
+      "high": "사람들의 감정을 잘 알아채고 마음을 편하게 해 줘요. 그렇게 쌓인 신뢰가 사람들을 하나의 팀으로 만들어요.",
+      "low": "감정보다 일에 집중하는 편이라, 직설적인 말투 때문에 호감을 잃을 때가 있어요. 이 특성은 리더로 눈에 띄는 것보다 리더 역할을 잘 해내는 데 더 중요해요.",
+      "tip": "다음 대화에서는 내 의견을 말하기 전에 질문을 하나 더 해 보세요."
+    },
+    "motivation": {
+      "name": "리더십 동기",
+      "short": "동기",
+      "tagline": "리더 역할과 그 책임을 원하는 마음",
+      "high": "이끌고 싶어 하고, 앞에 나서야 한다는 의무감을 느껴요. 이런 동기가 잠재력을 실제 리더 역할로 바꿔 놓는 경우가 많아요.",
+      "low": "책임자가 되는 일에 딱히 끌리지 않아요. 그래도 괜찮아요. 필요한 순간이 오면 얼마든지 이끌 수 있어요.",
+      "tip": "이번 달에는 작은 일 하나를 이끌겠다고 자원해 보세요. 회의든 여행이든 프로젝트든 좋아요."
+    },
+    "decisiveness": {
+      "name": "결단력",
+      "tagline": "결정을 내리는 자신감",
+      "high": "머뭇거리지 않고 결정하며, 이끌 수 있다고 스스로를 믿어요. 덕분에 팀이 더 빨리 움직여요.",
+      "low": "선택지를 오래 저울질하고 스스로를 의심하기도 해요. 늦게 내린 완벽한 결정보다 제때 내린 좋은 결정이 대개 더 나아요.",
+      "tip": "작은 결정은 2분만 고민하고, 고른 다음 바로 넘어가세요."
+    }
+  },
+  "archetypes": {
+    "commander": {
+      "name": "지휘관형",
+      "tagline": "결정적 순간에 조종간을 잡는 리더",
+      "summary": "앞에서 이끄는 리더예요. 상황이 불분명하거나 급할 때 결정을 내리고, 책임을 지고, 다른 사람들이 움직여 주기를 기대해요. 압박 속에 있는 팀에게는 든든한 존재예요.",
+      "strengths": ["압박 속에서도 빠르게 결정해요", "결과를 끝까지 책임져요", "그룹에 분명한 방향을 제시해요"],
+      "watchouts": ["조용한 사람들의 목소리를 덮어 버릴 수 있어요", "전체 이야기를 듣기 전에 결정할 수 있어요"],
+      "motto": "결정은 내가, 책임도 내가."
+    },
+    "visionary": {
+      "name": "선구자형",
+      "tagline": "누구보다 먼저 다음 역을 보는 리더",
+      "summary": "아이디어로 이끄는 리더예요. 앞으로 어디로 갈 수 있을지 내다보고, 사람들을 그쪽으로 이끌어 갈 추진력도 있어요. 팀에 새로운 방향이 필요할 때 가장 빛나요.",
+      "strengths": ["미래를 선명하게 그려 보여요", "남들이 놓치는 기회를 알아봐요", "사람들이 변화에 설레게 만들어요"],
+      "watchouts": ["세부 사항에는 흥미를 잃기 쉬워요", "하던 아이디어를 마무리하기 전에 다음으로 넘어갈 수 있어요"],
+      "motto": "다음은 내가 만든다."
+    },
+    "connector": {
+      "name": "마당발형",
+      "tagline": "모인 사람들을 한 팀으로 만드는 리더",
+      "summary": "사람을 통해 이끄는 리더예요. 분위기를 읽고, 아무도 소외되지 않게 챙기고, 일이 되게 하는 인맥을 쌓아요. 사람들은 함께 있는 게 좋아서 따라와요.",
+      "strengths": ["금세 신뢰를 쌓아요", "서로 다른 사람들을 하나로 모아요", "팀의 사기를 높게 유지해요"],
+      "watchouts": ["평화를 지키려고 어려운 대화를 피할 수 있어요", "인기 없는 결정을 내리기 힘들어할 수 있어요"],
+      "motto": "한 명도 빠짐없이 함께 간다."
+    },
+    "anchor": {
+      "name": "버팀목형",
+      "tagline": "모두가 흔들릴 때도 굳건한 리더",
+      "summary": "믿음직함으로 이끄는 리더예요. 침착함을 잃지 않고, 한 말은 지키고, 일이 실제로 마무리되도록 챙겨요. 일이 잘못되면 사람들이 가장 먼저 찾는 사람이에요.",
+      "strengths": ["위기에도 침착해요", "약속한 것은 해내요", "높은 기준을 세워요"],
+      "watchouts": ["위험해 보이는 변화에 저항할 수 있어요", "자신의 아이디어를 충분히 내세우지 않을 수 있어요"],
+      "motto": "언제나 흔들림 없이."
+    },
+    "catalyst": {
+      "name": "기관차형",
+      "tagline": "열차 전체를 움직이게 하는 리더",
+      "summary": "에너지로 이끄는 리더예요. 사람들을 움직이게 하는 걸 좋아하고, 기꺼이 앞장서며, 그 열정이 주변으로 번져요. 멈춰 선 그룹에 꼭 필요한 불씨 같은 존재예요.",
+      "strengths": ["순식간에 사람들을 모아요", "기꺼이 앞에 나서요", "아이디어를 신나 보이게 만들어요"],
+      "watchouts": ["끝내는 것보다 시작하는 게 더 많을 수 있어요", "눈에 덜 띄는 세부 사항을 놓칠 수 있어요"],
+      "motto": "에너지는 전염된다."
+    },
+    "strategist": {
+      "name": "책사형",
+      "tagline": "세 정거장 앞을 미리 읽는 리더",
+      "summary": "머리로 이끄는 리더예요. 긴 승부를 내다보고, 신중하게 계획하며, 다른 사람들이 동요할 때도 냉정을 유지해요. 그 자리에서 목소리가 가장 크진 않아도, 결국 통하는 건 그 계획일 때가 많아요.",
+      "strengths": ["장기적으로 계획해요", "복잡한 문제를 풀어요", "압박 속에서도 객관성을 지켜요"],
+      "watchouts": ["좋은 아이디어를 혼자만 간직할 수 있어요", "더 가까워지고 싶은 사람에게는 거리감을 줄 수 있어요"],
+      "motto": "깊이 생각하고, 그다음에 이끈다."
+    },
+    "coach": {
+      "name": "멘토형",
+      "tagline": "사람을 키우며 이끄는 리더",
+      "summary": "사람을 성장시키며 이끄는 리더예요. 귀 기울여 듣고, 다른 사람에게 필요한 것을 알아채고, 그들의 성장을 돕는 것을 자기 책임으로 여겨요. 함께하는 팀은 시간이 갈수록 나아져요.",
+      "strengths": ["잘 들어 줘요", "다른 사람의 성장을 도와요", "두터운 신뢰를 얻어요"],
+      "watchouts": ["사람들을 세게 밀어붙이기를 망설일 수 있어요", "다른 사람의 문제를 자기 문제처럼 떠안을 수 있어요"],
+      "motto": "너의 성공이 곧 나의 성공."
+    },
+    "maverick": {
+      "name": "마이웨이형",
+      "tagline": "완행 말고 급행을 타는 리더",
+      "summary": "스스로 생각하고 스스로 결정해요. 책임자가 되는 게 목표는 아니지만, 마음이 가는 일에는 빠르게 움직이고 새로운 시각을 더해요. 반대 의견을 내면 그룹이 귀를 기울여요.",
+      "strengths": ["독립적으로 생각해요", "과감하게 결정해요", "늘 하던 방식에 의문을 던져요"],
+      "watchouts": ["그룹에 관심이 없어 보일 수 있어요", "팀으로 하는 게 나을 때도 혼자 가려 할 수 있어요"],
+      "motto": "나만의 노선을 찾는다."
+    },
+    "allrounder": {
+      "name": "팔방미인형",
+      "tagline": "모든 노선을 조금씩 갖춘 리더",
+      "summary": "특성들이 비슷한 수준에 있어서 어느 하나가 크게 앞서거나 처지지 않아요. 이렇게 고른 덕분에 앞장서기든, 귀 기울이기든, 미리 계획하기든 그 순간에 필요한 방식으로 스타일을 바꿀 수 있어요.",
+      "strengths": ["상황에 따라 유연하게 적응해요", "혼자 튀거나 처지는 특성이 없어요", "맡을 역할을 가리지 않아요"],
+      "watchouts": ["사람들이 기억할 만한 대표 강점이 부족할 수 있어요", "여러 방향으로 끌려다닐 수 있어요"],
+      "motto": "그때그때 딱 맞는 스타일로."
+    }
+  },
+  "bands": {
+    "exceptional": { "label": "탁월", "line": "정상까지 급행 운행", "range": "130 이상" },
+    "strong": { "label": "우수", "line": "급행 운행 중", "range": "115–129" },
+    "solid": { "label": "양호", "line": "정시 운행 중", "range": "100–114" },
+    "emerging": { "label": "성장 중", "line": "완행, 속도 올리는 중", "range": "85–99" },
+    "untapped": { "label": "숨은 잠재력", "line": "승강장에서 대기 중", "range": "85 미만" }
+  },
+  "templates": {
+    "headline": "내 LQ는 {lq}",
+    "percentile": "100명 중 약 {pct}명보다 높은 LQ예요",
+    "archetype": "{archetype} 리더예요",
+    "summary": "LQ {lq}, 100명 중 약 {pct}명보다 높은 점수예요. 리더십 스타일은 {archetype}에 가장 가까워요.",
+    "strengths": "가장 강한 특성: {list}",
+    "growth": "가장 키울 여지가 큰 특성: {list}",
+    "list_separator": ", ",
+    "list_last_separator": ", ",
+    "rank": "이번 주 {rank}위",
+    "document_title": "LQ {lq} · {archetype} · LQ 테스트"
+  },
+  "share_text": {
+    "title": "LQ 테스트: 나의 리더십 지수는?",
+    "default": "내 LQ는 {lq}, 100명 중 {pct}명보다 높대! 넌 몇 점이야?",
+    "archetype": "나는 {archetype} 리더래. LQ는 {lq}! 넌 어떤 리더인지 7분이면 알 수 있어.",
+    "challenge": "내 LQ는 {lq}. 나보다 리더십 있다고 생각하면 증명해 봐!",
+    "leaderboard": "이번 주 LQ 리더보드 {rank}위, 점수는 {lq}! 이제 네 차례야.",
+    "invite": "나의 리더십 지수(LQ)는? 49문항, 7분이면 숫자 하나로 나와요.",
+    "email_subject": "내 LQ는 {lq}! 넌 몇 점이야?",
+    "hashtag": "LQ테스트"
+  },
+  "science": {
+    "title": "LQ에 담긴 과학",
+    "intro": "LQ 테스트는 누가 리더가 되고 누가 리더 역할을 잘 해내는지를 다룬 수십 년간의 연구를 바탕으로 만든 짧은 성격 질문지입니다. 아래에서 점수가 어떻게 만들어지는지, 그리고 어디까지가 한계인지 설명합니다.",
+    "sections": [
+      {
+        "id": "how",
+        "heading": "LQ는 이렇게 계산됩니다",
+        "paragraphs": [
+          "자신에 관한 문장 40개와 짧은 상황 8개에 답합니다. 문장의 절반은 반대 방향으로 쓰여 있어서(예: “다른 사람이 먼저 앞장서기를 기다린다”), 모든 문장에 동의한다고 점수가 올라가지는 않습니다.",
+          "8가지 특성은 각각 문장 5개와 상황 1개로 점수를 매깁니다. 이 점수를 잠정 규준(아래 참고)과 비교해 백분위로 바꿉니다.",
+          "그다음 연구 결과에 따라 정한 가중치로 특성들을 합산합니다. 주도성이나 리더십 동기처럼 리더십과의 관련성이 강한 특성은 공감력처럼 관련성이 약한 특성보다 더 큰 비중을 차지합니다. 가중치는 일부러 단순하게 정했습니다. 정교하게 맞춘 가중치보다 단순한 가중치가 새로운 사람들에게 더 잘 들어맞는 경향이 있기 때문입니다(Dawes, 1979). 특성들은 서로 관련되어 있으므로(van der Linden et al., 2010), 합산 점수를 다시 조정해 IQ처럼 평균이 100이 되고 약 세 명 중 두 명이 85에서 115 사이에 들도록 했습니다. 점수 범위는 55부터 145까지입니다.",
+          "백분위는 나보다 점수가 낮을 것으로 예상되는 사람의 비율입니다. ‘5인 그룹’ 수치는 LQ가 그룹에서 누가 리더가 되는지와 어느 정도 관련이 있다고 가정한 단순한 통계 모델에서 나옵니다(상관계수 0.35로, 대규모 연구에서 보고된 값보다 일부러 낮게 잡았습니다). 대략적인 예시로만 봐 주세요."
+        ]
+      },
+      {
+        "id": "research",
+        "heading": "8가지 특성의 연구 근거",
+        "paragraphs": [
+          "20세기의 상당 기간 동안 많은 연구자는 성격이 리더십과 별 관련이 없다고 보았습니다. Ralph Stogdill(1948)의 영향력 있는 문헌 검토는 한 상황에서 리더가 된 사람이 다른 상황에서는 리더가 되지 못할 수도 있다고 결론지었습니다. 그러나 Lord, De Vader, Alliger(1986)를 시작으로 같은 종류의 연구들을 다시 분석한 결과, 그 관련성은 사람들이 생각했던 것보다 더 강하고 일관적이었습니다.",
+          "사람들을 여러 그룹과 과제에 번갈아 배치한 연구를 보면, 같은 사람들이 거듭해서 리더로 떠오르는 경향이 있습니다. 한 재분석에서는 누가 리더로 떠오르는지에 나타난 차이의 49%에서 82%가 상황이 아니라 개인에게서 비롯되었습니다(Kenny & Zaccaro, 1983; Zaccaro, 2007).",
+          "Judge, Bono, Ilies, Gerhardt(2002)의 기념비적인 메타분석은 73개 표본에서 얻은 상관계수 222개를 종합했습니다. 외향성(.31), 성실성(.28), 개방성(.24), 정서적 안정성(.24)이 모두 리더십을 예측했습니다. 친화성은 전체적으로는 거의 예측력이 없었지만(.08), 리더로 선택되는 것(.05)보다 리더 역할을 효과적으로 해내는 것(.21)에서 더 중요했습니다. 다섯 가지 특성을 함께 고려하면 누가 리더로 떠오를지를 다중상관 .53으로 예측했습니다.",
+          "이후 연구는 더 세밀하게 들여다보았습니다. 외향성 가운데 사교적인 측면보다 자기주장이 강하고 주도하려는 측면이 리더십과의 관련성을 더 많이 설명합니다(Do & Minbashian, 2014). 25가지 개인차와 리더 효과성의 관계를 검토한 연구에서는 특성에 가까운 변인 중 카리스마(.57)가 가장 강한 상관을 보였고, 지배성(.35), 창의성(.31), 활력(.29), 정직성(.29), 성취동기(.28), 자신감(.24)이 뒤를 이었습니다. 기술 중에서는 의사결정 능력(.52)이 가장 강했습니다(Hoffman et al., 2011).",
+          "리더가 되고 싶은 마음도 중요합니다. 이끄는 것을 즐기고 앞에 나서야 한다는 의무감을 느끼는 사람일수록 리더로 떠오르고 그 역할을 잘 해낼 가능성이 높습니다(Chan & Drasgow, 2001; Badura et al., 2020). 군 사관후보생들이 자신의 리더십 능력에 대해 가진 자신감은 미 육군 하계 리더십 훈련 과정에서 받은 평가를 예측했습니다(Chemers, Watson & May, 2000). 또한 사회적 상황을 읽고 그에 맞춰 행동을 조절하는 성향인 자기감시(self-monitoring)는 리더로 떠오르는 것과 관련이 있습니다(Day et al., 2002)."
+        ]
+      },
+      {
+        "id": "history",
+        "heading": "군대와 함께한 짧은 역사",
+        "paragraphs": [
+          "이 분야 연구의 상당 부분은 리더를 빠르고 정확하게 골라야 했던 군대의 지원으로 이루어졌습니다. 1945년에 시작된 오하이오 주립대 리더십 연구(Ohio State Leadership Studies)는 미 해군연구청(Office of Naval Research)과의 계약에 따라 해군 리더십에 관한 일련의 연구를 수행했습니다. 이들이 만든 리더 행동 질문지의 공군판은 폭격기 승무원들이 자기 기장에 대해 묘사한 내용을 바탕으로 만들어졌습니다(Shartle, 1979; Stogdill & Coons, 1957).",
+          "‘리더십 동기’라는 개념은 싱가포르 군 신병 1,594명과 두 개의 학생 표본을 대상으로 개발되었습니다(Chan & Drasgow, 2001). 미 육군 연구소(U.S. Army Research Institute)는 신병을 위한 성격 검사를 개발했습니다. 처음에는 AIM(Assessment of Individual Motivation)을, 이어서 TAPAS(Tailored Adaptive Personality Assessment System)를 만들었으며, 육군은 2009년부터 TAPAS로 신병의 중도 이탈 가능성과 직무 수행을 가늠하고 있습니다(Kirkendall et al., 2020)."
+        ]
+      },
+      {
+        "id": "limits",
+        "heading": "LQ가 말해 줄 수 있는 것과 없는 것",
+        "paragraphs": [
+          "LQ는 스스로를 묘사한 방식이 평균적으로 리더로 떠오르고 유능하다고 평가받는 것과 관련된 특성들과 얼마나 맞아떨어지는지를 요약해 줍니다. 그래서 어떤 강점을 살리고 어떤 습관을 기를지 돌아보는 데 유용합니다.",
+          "하지만 좋은 리더가 될지까지 알려 주지는 못합니다. 리더로 뽑히는 것과 리더 역할을 잘 해내는 것은 서로 다른 문제입니다(Hogan & Kaiser, 2005). 나르시시즘처럼 사람을 눈에 띄게 만드는 일부 특성은 리더로서의 효과성을 높이지 않으며(Grijalva et al., 2015), 지나친 자기주장은 너무 약한 자기주장만큼 해로울 수 있습니다(Ames & Flynn, 2007). 기술, 경험, 지능, 가치관, 그리고 상황도 모두 중요하지만, 이 테스트는 그중 어느 것도 측정하지 않습니다.",
+          "자기 보고식 응답은 부풀리기 쉽습니다. 테스트가 주의력과 일관성, 응답 속도를 확인하기는 하지만, 좋게 보이려고 작정한 사람이라면 얼마든지 점수를 높일 수 있습니다. 리더보드 상위권은 가볍게 웃으며 봐 주세요.",
+          "규준은 잠정적입니다. 이 테스트를 실제로 본 사람들이 아니라 공개 성격 문항의 일반적인 통계를 바탕으로 추정한 값이므로, 모든 백분위는 대략적인 참고로만 봐 주세요. 이 사이트는 익명 답변을 수집하지 않으며, 이 방침이 바뀐다면 개인정보 처리방침에 먼저 밝히겠습니다.",
+          "문화에 따라 자신을 묘사하는 방식이 다릅니다. 더 겸손하게 답하거나 척도의 가운데 쪽에 머무는 경향이 있는 문화도 있으므로, LQ는 같은 언어 버전 안에서 비교하는 것이 가장 좋습니다.",
+          "낮은 점수가 최종 판정은 아닙니다. 특성을 효과적인 리더십으로 바꿔 주는 기술 중 상당수는 배워서 익힐 수 있습니다(Zaccaro, 2007)."
+        ]
+      },
+      {
+        "id": "items",
+        "heading": "문항에 대하여",
+        "paragraphs": [
+          "대부분의 문장은 전 세계 연구자들이 사용하는 공개 문항 모음인 국제 성격 문항 풀(International Personality Item Pool)의 문항을 다듬어 만들었습니다(Goldberg et al., 2006). 나머지 문장과 모든 상황 문항은 이 테스트를 위해 새로 썼습니다. 상업용 검사에서 가져온 문항은 없습니다.",
+          "상황 문항의 답은 연구에서 효과적이라고 밝힌 리더 행동에 얼마나 가까운지에 따라 점수를 매깁니다. 이런 상황 판단 문항으로 잘 만든 검사는 그 자체로도 직무 수행을 예측합니다(McDaniel et al., 2001). 다만 이 테스트의 상황 문항 8개는 짧고, 따로 타당성을 검증하지는 않았습니다.",
+          "몇몇 문장은 정반대 문장과 짝을 이뤄 테스트 안에서 멀리 떨어져 배치되어 있고, 한 문항은 특정한 답을 고르도록 요청합니다. 응답에 걸린 시간과 함께 이런 확인 장치들이 성급하거나 무작위이거나 모순된 답변을 가려냅니다."
+        ]
+      }
+    ],
+    "faq_title": "자주 묻는 질문",
+    "faq": [
+      {
+        "q": "LQ는 IQ 같은 건가요?",
+        "a": "척도만 같습니다. 평균이 100이고 표준편차가 15입니다. IQ 검사는 정답과 오답이 있는 문제로 추론 능력을 측정하지만, LQ 테스트는 주로 자신을 어떻게 묘사하는지를 통해 성격 특성을 측정합니다."
+      },
+      {
+        "q": "MBTI와는 무엇이 다른가요?",
+        "a": "MBTI는 사람을 유형으로 나눕니다. LQ 테스트는 특성을 연속적인 척도로 측정하고, 각 특성이 연구에서 리더십과 얼마나 강하게 관련되는지에 따라 가중치를 둡니다. 리더 유형은 프로필의 전체적인 모양에 이름을 붙인 것일 뿐입니다."
+      },
+      {
+        "q": "왜 비슷한 질문이 여러 번 나오나요?",
+        "a": "몇몇 문장은 일부러 정반대 문장과 짝을 지어 테스트 안에서 멀리 떨어뜨려 놓았습니다. 그래야 무작위로 하거나 대충 한 답변을 가려낼 수 있습니다."
+      },
+      {
+        "q": "LQ를 높일 수 있나요?",
+        "a": "특성은 꽤 안정적이지만 행동은 그렇지 않습니다. 의견 말하기, 끝까지 해내기, 침착함 유지하기처럼 각 특성의 바탕이 되는 습관을 연습하면 행동이 달라지고, 시간이 지나면서 스스로를 보는 시각도 달라집니다."
+      },
+      {
+        "q": "왜 결과에 경고 표시가 붙었나요?",
+        "a": "답변이 성급하거나, 무작위이거나, 모순되거나, 지나치게 완벽해 보이면 표시가 붙습니다. 점수는 그대로 볼 수 있지만 리더보드에는 올라가지 않습니다."
+      },
+      {
+        "q": "제 답변은 어떻게 처리되나요?",
+        "a": "답변은 브라우저 안에서 채점됩니다. 주간 리더보드에 점수를 올리면 서버가 점수를 확인할 수 있도록 답변이 한 번 전송되며, 리더보드에는 닉네임, LQ, 리더 유형, 국가가 표시됩니다. 자세한 내용은 개인정보 처리방침을 참고하세요."
+      }
+    ],
+    "disclaimer_title": "면책 조항",
+    "disclaimer": "LQ 테스트는 교육과 재미를 위한 것입니다. 실제 리더십 성과를 기준으로 타당성을 검증하지 않았습니다. 채용, 승진, 임상 또는 진단 도구가 아니며, 누군가에 관한 결정을 내리는 데 사용해서는 안 됩니다.",
+    "references_title": "참고 문헌",
+    "references": [
+      "Ames, D. R., & Flynn, F. J. (2007). What breaks a leader: The curvilinear relation between assertiveness and leadership. Journal of Personality and Social Psychology, 92(2), 307–324. https://doi.org/10.1037/0022-3514.92.2.307",
+      "Badura, K. L., Grijalva, E., Galvin, B. M., Owens, B. P., & Joseph, D. L. (2020). Motivation to lead: A meta-analysis and distal-proximal model of motivation and leadership. Journal of Applied Psychology, 105(4), 331–354. https://doi.org/10.1037/apl0000439",
+      "Chan, K.-Y., & Drasgow, F. (2001). Toward a theory of individual differences and leadership: Understanding the motivation to lead. Journal of Applied Psychology, 86(3), 481–498. https://doi.org/10.1037/0021-9010.86.3.481",
+      "Chemers, M. M., Watson, C. B., & May, S. T. (2000). Dispositional affect and leadership effectiveness: A comparison of self-esteem, optimism, and efficacy. Personality and Social Psychology Bulletin, 26(3), 267–277. https://doi.org/10.1177/0146167200265001",
+      "Dawes, R. M. (1979). The robust beauty of improper linear models in decision making. American Psychologist, 34(7), 571–582. https://doi.org/10.1037/0003-066X.34.7.571",
+      "Day, D. V., Schleicher, D. J., Unckless, A. L., & Hiller, N. J. (2002). Self-monitoring personality at work: A meta-analytic investigation of construct validity. Journal of Applied Psychology, 87(2), 390–401. https://doi.org/10.1037/0021-9010.87.2.390",
+      "Do, M. H., & Minbashian, A. (2014). A meta-analytic examination of the effects of the agentic and affiliative aspects of extraversion on leadership outcomes. The Leadership Quarterly, 25(5), 1040–1053. https://doi.org/10.1016/j.leaqua.2014.04.004",
+      "Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40(1), 84–96. https://doi.org/10.1016/j.jrp.2005.08.007",
+      "Grijalva, E., Harms, P. D., Newman, D. A., Gaddis, B. H., & Fraley, R. C. (2015). Narcissism and leadership: A meta-analytic review of linear and nonlinear relationships. Personnel Psychology, 68(1), 1–47. https://doi.org/10.1111/peps.12072",
+      "Hoffman, B. J., Woehr, D. J., Maldagen-Youngjohn, R., & Lyons, B. D. (2011). Great man or great myth? A quantitative review of the relationship between individual differences and leader effectiveness. Journal of Occupational and Organizational Psychology, 84(2), 347–381. https://doi.org/10.1348/096317909X485207",
+      "Hogan, R., & Kaiser, R. B. (2005). What we know about leadership. Review of General Psychology, 9(2), 169–180. https://doi.org/10.1037/1089-2680.9.2.169",
+      "Judge, T. A., Bono, J. E., Ilies, R., & Gerhardt, M. W. (2002). Personality and leadership: A qualitative and quantitative review. Journal of Applied Psychology, 87(4), 765–780. https://doi.org/10.1037/0021-9010.87.4.765",
+      "Kenny, D. A., & Zaccaro, S. J. (1983). An estimate of variance due to traits in leadership. Journal of Applied Psychology, 68(4), 678–685. https://doi.org/10.1037/0021-9010.68.4.678",
+      "Kirkendall, C., Bynum, B., Nesbitt, C., & Hughes, M. (2020). Validation of the TAPAS for predicting in-unit soldier outcomes. Military Psychology, 32(1), 24–35. https://doi.org/10.1080/08995605.2019.1652484",
+      "Lord, R. G., De Vader, C. L., & Alliger, G. M. (1986). A meta-analysis of the relation between personality traits and leadership perceptions: An application of validity generalization procedures. Journal of Applied Psychology, 71(3), 402–410. https://doi.org/10.1037/0021-9010.71.3.402",
+      "McDaniel, M. A., Morgeson, F. P., Finnegan, E. B., Campion, M. A., & Braverman, E. P. (2001). Use of situational judgment tests to predict job performance: A clarification of the literature. Journal of Applied Psychology, 86(4), 730–740. https://doi.org/10.1037/0021-9010.86.4.730",
+      "Shartle, C. L. (1979). Early years of the Ohio State University leadership studies. Journal of Management, 5(2), 127–134. https://doi.org/10.1177/014920637900500203",
+      "Stogdill, R. M. (1948). Personal factors associated with leadership: A survey of the literature. The Journal of Psychology, 25(1), 35–71. https://doi.org/10.1080/00223980.1948.9917362",
+      "Stogdill, R. M., & Coons, A. E. (Eds.). (1957). Leader behavior: Its description and measurement (Research Monograph No. 88). Ohio State University, Bureau of Business Research.",
+      "van der Linden, D., te Nijenhuis, J., & Bakker, A. B. (2010). The General Factor of Personality: A meta-analysis of Big Five intercorrelations and a criterion-related validity study. Journal of Research in Personality, 44(3), 315–327. https://doi.org/10.1016/j.jrp.2010.03.003",
+      "Zaccaro, S. J. (2007). Trait-based perspectives of leadership. American Psychologist, 62(1), 6–16. https://doi.org/10.1037/0003-066X.62.1.6"
+    ]
+  }
+}

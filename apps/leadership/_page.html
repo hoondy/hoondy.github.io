@@ -1,0 +1,179 @@
+{%- comment -%}
+  Shared body of every LQ Test page. Each language page sets `lang` in its front matter;
+  strings come from _data/leadership/<lang>.json and fall back to English block by block.
+  The landing and the explainer are rendered here so they work without JavaScript and get
+  indexed; the quiz and the results are drawn by main.js.
+{%- endcomment -%}
+{%- assign en = site.data.leadership.en -%}
+{%- assign t = site.data.leadership[page.lang] | default: en -%}
+{%- assign ui = t.ui | default: en.ui -%}
+{%- assign landing = ui.landing | default: en.ui.landing -%}
+{%- assign quiz = ui.quiz | default: en.ui.quiz -%}
+{%- assign lb = ui.leaderboard | default: en.ui.leaderboard -%}
+{%- assign res = ui.result | default: en.ui.result -%}
+{%- assign langs = ui.languages | default: en.ui.languages -%}
+{%- assign sci = t.science | default: en.science -%}
+{%- assign facts = landing.facts | default: en.ui.landing.facts -%}
+{%- assign points = landing.points | default: en.ui.landing.points -%}
+{%- assign steps = landing.steps | default: en.ui.landing.steps -%}
+{%- assign pct_token = '{pct}' -%}
+<div class="lq" data-lq data-lang="{{ page.lang | default: 'en' }}" data-share-url="{{ page.url | absolute_url }}" lang="{{ page.lang | default: 'en' }}">
+
+  <div class="lq-view lq-landing" data-view="landing">
+    <div class="container">
+      <div class="lq-shared" data-shared hidden></div>
+
+      <section class="lq-hero" aria-labelledby="lq-hero-title">
+        <div class="lq-hero__intro">
+          <p class="lq-kicker"><span class="bullet bullet--sm" style="--bullet: var(--line-red)" aria-hidden="true">1</span><span>{{ landing.kicker | default: en.ui.landing.kicker | escape }}</span></p>
+          <h1 class="lq-hero__title" id="lq-hero-title">{{ landing.title | default: en.ui.landing.title | escape }}</h1>
+          <p class="lq-hero__lede">{{ landing.lede | default: en.ui.landing.lede | escape }}</p>
+          <ul class="lq-facts">
+            {%- for f in facts %}
+            <li>{{ f | escape }}</li>
+            {%- endfor %}
+          </ul>
+          <div class="lq-hero__actions">
+            <div class="lq-cta" data-cta>
+              <a class="btn btn--primary btn--lg lq-btn-go" href="#test" data-start>{{ landing.start | default: en.ui.landing.start | escape }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="lq-resume" data-resume hidden>
+              <p class="lq-resume__text">{{ quiz.resume_prompt | default: en.ui.quiz.resume_prompt | escape }}</p>
+              <div class="lq-resume__bar" aria-hidden="true"><span data-resume-bar></span></div>
+              <div class="lq-resume__actions">
+                <button class="btn btn--primary btn--lg lq-btn-go" type="button" data-resume-btn>{{ landing.resume | default: en.ui.landing.resume | escape }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button class="btn btn--ghost btn--lg" type="button" data-restart>{{ landing.restart | default: en.ui.landing.restart | escape }}</button>
+              </div>
+            </div>
+            <a class="lq-last" href="#result" data-last hidden></a>
+          </div>
+          <nav class="lq-langs" aria-label="{{ landing.language | default: en.ui.landing.language | escape }}">
+            <svg class="lq-langs__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span class="visually-hidden">{{ landing.language | default: en.ui.landing.language | escape }}</span>
+            <ul>
+              {%- for alt in page.alternates %}
+              <li><a href="{{ alt.url | relative_url }}" hreflang="{{ alt.lang }}" lang="{{ alt.lang }}" data-lang-link{% if alt.lang == page.lang %} aria-current="page"{% endif %}>{{ langs[alt.lang] | default: en.ui.languages[alt.lang] | escape }}</a></li>
+              {%- endfor %}
+            </ul>
+          </nav>
+        </div>
+
+        <div class="lq-hero__board" aria-hidden="true">
+          <div class="lq-demo" data-demo>
+            <div class="lq-demo__head">
+              <span class="lq-demo__line"><span class="bullet bullet--sm" style="--bullet: var(--line-red)">1</span>{{ ui.app_name | default: en.ui.app_name | escape }}</span>
+              <span class="lq-demo__status"><span class="lq-demo__dot"></span>{{ landing.demo_label | default: en.ui.landing.demo_label | escape }}</span>
+            </div>
+            <div class="lq-demo__main">
+              <span class="lq-demo__label">{{ res.lq_label | default: en.ui.result.lq_label | escape }}</span>
+              <span class="lq-demo__num" data-demo-lq>???</span>
+            </div>
+            <dl class="lq-demo__rows">
+              <div><dt>{{ res.pct_label | default: en.ui.result.pct_label | escape }}</dt><dd data-demo-pct>{{ res.pct_value | default: en.ui.result.pct_value | replace: pct_token, '--' | escape }}</dd></div>
+              <div><dt>{{ res.archetype_label | default: en.ui.result.archetype_label | escape }}</dt><dd data-demo-arch>· · ·</dd></div>
+            </dl>
+            <div class="lq-demo__scale"><span></span><span></span><span></span><span></span><span></span><i data-demo-marker></i></div>
+          </div>
+          <p class="lq-hero__caption">{{ res.lq_scale | default: en.ui.result.lq_scale | escape }}</p>
+        </div>
+      </section>
+
+      <section class="lq-how" aria-labelledby="lq-steps-title">
+        <h2 class="lq-section-title" id="lq-steps-title">{{ landing.steps_title | default: en.ui.landing.steps_title | escape }}</h2>
+        <ol class="lq-steps">
+          {%- for s in steps %}
+          <li>
+            <span class="lq-steps__stop" aria-hidden="true">{{ forloop.index }}</span>
+            <h3>{{ s.title | escape }}</h3>
+            <p>{{ s.body | escape }}</p>
+          </li>
+          {%- endfor %}
+          <li class="lq-steps__end" aria-hidden="true"></li>
+        </ol>
+      </section>
+
+      <section class="lq-features" aria-label="{{ ui.app_name | default: en.ui.app_name | escape }}">
+        <ul class="lq-features__list">
+          {%- for p in points %}
+          <li class="lq-feature">
+            {%- case forloop.index %}
+            {%- when 1 %}<span class="lq-feature__icon" style="--c: var(--line-red)" aria-hidden="true"><b>100</b></span>
+            {%- when 2 %}<span class="lq-feature__icon" style="--c: var(--line-blue)" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 19.5c2.6 0 3.7-2.8 5-7.2S10.6 4.5 12 4.5s2.6 3.4 4 7.8 2.4 7.2 5 7.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M15.2 9.5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            {%- when 3 %}<span class="lq-feature__icon" style="--c: var(--line-purple)" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 20 8v8l-8 4.5L4 16V8l8-4.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M12 7.5 16 10v4l-4 2.5L8 14v-4l4-2.5Z" fill="currentColor" opacity=".35"/></svg></span>
+            {%- else %}<span class="lq-feature__icon" style="--c: var(--line-green)" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5M12 14v3.5M8 20h8M9.5 17.5h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            {%- endcase %}
+            <span class="lq-feature__text">{{ p | escape }}</span>
+          </li>
+          {%- endfor %}
+        </ul>
+        <div class="lq-notes">
+          <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v5c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>{{ landing.honesty_note | default: en.ui.landing.honesty_note | escape }}</span></p>
+          <p><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>{{ landing.privacy_note | default: en.ui.landing.privacy_note | escape }}</span></p>
+        </div>
+      </section>
+
+      <section class="lq-top" aria-labelledby="lq-top-title">
+        <div class="lq-top__text">
+          <h2 class="lq-section-title" id="lq-top-title">{{ lb.title | default: en.ui.leaderboard.title | escape }}</h2>
+          <p>{{ lb.subtitle | default: en.ui.leaderboard.subtitle | escape }}</p>
+          <a class="btn btn--ghost" href="#test" data-start>{{ landing.start | default: en.ui.landing.start | escape }}</a>
+        </div>
+        <div class="lq-top__board" data-board-landing>
+          <p class="lq-board-loading">{{ lb.loading | default: en.ui.leaderboard.loading | escape }}</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="lq-view lq-quiz-view" data-view="quiz" hidden></div>
+  <div class="lq-view lq-loading-view" data-view="loading" hidden></div>
+  <div class="lq-view lq-result-view" data-view="result" hidden></div>
+
+  {%- capture lq_strings -%}
+{"lang":{{ t.lang | jsonify }},"locale":{{ t.locale | jsonify }},"dir":{{ t.dir | jsonify }},"meta":{{ t.meta | jsonify }},"ui":{{ t.ui | jsonify }},"scale":{{ t.scale | jsonify }},"items":{{ t.items | jsonify }},"attention":{{ t.attention | jsonify }},"sjt":{{ t.sjt | jsonify }},"dimensions":{{ t.dimensions | jsonify }},"archetypes":{{ t.archetypes | jsonify }},"bands":{{ t.bands | jsonify }},"templates":{{ t.templates | jsonify }},"share_text":{{ t.share_text | jsonify }}}
+  {%- endcapture %}
+  <script type="application/json" id="lq-i18n">{{ lq_strings | replace: '</', '<\/' }}</script>
+  {%- if page.lang != 'en' %}
+  {%- capture lq_strings_en -%}
+{"lang":{{ en.lang | jsonify }},"locale":{{ en.locale | jsonify }},"dir":{{ en.dir | jsonify }},"meta":{{ en.meta | jsonify }},"ui":{{ en.ui | jsonify }},"scale":{{ en.scale | jsonify }},"items":{{ en.items | jsonify }},"attention":{{ en.attention | jsonify }},"sjt":{{ en.sjt | jsonify }},"dimensions":{{ en.dimensions | jsonify }},"archetypes":{{ en.archetypes | jsonify }},"bands":{{ en.bands | jsonify }},"templates":{{ en.templates | jsonify }},"share_text":{{ en.share_text | jsonify }}}
+  {%- endcapture %}
+  <script type="application/json" id="lq-i18n-en">{{ lq_strings_en | replace: '</', '<\/' }}</script>
+  {%- endif %}
+</div>
+
+<div class="container lq-explainer" id="science">
+  <article class="prose" lang="{{ page.lang | default: 'en' }}">
+    <h2>{{ sci.title | escape }}</h2>
+    <p class="lq-explainer__intro">{{ sci.intro | escape }}</p>
+    {%- for s in sci.sections %}
+    <h3 id="science-{{ s.id }}">{{ s.heading | escape }}</h3>
+    {%- for p in s.paragraphs %}
+    <p>{{ p | escape }}</p>
+    {%- endfor %}
+    {%- if forloop.index == 2 %}
+    {% include billboard.html format="rectangle" %}
+    {%- endif %}
+    {%- endfor %}
+
+    <h2 id="faq">{{ sci.faq_title | escape }}</h2>
+    <div class="lq-faq">
+      {%- for f in sci.faq %}
+      <details>
+        <summary>{{ f.q | escape }}</summary>
+        <p>{{ f.a | escape }}</p>
+      </details>
+      {%- endfor %}
+    </div>
+
+    <h2 id="disclaimer">{{ sci.disclaimer_title | escape }}</h2>
+    <p>{{ sci.disclaimer | escape }}</p>
+
+    <h2 id="references">{{ sci.references_title | escape }}</h2>
+    <ol class="lq-refs" lang="en">
+      {%- for ref in sci.references %}
+      {%- assign parts = ref | split: 'https://doi.org/' %}
+      <li>{{ parts[0] | escape }}{% if parts[1] %}<a href="https://doi.org/{{ parts[1] | strip | escape }}" rel="noopener">doi.org/{{ parts[1] | strip | escape }}</a>{% endif %}</li>
+      {%- endfor %}
+    </ol>
+  </article>
+</div>

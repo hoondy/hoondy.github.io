@@ -1,0 +1,599 @@
+{
+  "lang": "zh",
+  "locale": "zh-CN",
+  "dir": "ltr",
+  "meta": {
+    "title": "LQ 测试：你的领导力商数是多少？",
+    "short_title": "LQ 测试",
+    "description": "免费的 7 分钟领导力性格测试，以数十年的研究为基础。测出你的 LQ 分数、百分位排名、领导原型，以及你在 8 项特质上的表现。",
+    "og_title": "你的领导力商数是多少？",
+    "og_description": "49 道题，约 7 分钟，一个数字：看看你的领导力商数在人群中处于什么水平。免费、有研究依据，支持 5 种语言。",
+    "og_image_alt": "一块琥珀色 LED 显示屏，显示着 LQ 分数和百分位",
+    "keywords": "领导力测试, 领导力商数, LQ 测试, 领导力性格测试, 领导力人格测试, 领导风格测试, 领导原型, 性格与领导力, 免费性格测试"
+  },
+  "ui": {
+    "app_name": "LQ 测试",
+    "landing": {
+      "kicker": "1 号线 · 领导力",
+      "title": "你的领导力商数是多少？",
+      "lede": "从 20 世纪 40 年代起，研究者们就在探究：谁会挺身而出、担起领导之责，原因又是什么。他们当中有不少人与军方合作。这个测试把他们关于人格的发现，浓缩成了一个数字。",
+      "facts": ["49 道题", "约 7 分钟", "免费，无需注册"],
+      "points": [
+        "你的 LQ：采用类似 IQ 的尺度，100 为平均水平",
+        "你的百分位：你的 LQ 与其他人相比处于什么水平",
+        "你的领导原型，以及你在 8 项特质上的表现",
+        "每周排行榜，想比拼就来"
+      ],
+      "steps_title": "测试流程",
+      "steps": [
+        { "title": "回答 49 道题", "body": "40 条关于你自己的简短陈述，加上 8 个简短情境。凭第一直觉作答即可。" },
+        { "title": "获取你的 LQ", "body": "查看你的分数、百分位、领导原型，以及你在每项特质上的位置。" },
+        { "title": "比拼与分享", "body": "把分数提交到本周排行榜，向朋友发起挑战。" }
+      ],
+      "demo_label": "示例",
+      "start": "开始测试",
+      "resume": "继续测试",
+      "restart": "重新开始",
+      "language": "语言",
+      "honesty_note": "请按真实的自己作答，而不是你希望成为的样子。测试会识别草率或前后矛盾的作答。",
+      "privacy_note": "你的答案在浏览器中计分，只有在你选择提交分数时才会发送出去。"
+    },
+    "quiz": {
+      "progress": "第 {n} 题，共 {total} 题",
+      "progress_short": "{n}/{total}",
+      "time_left": "大约还剩 {min} 分钟",
+      "time_left_short": "还剩不到 1 分钟",
+      "almost_there": "只剩最后几站",
+      "statement_prompt": "这句话有多符合你？",
+      "scenario_label": "情境题",
+      "scenario_prompt": "你最可能怎么做？",
+      "attention_label": "快速确认",
+      "back": "上一题",
+      "next": "下一题",
+      "finish": "查看结果",
+      "exit": "退出",
+      "exit_confirm": "确定要退出测试吗？已作答的内容会保存在这台设备上。",
+      "keyboard_hint_scale": "按 1–5 作答，按退格键返回上一题。",
+      "keyboard_hint_options": "按 A–D 选择，按退格键返回上一题。",
+      "saved": "进度已保存在这台设备上",
+      "resume_prompt": "你有一次未完成的测试。要从上次中断的地方继续吗？"
+    },
+    "loading": {
+      "title": "下一站：你的结果",
+      "steps": ["正在检查你的答案", "正在为 8 项特质计分", "正在与其他人比较", "正在匹配你的领导原型"],
+      "doors": "车门即将关闭，请勿靠近车门。"
+    },
+    "result": {
+      "kicker": "你的结果",
+      "lq_label": "你的 LQ",
+      "lq_scale": "100 为平均水平，约三分之二的人在 85 到 115 之间。",
+      "pct_label": "百分位",
+      "pct_value": "{pct}%",
+      "pct_sentence": "你的 LQ 高于约 {pct}% 的人",
+      "emergence_label": "带领 5 人小组的概率",
+      "emergence_value": "{chance}%",
+      "emergence_sentence": "把你和四个陌生人放进同一个房间，再给这个小组布置一项任务。按照本测试的粗略模型，你最终成为小组领导者的概率是 {chance}%。如果全凭运气，这个概率是 20%。",
+      "archetype_label": "你的领导原型",
+      "band_label": "等级",
+      "traits_title": "你的 8 项特质",
+      "traits_note": "每一条都显示你在这项特质上与其他人相比所处的位置。",
+      "trait_value": "{pct}",
+      "trait_value_aria": "{trait}：高于 {pct}% 的人",
+      "trait_low": "低",
+      "trait_high": "高",
+      "strengths_title": "你最突出的特质",
+      "growth_title": "提升空间",
+      "strength_relative": "在你自己的特质组合里，这一项相对靠前，尽管大多数人在这项上得分比你高。",
+      "growth_relative": "这一项已经高于平均水平，只是你的其他特质更高，才把它排到了这里。",
+      "growth_note": "这些都不是一成不变的。每项特质背后的习惯，都可以通过练习养成。",
+      "try_this": "试试这样做",
+      "strengths_list_title": "优势",
+      "watchouts_title": "需要留意",
+      "motto_label": "座右铭",
+      "summary_title": "这意味着什么",
+      "retake": "重新测试",
+      "share_title": "分享你的结果",
+      "science_link": "分数是怎么算的",
+      "validity_title": "这个结果可能无法反映真实的你",
+      "validity_body": "分数照常显示，但无法提交到排行榜。想要准确的结果，请重新测试，按自己的节奏作答。",
+      "validity_reasons": "值得注意的地方：",
+      "shared_kicker": "好友分享",
+      "shared_title": "有人向你分享了自己的 LQ",
+      "shared_headline": "TA 的 LQ 是 {lq}",
+      "vs_ahead": "你领先 {n} 分",
+      "vs_behind": "你落后 {n} 分",
+      "vs_tie": "打成平手",
+      "shared_cta": "你的呢？测一测",
+      "shared_note": "分享的结果按原样显示，未经核实。",
+      "shared_invalid": "这个结果链接已失效或已过期。你仍然可以参加测试。"
+    },
+    "leaderboard": {
+      "title": "本周 LQ 高分榜",
+      "board_title": "本周",
+      "subtitle": "本周 LQ 得分最高的人。榜单在纽约时间每周一零点重置。",
+      "empty": "本周还没有人上榜，来做第一个吧。",
+      "local": "这台设备上保存的分数",
+      "resets": "距重置",
+      "units": { "d": " 天", "h": " 小时", "m": " 分钟" },
+      "you": "你",
+      "score": "{lq}",
+      "row_meta": "{archetype}",
+      "join_title": "提交分数上榜",
+      "name_label": "昵称",
+      "name_placeholder": "最多 16 个字符",
+      "name_hint": "昵称会公开显示，不必使用真名。",
+      "submit": "提交我的分数",
+      "submitting": "正在提交…",
+      "posted": "你在本周榜单上排第 {rank} 名。",
+      "posted_best": "刷新个人最佳！你本周排第 {rank} 名。",
+      "posted_local": "已保存在这台设备上，你在本机排第 {rank} 名。",
+      "best_only": "每周只有你的最高分会出现在榜单上。",
+      "local_hint": "这个榜单只保存在这台设备上，其他人看不到。",
+      "invalid": "部分答案被标记为异常，这个结果无法提交。",
+      "view": "查看排行榜",
+      "personal_best": "你的最佳：LQ {lq}",
+      "loading": "正在加载榜单…",
+      "unavailable": "排行榜暂时无法连接，请稍后再来看看。"
+    },
+    "share": {
+      "title": "分享",
+      "share": "分享",
+      "copy": "复制链接",
+      "copied": "链接已复制",
+      "download": "保存图片",
+      "more": "分享到{label}",
+      "targets": {"email": "邮件", "line": "LINE", "naver": "NAVER", "band": "BAND", "weibo": "微博", "qzone": "QQ空间", "douban": "豆瓣"},
+      "image_kicker": "LQ 测试",
+      "image_lq": "LQ",
+      "image_pct": "高于约 {pct}% 的人",
+      "image_cta": "你的呢？来测测：hoondy.com/apps/leadership/zh",
+      "image_file": "my-lq.png"
+    },
+    "validity": {
+      "incomplete": "有些题目没有作答。",
+      "too_fast": "你的答题用时比读完题目所需的时间还短。",
+      "attention": "你没有答对快速确认题。",
+      "straightline": "你的大部分答案都一样。",
+      "inconsistent": "有些答案前后矛盾。",
+      "acquiescence": "你几乎对每一条陈述都表示同意（或都不同意），包括意思相反的陈述。",
+      "idealized": "你的答案看起来太理想，不太真实。大多数人眼中的自己，都是优点和短板并存的。",
+      "erratic": "你对同一项特质的回答方向不一致。"
+    },
+    "errors": {
+      "bad_body": "提交时出了点问题，请重新测试。",
+      "bad_answers": "提交时出了点问题，请重新测试。",
+      "bad_lang": "提交时出了点问题，请重新测试。",
+      "bad_duration": "提交时出了点问题，请重新测试。",
+      "too_fast": "这个结果完成得太快，无法提交。",
+      "attention": "这个结果没有通过快速确认题，无法提交。",
+      "straightline": "相同的答案太多，这个结果无法提交。",
+      "acquiescence": "前后矛盾的答案太多，这个结果无法提交。",
+      "inconsistent": "前后矛盾的答案太多，这个结果无法提交。",
+      "erratic": "这些答案看起来像是随机选的，这个结果无法提交。",
+      "idealized": "完美得不太真实，这个结果无法提交。",
+      "invalid": "这个结果无法提交。",
+      "name": "请换一个昵称。",
+      "rate_limited": "尝试次数太多，请过几分钟再试。",
+      "too_many_names": "本周排行榜上已有三个来自这个网络的昵称。请用其中一个发布，或者下周再试。",
+      "network": "无法连接到排行榜，请检查网络后重试。",
+      "unknown": "出了点问题，请重试。"
+    },
+    "common": {
+      "close": "关闭",
+      "try_again": "重试",
+      "loading": "加载中…",
+      "or": "或"
+    },
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "简体中文"
+    },
+    "disclaimer": "仅供学习和娱乐。LQ 测试不是招聘、晋升、临床或诊断工具，不应被用来对任何人做出决定。"
+  },
+  "scale": {
+    "labels": ["完全不符合", "比较不符合", "不确定", "比较符合", "完全符合"],
+    "low": "不符合",
+    "high": "符合"
+  },
+  "items": {
+    "drive_1": "当大家需要有人指明方向时，我会站出来带头。",
+    "drive_2": "我会等别人来带头。",
+    "drive_3": "我会设法影响团队做出的决定。",
+    "drive_4": "我能说服别人尝试我的想法。",
+    "drive_5": "在小组讨论中，我会把自己的意见放在心里。",
+    "presence_1": "和刚认识的人相处时，我感到自在。",
+    "presence_2": "和一群人在一起时，我会低调地待在一旁。",
+    "presence_3": "我会主动和陌生人搭话。",
+    "presence_4": "和不太熟的人在一起时，我很安静。",
+    "presence_5": "我会避免成为众人关注的焦点。",
+    "dependability_1": "我做事有始有终。",
+    "dependability_2": "我做事只求过得去。",
+    "dependability_3": "即使不方便，我也会信守承诺。",
+    "dependability_4": "离截止日期还早，我就会开始规划工作。",
+    "dependability_5": "我需要别人推一把，才会着手做事。",
+    "composure_1": "在压力下，我能保持冷静。",
+    "composure_2": "我很容易感到压力大。",
+    "composure_3": "遇到挫折后，我能很快恢复过来。",
+    "composure_4": "事情出问题时，我会惊慌失措。",
+    "composure_5": "我经常感到焦虑。",
+    "vision_1": "我喜欢琢磨事情还能有哪些不同的做法。",
+    "vision_2": "我更愿意沿用自己熟悉的做法。",
+    "vision_3": "我喜欢解决复杂的问题。",
+    "vision_4": "我喜欢思考长远的未来。",
+    "vision_5": "变化会让我感到不自在。",
+    "empathy_1": "不用别人开口，我就能察觉到他们的情绪。",
+    "empathy_2": "我很难站在别人的角度看问题。",
+    "empathy_3": "我能让身边的人感到轻松自在。",
+    "empathy_4": "我会无意中说出伤人的话。",
+    "empathy_5": "别人向我倾诉烦恼时，我会不耐烦。",
+    "motivation_1": "比起跟随别人，我更喜欢带领别人。",
+    "motivation_2": "比起带领别人，我更愿意跟随别人。",
+    "motivation_3": "我觉得自己将来会担任领导角色。",
+    "motivation_4": "没有人主动牵头时，我觉得自己应该站出来。",
+    "motivation_5": "我会避开需要为别人的工作负责的角色。",
+    "decisiveness_1": "我能迅速做出艰难的决定。",
+    "decisiveness_2": "我会把重要的决定往后拖。",
+    "decisiveness_3": "我有信心带好一个团队。",
+    "decisiveness_4": "面对多个选项时，我很难做出选择。",
+    "decisiveness_5": "我怀疑自己领导他人的能力。"
+  },
+  "attention": {
+    "check_1": "这道题用来确认你在认真读题，请选择“{label}”。"
+  },
+  "sjt": {
+    "sjt_1": {
+      "title": "结伴出游",
+      "stem": "你和五个朋友约好周末一起去旅行。两周过去了，什么都还没订，群里也没人说话了。",
+      "options": [
+        "等着。总会有比你更上心的人来张罗。",
+        "在群里发条消息，问问大家还想不想去。",
+        "提出两个日期和一个预算，请大家在周五前投票。",
+        "自己把所有行程都订好，然后在群里发起 AA 收款。"
+      ]
+    },
+    "sjt_2": {
+      "title": "夜间迷途",
+      "stem": "一次夜间野外拉练中，你们小队的导航突然失灵了。大家开始争论该走哪条路，队长看起来也拿不定主意。",
+      "options": [
+        "大声说大家迷路都是因为计划没做好。",
+        "冷静地提议先停两分钟，大家一起看地图，商量好路线再走。",
+        "直接接管指挥，告诉大家往哪边走。",
+        "保持沉默，队长怎么决定就怎么走。"
+      ]
+    },
+    "sjt_3": {
+      "title": "沉默的队友",
+      "stem": "一位平时很靠谱的队友，这个月已经两次没赶上截止日期，人也变得沉默寡言。你们一起负责的项目进度落后了。",
+      "options": [
+        "马上向上级报告对方错过截止日期的事。",
+        "在下次团队会议上提出对方延误的问题。",
+        "悄悄把对方那部分工作揽过来做完，让项目按时推进。",
+        "私下找对方聊聊，关心一下近况，再一起商量出一个计划。"
+      ]
+    },
+    "sjt_4": {
+      "title": "下班前拍板",
+      "stem": "你负责一个小项目，必须在今天下班前从两家供应商中选定一家。你手上的信息，大约只有你想掌握的 70%。",
+      "options": [
+        "根据现有信息做出最佳选择，说明理由，并定好日后复盘的日期。",
+        "申请延期，继续调研，直到有十足把握为止。",
+        "让团队投票，少数服从多数。",
+        "选更便宜的那家，这样谁也没法在成本上挑毛病。"
+      ]
+    },
+    "sjt_5": {
+      "title": "公园清扫日",
+      "stem": "你们社区需要有人牵头组织一年一度的公园义务清扫活动。这件事没有报酬，还要占用好几个晚上。",
+      "options": [
+        "什么也不说。你很忙，总会有别人去做。",
+        "主动报名牵头组织，并请几位邻居帮忙。",
+        "表示愿意帮忙，但前提是由别人来负责。",
+        "主动报名，并打算自己包揽大部分工作，确保做得到位。"
+      ]
+    },
+    "sjt_6": {
+      "title": "更好的办法",
+      "stem": "你们团队多年来一直沿用同一套流程，效果还算过得去。你发现了一种新方法，每周能节省好几个小时，但切换起来要费不少功夫，而且有些人持怀疑态度。",
+      "options": [
+        "写一份详细的提案，发给你的上级。",
+        "既然你知道新方法更好，就立刻让整个团队切换过去。",
+        "维持现状。现在这样已经够用了。",
+        "找几位自愿的同事小范围试行，分享结果，再由大家一起决定。"
+      ]
+    },
+    "sjt_7": {
+      "title": "进度告急",
+      "stem": "你答应团队周五前交一份报告。到了周三，你发现需要的时间比预想的要长。",
+      "options": [
+        "现在就告诉团队，说明原因，并提出一个新日期，或者先交一个精简版。",
+        "周五把手头已有的内容交上去，对缺漏只字不提。",
+        "等到周五看看能做到哪一步，再作解释。",
+        "每晚加班到很晚，希望能按时完成。"
+      ]
+    },
+    "sjt_8": {
+      "title": "初来乍到",
+      "stem": "你加入了一个新团队，谁都不认识。第一次开会时，大家大多在和熟人聊天。",
+      "options": [
+        "安静地听着，等别人主动来找你。",
+        "提前离开。以后再一个个认识会更容易。",
+        "主动向几个人介绍自己，问问他们手上的工作。",
+        "向所有人详细介绍你的履历，让大家知道你有什么本事。"
+      ]
+    }
+  },
+  "dimensions": {
+    "drive": {
+      "name": "主导力",
+      "tagline": "挺身而出，掌控节奏",
+      "high": "团队需要方向时，你会站出来，说出自己的想法，并推动想法落地。只要你在场，大家都会注意到你。",
+      "low": "你倾向于让别人掌舵，在被问到之前，往往不会说出自己的看法。你的想法也许很好，只是大家未必总能听到。",
+      "tip": "下次开会时，第一个提出下一步该做什么，哪怕只是一小步。"
+    },
+    "presence": {
+      "name": "气场",
+      "tagline": "精力充沛，与人相处自如",
+      "high": "和新认识的人相处，或者站在众人面前，你都很从容。这份从容会让别人愿意跟随你。",
+      "low": "你靠独处来充电，比起热闹的人群，更喜欢一对一的交流。很多出色的领导者都是这样，他们会提前规划好自己需要亮相的时刻。",
+      "tip": "下次聚会时，主动向两个不认识的人介绍自己。"
+    },
+    "dependability": {
+      "name": "责任心",
+      "tagline": "说到做到，树立标杆",
+      "high": "你信守承诺、提前规划，做事有始有终。重要的事情，大家都放心交给你。",
+      "low": "你做事容易一阵一阵的，有时会在跟进收尾上掉链子。人们评价领导者，看的是事情有没有办成，所以这一点值得加强。",
+      "tip": "把这周许下的每一个承诺都记下来，然后逐一兑现。"
+    },
+    "composure": {
+      "name": "定力",
+      "tagline": "压力之下，依然沉稳",
+      "high": "出了问题时你能保持冷静，也能很快恢复过来。压力之下，大家会看你的状态来定基调。",
+      "low": "压力对你的影响比对大多数人更大，身边的人也能感受到。沉稳是可以练出来的，而它正是领导者最显眼的标志之一。",
+      "tip": "遇到突发状况时，先慢慢深呼吸一次，再开口说话。"
+    },
+    "vision": {
+      "name": "远见",
+      "tagline": "好奇心与大局观",
+      "high": "新想法、难题和长远的眼光都很吸引你，你也能设想出事情下一步该往哪里走。",
+      "low": "你更喜欢经过验证的路子，专注于眼前的任务。这能让事情平稳运转；但要引领变革，你需要看得更远。",
+      "tip": "每周问自己一次：如果今天从头开始，我们会怎么做得不一样？"
+    },
+    "empathy": {
+      "name": "共情力",
+      "tagline": "读懂他人，让人感到被倾听",
+      "high": "你能察觉别人的感受，并让他们放松下来。这样建立起来的信任，能把一群人凝聚成一个团队。",
+      "low": "你更关注任务而非感受，说话太直有时会得罪人。这项特质与其说影响你能否被人注意到，不如说影响你能否把领导做好。",
+      "tip": "下次和别人交谈时，先多问一个问题，再说出你的看法。"
+    },
+    "motivation": {
+      "name": "领导意愿",
+      "short": "领导意愿",
+      "tagline": "想当领导，也愿意扛起责任",
+      "high": "你想当领导，也觉得自己有责任站出来。往往正是这份意愿，把潜力变成了真正的领导角色。",
+      "low": "你对当负责人没有特别强烈的兴趣。这没什么不好；当时机需要时，你依然可以站出来带头。",
+      "tip": "这个月主动牵头一件小事：一次会议、一次出游或一个项目。"
+    },
+    "decisiveness": {
+      "name": "决断力",
+      "tagline": "敢于拍板的底气",
+      "high": "你做决定不拖泥带水，也相信自己能带好团队。有你在，团队推进得更快。",
+      "low": "你会花很长时间权衡各种选项，也可能怀疑自己。一个及时的好决定，通常胜过一个太迟的完美决定。",
+      "tip": "遇到小事时，给自己两分钟，然后做出选择，继续往前走。"
+    }
+  },
+  "archetypes": {
+    "commander": {
+      "name": "指挥官型",
+      "tagline": "关键时刻，由你掌舵。",
+      "summary": "你习惯冲在最前面。局面不明或情况紧急时，你会果断拍板、承担责任，并期待大家立刻跟上。处在压力下的团队，会庆幸有你在。",
+      "strengths": ["压力之下也能迅速决策", "对结果负责到底", "给团队指明清晰的方向"],
+      "watchouts": ["可能盖过安静成员的声音", "可能还没了解全貌就做了决定"],
+      "motto": "敢拍板，就敢担当。"
+    },
+    "visionary": {
+      "name": "远见型",
+      "tagline": "比任何人都先看到下一站。",
+      "summary": "你用想法来领导。你能看到事情可能的走向，也有劲头带着大家朝那里前进。当团队需要一个新方向时，正是你发挥所长的时候。",
+      "strengths": ["能描绘清晰的未来图景", "能发现别人错过的机会", "能让大家对变革充满期待"],
+      "watchouts": ["可能对细节失去兴趣", "上一个想法还没落地，可能就已转向下一个"],
+      "motto": "下一站，由我开创。"
+    },
+    "connector": {
+      "name": "凝聚型",
+      "tagline": "把一群人变成一个团队。",
+      "summary": "你通过人来领导。你善于感知现场气氛，让每个人都有参与感，也善于搭建能把事情办成的人脉。大家追随你，是因为喜欢和你待在一起。",
+      "strengths": ["能迅速建立信任", "能把不同的人聚到一起", "能让士气保持高涨"],
+      "watchouts": ["可能为了维持和气而回避艰难的对话", "可能难以做出不受欢迎的决定"],
+      "motto": "一个都不落下。"
+    },
+    "anchor": {
+      "name": "定海神针型",
+      "tagline": "车厢再晃，你也站得稳稳的。",
+      "summary": "你以可靠服人。你沉着冷静、说到做到，确保工作真正落到实处。一旦出了问题，大家都会看向你。",
+      "strengths": ["危机中沉着冷静", "言出必行", "坚持高标准"],
+      "watchouts": ["可能抗拒看起来有风险的变化", "可能不够主动推广自己的想法"],
+      "motto": "稳字当头，次次靠谱。"
+    },
+    "catalyst": {
+      "name": "火车头型",
+      "tagline": "带着整列车跑起来。",
+      "summary": "你用活力来领导。你喜欢把大家调动起来，乐于站出来牵头，你的热情也很有感染力。一个停滞不前的团队，最需要的就是你这样的火花。",
+      "strengths": ["能迅速调动大家", "乐于站出来担当", "能让想法变得激动人心"],
+      "watchouts": ["开的头可能比收的尾多", "可能忽略不起眼的细节"],
+      "motto": "热情会传染。"
+    },
+    "strategist": {
+      "name": "军师型",
+      "tagline": "总比别人多想三站。",
+      "summary": "你用头脑来领导。你着眼长远、计划周密，在别人忙着应付时依然保持冷静。你未必是全场嗓门最大的人，但最终奏效的往往是你的方案。",
+      "strengths": ["善于长远规划", "能解决复杂问题", "压力之下保持客观"],
+      "watchouts": ["可能把好点子藏在心里", "在希望多些交流的人眼里，可能显得有些疏远"],
+      "motto": "谋定而后动。"
+    },
+    "coach": {
+      "name": "教练型",
+      "tagline": "把别人托起来，就是你的领导方式。",
+      "summary": "你通过培养人来领导。你善于倾听，能察觉别人的需要，并把帮助他们成长当作自己的责任。和你共事的团队会越来越好。",
+      "strengths": ["善于倾听", "帮助他人成长", "赢得忠诚与信任"],
+      "watchouts": ["可能不太愿意给人施加压力", "可能把别人的问题揽成自己的"],
+      "motto": "你赢，就是我赢。"
+    },
+    "maverick": {
+      "name": "独行侠型",
+      "tagline": "只坐直达快车，不坐站站停。",
+      "summary": "你独立思考，自己拿主意。当领导并不是你的目标，但遇到在乎的事，你会迅速行动，带来全新的视角。当你提出异议时，大家都会注意到。",
+      "strengths": ["独立思考", "敢于大胆拍板", "敢于质疑惯常做法"],
+      "watchouts": ["可能显得对集体漠不关心", "在团队合作效果更好时，仍可能选择单打独斗"],
+      "motto": "走出自己的路线。"
+    },
+    "allrounder": {
+      "name": "多面手型",
+      "tagline": "每条线都坐一段。",
+      "summary": "你的各项特质处在相近的水平，没有哪一项远远领先，也没有哪一项明显落后。这种均衡让你能根据当下的需要调整风格，无论是站出来掌舵、倾听他人，还是提前谋划。",
+      "strengths": ["能适应不同情境", "没有哪项特质与其他特质脱节", "在扮演什么角色上很灵活"],
+      "watchouts": ["可能缺少一项让人记住的招牌优势", "可能被太多事情分散精力"],
+      "motto": "因时制宜，恰到好处。"
+    }
+  },
+  "bands": {
+    "exceptional": { "label": "卓越", "line": "直达快车，一路登顶", "range": "130 及以上" },
+    "strong": { "label": "出色", "line": "已搭上快车", "range": "115 至 129" },
+    "solid": { "label": "稳健", "line": "准点运行", "range": "100 至 114" },
+    "emerging": { "label": "成长中", "line": "站站停，正在提速", "range": "85 至 99" },
+    "untapped": { "label": "待发掘", "line": "还在站台候车", "range": "低于 85" }
+  },
+  "templates": {
+    "headline": "你的 LQ 是 {lq}",
+    "percentile": "高于约 {pct}% 的人",
+    "archetype": "你是{archetype}领导者",
+    "summary": "你的 LQ 为 {lq}，高于约 {pct}% 的人。你的领导风格最接近{archetype}。",
+    "strengths": "你最突出的特质：{list}。",
+    "growth": "你最有提升空间的方面：{list}。",
+    "list_separator": "、",
+    "list_last_separator": "和",
+    "rank": "本周第 {rank} 名",
+    "document_title": "LQ {lq} · {archetype} · LQ 测试"
+  },
+  "share_text": {
+    "title": "LQ 测试：你的领导力商数是多少？",
+    "default": "测了一下，我的 LQ 是 {lq}，高于约 {pct}% 的人。你的呢？",
+    "archetype": "我是{archetype}领导者，LQ {lq}。只要 7 分钟，测测你是哪种领导者。",
+    "challenge": "我的 LQ 是 {lq}。觉得自己更有领导力？不服来战！",
+    "leaderboard": "我在本周 LQ 排行榜上排第 {rank} 名，LQ {lq}。该你了。",
+    "invite": "你的领导力商数是多少？49 道题，7 分钟，一个数字见分晓。",
+    "email_subject": "我的 LQ 是 {lq}，你的呢？",
+    "hashtag": "LQ测试"
+  },
+  "science": {
+    "title": "LQ 背后的科学",
+    "intro": "LQ 测试是一份简短的人格问卷，以数十年的研究为基础。这些研究关注的是：谁最终会成为领导者，谁又能把领导做好。下面介绍分数是如何得出的，以及它有哪些不足。",
+    "sections": [
+      {
+        "id": "how",
+        "heading": "LQ 是怎么算出来的",
+        "paragraphs": [
+          "你需要回答 40 条关于自己的陈述和 8 个简短的情境题。其中一半陈述的方向是反过来的（例如“我会等别人来带头”），所以对所有陈述都表示同意，并不会推高你的分数。",
+          "8 项特质中，每一项的分数都来自 5 条陈述和 1 道情境题。这个分数会与暂定常模（见下文）比较，再换算成百分位。",
+          "接着，各项特质按照研究结果加权合并：与领导力联系更强的特质（如主导力和领导意愿）权重更高，联系较弱的特质（如共情力）权重更低。权重刻意保持简单，因为简单的权重在新的人群中往往比精细调校的权重更稳健（Dawes, 1979）。由于各项特质彼此相关（van der Linden et al., 2010），合并后的分数会重新标定，使它像 IQ 一样以 100 为平均值，约三分之二的人落在 85 到 115 之间。分数范围为 55 到 145。",
+          "你的百分位，是预计得分低于你的人所占的比例。“5 人小组”这个数字来自一个简单的统计模型：它假设你的 LQ 与谁最终成为小组领导者存在中等程度的相关（相关系数为 0.35，刻意低于大型研究报告的数值）。请只把它当作一个粗略的示意。"
+        ]
+      },
+      {
+        "id": "research",
+        "heading": "8 项特质背后的研究",
+        "paragraphs": [
+          "在 20 世纪的大部分时间里，许多研究者都怀疑人格与领导力关系不大。Ralph Stogdill（1948）一篇颇具影响力的综述认为，一个人在某种情境下能当领导，换一种情境就未必。后来对同类研究的重新分析（始于 Lord、De Vader 和 Alliger，1986）发现，这些联系比人们以为的更强，也更一致。",
+          "让人们轮流加入不同小组、完成不同任务的研究表明，往往是同一批人一次又一次地成为领导者。一项重新分析发现，在“谁会成为领导者”的差异中，有 49% 到 82% 取决于个人，而非情境（Kenny & Zaccaro, 1983; Zaccaro, 2007）。",
+          "Judge、Bono、Ilies 和 Gerhardt（2002）的里程碑式元分析，汇总了来自 73 个样本的 222 个相关系数。外向性（0.31）、尽责性（0.28）、开放性（0.24）和情绪稳定性（0.24）都能预测领导力。宜人性的整体预测作用微乎其微（0.08），不过它对有效领导（0.21）的作用要大于对被选为领导者（0.05）的作用。五大人格特质合在一起，预测谁会成为领导者的复相关系数为 0.53。",
+          "后来的研究看得更细。外向性中果断、主导的一面，比爱社交的一面与领导力的联系更强（Do & Minbashian, 2014）。一项针对 25 种个体差异与领导有效性的综述发现，在类特质变量中，魅力（0.57）的相关最强，其后依次是支配性（0.35）、创造力（0.31）、精力（0.29）、正直（0.29）、成就动机（0.28）和自信（0.24）；在各项技能中，决策能力的相关最强（0.52）（Hoffman et al., 2011）。",
+          "想不想当领导也很重要。喜欢带领别人、并觉得自己有责任站出来的人，更有可能成为领导者，也更可能在这个角色上表现出色（Chan & Drasgow, 2001; Badura et al., 2020）。军校学员对自己领导能力的信心，能预测他们在陆军夏季领导力训练项目中得到的评价（Chemers, Watson & May, 2000）。此外，自我监控，也就是解读社交情境并随之调整自己的习惯，与成为领导者有关（Day et al., 2002）。"
+        ]
+      },
+      {
+        "id": "history",
+        "heading": "简史：带点军事色彩",
+        "paragraphs": [
+          "这类研究有相当一部分是由军方资助的，因为军队需要又快又准地选拔领导者。始于 1945 年的俄亥俄州立大学领导力研究，曾受美国海军研究办公室委托，开展了一系列海军领导力研究；他们的领导行为问卷还有一个空军版本，是根据轰炸机机组成员对机长的描述编制的（Shartle, 1979; Stogdill & Coons, 1957）。",
+          "“领导意愿”（motivation to lead）这一概念，是基于 1594 名新加坡新兵以及两个学生样本提出的（Chan & Drasgow, 2001）。美国陆军研究所为新兵开发了人格筛查工具：先是个体动机评估（Assessment of Individual Motivation），后来是定制自适应人格评估系统（Tailored Adaptive Personality Assessment System）。美国陆军自 2009 年起一直用后者筛查新兵，评估他们中途流失的风险和工作表现（Kirkendall et al., 2020）。"
+        ]
+      },
+      {
+        "id": "limits",
+        "heading": "LQ 能告诉你什么，不能告诉你什么",
+        "paragraphs": [
+          "它可以概括：你对自己的描述，与那些平均而言和成为领导者、被视为有效领导者相关的特质，在多大程度上吻合。因此它适合用来自我反思：哪些优势可以倚重，哪些习惯需要培养。",
+          "它无法告诉你，你会不会成为一个好领导。被选为领导和把领导做好是两回事（Hogan & Kaiser, 2005）。一些能让人被注意到的特质（比如自恋）并不会让人成为更有效的领导者（Grijalva et al., 2015），而强势过头和强势不足一样有害（Ames & Flynn, 2007）。技能、经验、智力、价值观和情境都很重要，而这些都不在本测试的测量范围之内。",
+          "自我报告很容易被美化。测试会检查注意力、一致性和答题速度，但一心想让自己看起来更好的人，仍然能做到。对排行榜上的榜首，不妨一笑置之。",
+          "常模是暂定的。它们是根据公共领域人格题目的典型统计数据估算出来的，并非来自参加过本测试的人，所以请把每个百分位都当作粗略的参考。本站不收集匿名答案；如果将来有所改变，隐私政策会事先说明。",
+          "不同文化背景的人，描述自己的方式也不一样。有些人作答时更谦虚，或者更倾向于选择量表中间的选项，所以 LQ 最好只在同一语言版本内比较。",
+          "分数低并不是定论。把特质转化为有效领导力的许多技能，都是可以学会的（Zaccaro, 2007）。"
+        ]
+      },
+      {
+        "id": "items",
+        "heading": "关于题目",
+        "paragraphs": [
+          "大多数陈述改编自国际人格题库（International Personality Item Pool），这是全世界研究者都在使用的公共领域题库（Goldberg et al., 2006）。其余陈述以及所有情境题，都是专为本测试编写的。没有任何题目取自商业测试。",
+          "情境题的计分，看的是选项与研究中描述的有效领导行为有多吻合。精心编制的情境判断测验，本身就能预测工作绩效（McDaniel et al., 2001）；而这里的 8 道题都很简短，也没有经过单独验证。",
+          "有几条陈述会与意思相反的陈述配对，分散在测试中相隔较远的位置；还有一道题会要求你选择指定的答案。结合你的答题用时，这些检查可以识别出草率、随机或前后矛盾的作答。"
+        ]
+      }
+    ],
+    "faq_title": "常见问题",
+    "faq": [
+      {
+        "q": "LQ 和 IQ 是一回事吗？",
+        "a": "只有计分尺度相同：平均值为 100，标准差为 15。IQ 测试通过有对错之分的题目来测量推理能力；LQ 测试测量的是人格特质，主要依据你对自己的描述。"
+      },
+      {
+        "q": "这和 MBTI 有什么不同？",
+        "a": "MBTI 把人归入不同的类型。LQ 测试则在连续的尺度上为特质打分，并根据研究中每项特质与领导力关联的强弱来加权。你的领导原型，只是给你整体的特质组合形态起了个名字。"
+      },
+      {
+        "q": "为什么有些题目感觉在重复？",
+        "a": "有几条陈述被刻意与意思相反的陈述配对，并在测试中隔得很远。这样就能轻松发现随机或马虎的作答。"
+      },
+      {
+        "q": "我能提高自己的 LQ 吗？",
+        "a": "特质相当稳定，但行为可以改变。练习每项特质背后的习惯，比如敢于发言、做事有始有终、保持冷静，会改变你的行为方式；久而久之，也会改变你对自己的看法。"
+      },
+      {
+        "q": "为什么我的结果被标记了？",
+        "a": "当答案看起来草率、随机、前后矛盾或过于完美时，结果就会被标记。你仍然可以看到自己的分数，但它不会被提交到排行榜。"
+      },
+      {
+        "q": "我的答案会被怎样处理？",
+        "a": "答案在你的浏览器中计分。如果你提交到每周排行榜，答案会被发送一次，以便服务器核验分数；榜单上会显示你的昵称、LQ、领导原型和所在国家/地区。详情请参阅隐私政策。"
+      }
+    ],
+    "disclaimer_title": "免责声明",
+    "disclaimer": "LQ 测试仅供学习和娱乐，尚未用真实的领导成效进行过验证。它不是招聘、晋升、临床或诊断工具，不应被用来对任何人做出决定。",
+    "references_title": "参考文献",
+    "references": [
+      "Ames, D. R., & Flynn, F. J. (2007). What breaks a leader: The curvilinear relation between assertiveness and leadership. Journal of Personality and Social Psychology, 92(2), 307–324. https://doi.org/10.1037/0022-3514.92.2.307",
+      "Badura, K. L., Grijalva, E., Galvin, B. M., Owens, B. P., & Joseph, D. L. (2020). Motivation to lead: A meta-analysis and distal-proximal model of motivation and leadership. Journal of Applied Psychology, 105(4), 331–354. https://doi.org/10.1037/apl0000439",
+      "Chan, K.-Y., & Drasgow, F. (2001). Toward a theory of individual differences and leadership: Understanding the motivation to lead. Journal of Applied Psychology, 86(3), 481–498. https://doi.org/10.1037/0021-9010.86.3.481",
+      "Chemers, M. M., Watson, C. B., & May, S. T. (2000). Dispositional affect and leadership effectiveness: A comparison of self-esteem, optimism, and efficacy. Personality and Social Psychology Bulletin, 26(3), 267–277. https://doi.org/10.1177/0146167200265001",
+      "Dawes, R. M. (1979). The robust beauty of improper linear models in decision making. American Psychologist, 34(7), 571–582. https://doi.org/10.1037/0003-066X.34.7.571",
+      "Day, D. V., Schleicher, D. J., Unckless, A. L., & Hiller, N. J. (2002). Self-monitoring personality at work: A meta-analytic investigation of construct validity. Journal of Applied Psychology, 87(2), 390–401. https://doi.org/10.1037/0021-9010.87.2.390",
+      "Do, M. H., & Minbashian, A. (2014). A meta-analytic examination of the effects of the agentic and affiliative aspects of extraversion on leadership outcomes. The Leadership Quarterly, 25(5), 1040–1053. https://doi.org/10.1016/j.leaqua.2014.04.004",
+      "Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40(1), 84–96. https://doi.org/10.1016/j.jrp.2005.08.007",
+      "Grijalva, E., Harms, P. D., Newman, D. A., Gaddis, B. H., & Fraley, R. C. (2015). Narcissism and leadership: A meta-analytic review of linear and nonlinear relationships. Personnel Psychology, 68(1), 1–47. https://doi.org/10.1111/peps.12072",
+      "Hoffman, B. J., Woehr, D. J., Maldagen-Youngjohn, R., & Lyons, B. D. (2011). Great man or great myth? A quantitative review of the relationship between individual differences and leader effectiveness. Journal of Occupational and Organizational Psychology, 84(2), 347–381. https://doi.org/10.1348/096317909X485207",
+      "Hogan, R., & Kaiser, R. B. (2005). What we know about leadership. Review of General Psychology, 9(2), 169–180. https://doi.org/10.1037/1089-2680.9.2.169",
+      "Judge, T. A., Bono, J. E., Ilies, R., & Gerhardt, M. W. (2002). Personality and leadership: A qualitative and quantitative review. Journal of Applied Psychology, 87(4), 765–780. https://doi.org/10.1037/0021-9010.87.4.765",
+      "Kenny, D. A., & Zaccaro, S. J. (1983). An estimate of variance due to traits in leadership. Journal of Applied Psychology, 68(4), 678–685. https://doi.org/10.1037/0021-9010.68.4.678",
+      "Kirkendall, C., Bynum, B., Nesbitt, C., & Hughes, M. (2020). Validation of the TAPAS for predicting in-unit soldier outcomes. Military Psychology, 32(1), 24–35. https://doi.org/10.1080/08995605.2019.1652484",
+      "Lord, R. G., De Vader, C. L., & Alliger, G. M. (1986). A meta-analysis of the relation between personality traits and leadership perceptions: An application of validity generalization procedures. Journal of Applied Psychology, 71(3), 402–410. https://doi.org/10.1037/0021-9010.71.3.402",
+      "McDaniel, M. A., Morgeson, F. P., Finnegan, E. B., Campion, M. A., & Braverman, E. P. (2001). Use of situational judgment tests to predict job performance: A clarification of the literature. Journal of Applied Psychology, 86(4), 730–740. https://doi.org/10.1037/0021-9010.86.4.730",
+      "Shartle, C. L. (1979). Early years of the Ohio State University leadership studies. Journal of Management, 5(2), 127–134. https://doi.org/10.1177/014920637900500203",
+      "Stogdill, R. M. (1948). Personal factors associated with leadership: A survey of the literature. The Journal of Psychology, 25(1), 35–71. https://doi.org/10.1080/00223980.1948.9917362",
+      "Stogdill, R. M., & Coons, A. E. (Eds.). (1957). Leader behavior: Its description and measurement (Research Monograph No. 88). Ohio State University, Bureau of Business Research.",
+      "van der Linden, D., te Nijenhuis, J., & Bakker, A. B. (2010). The General Factor of Personality: A meta-analysis of Big Five intercorrelations and a criterion-related validity study. Journal of Research in Personality, 44(3), 315–327. https://doi.org/10.1016/j.jrp.2010.03.003",
+      "Zaccaro, S. J. (2007). Trait-based perspectives of leadership. American Psychologist, 62(1), 6–16. https://doi.org/10.1037/0003-066X.62.1.6"
+    ]
+  }
+}

@@ -1,0 +1,599 @@
+{
+  "lang": "es",
+  "locale": "es",
+  "dir": "ltr",
+  "meta": {
+    "title": "Test LQ: ¿cuál es tu cociente de liderazgo?",
+    "short_title": "Test LQ",
+    "description": "Test gratuito de personalidad y liderazgo, de 7 minutos y basado en décadas de investigación. Descubre tu LQ, tu percentil, tu arquetipo de líder y tu perfil en 8 rasgos.",
+    "og_title": "¿Cuál es tu cociente de liderazgo?",
+    "og_description": "49 preguntas, unos 7 minutos y un solo número: descubre cómo se compara tu cociente de liderazgo con el de otras personas. Gratis, basado en la investigación y en 5 idiomas.",
+    "og_image_alt": "Un panel LED de color ámbar que muestra una puntuación LQ y un percentil",
+    "keywords": "test de liderazgo, cociente de liderazgo, coeficiente de liderazgo, test LQ, test de personalidad y liderazgo, tipos de líder, arquetipo de líder, personalidad y liderazgo"
+  },
+  "ui": {
+    "app_name": "Test LQ",
+    "landing": {
+      "kicker": "Línea 1 · Liderazgo",
+      "title": "¿Cuál es tu cociente de liderazgo?",
+      "lede": "Desde la década de 1940, equipos de investigación, muchos de ellos vinculados a las fuerzas armadas, han estudiado quién da un paso al frente para liderar y por qué. Este test convierte lo que aprendieron sobre la personalidad en un solo número.",
+      "facts": ["49 preguntas", "Unos 7 minutos", "Gratis, sin registro"],
+      "points": [
+        "Tu LQ, en una escala como la del CI, donde 100 es la media",
+        "Tu percentil: cómo se compara tu LQ con el de otras personas",
+        "Tu arquetipo de líder y tu perfil en 8 rasgos",
+        "Un ranking semanal, si quieres competir"
+      ],
+      "steps_title": "Cómo funciona",
+      "steps": [
+        { "title": "Responde 49 preguntas", "body": "40 afirmaciones breves sobre ti y 8 situaciones cortas. Fíate de tu primer instinto." },
+        { "title": "Obtén tu LQ", "body": "Descubre tu puntuación, tu percentil, tu arquetipo y dónde te sitúas en cada rasgo." },
+        { "title": "Compara y comparte", "body": "Publica tu puntuación en el ranking de esta semana y reta a tus amistades." }
+      ],
+      "demo_label": "Ejemplo",
+      "start": "Empezar el test",
+      "resume": "Continuar el test",
+      "restart": "Empezar de nuevo",
+      "language": "Idioma",
+      "honesty_note": "Responde como eres, no como te gustaría ser. El test detecta respuestas apresuradas o contradictorias.",
+      "privacy_note": "Tus respuestas se puntúan en tu navegador y solo salen de él si decides publicar tu puntuación."
+    },
+    "quiz": {
+      "progress": "Pregunta {n} de {total}",
+      "progress_short": "{n}/{total}",
+      "time_left": "Quedan unos {min} min",
+      "time_left_short": "Queda menos de un minuto",
+      "almost_there": "Últimas estaciones",
+      "statement_prompt": "¿En qué medida te describe esta afirmación?",
+      "scenario_label": "Situación",
+      "scenario_prompt": "¿Qué es más probable que hagas?",
+      "attention_label": "Comprobación rápida",
+      "back": "Atrás",
+      "next": "Siguiente",
+      "finish": "Ver mis resultados",
+      "exit": "Salir",
+      "exit_confirm": "¿Quieres salir del test? Tus respuestas hasta ahora se guardan en este dispositivo.",
+      "keyboard_hint_scale": "Usa las teclas 1–5 para responder y Retroceso para volver.",
+      "keyboard_hint_options": "Usa las teclas A–D para elegir y Retroceso para volver.",
+      "saved": "Progreso guardado en este dispositivo",
+      "resume_prompt": "Tienes un test sin terminar. ¿Quieres seguir donde lo dejaste?"
+    },
+    "loading": {
+      "title": "Próxima estación: tus resultados",
+      "steps": ["Revisando tus respuestas", "Puntuando 8 rasgos", "Comparando con otras personas", "Buscando tu arquetipo"],
+      "doors": "Atención: cierre de puertas."
+    },
+    "result": {
+      "kicker": "Tu resultado",
+      "lq_label": "Tu LQ",
+      "lq_scale": "100 es la media. Alrededor de dos de cada tres personas puntúan entre 85 y 115.",
+      "pct_label": "Percentil",
+      "pct_value": "{pct}\u00a0%",
+      "pct_sentence": "Tu LQ supera al de cerca del {pct}\u00a0% de la gente",
+      "emergence_label": "Probabilidad de liderar un grupo de\u00a05",
+      "emergence_value": "{chance}\u00a0%",
+      "emergence_sentence": "Imagina una sala con cuatro personas desconocidas y una tarea para el grupo. Según el modelo aproximado de este test, tendrías un {chance}\u00a0% de probabilidades de acabar liderando el grupo. El puro azar daría un 20\u00a0%.",
+      "archetype_label": "Tu arquetipo",
+      "band_label": "Nivel",
+      "traits_title": "Tus 8 rasgos",
+      "traits_note": "Cada barra muestra cómo te sitúas frente a otras personas en ese rasgo.",
+      "trait_value": "{pct}",
+      "trait_value_aria": "{trait}: por encima del {pct}\u00a0% de las personas",
+      "trait_low": "Bajo",
+      "trait_high": "Alto",
+      "strengths_title": "Tus rasgos más fuertes",
+      "growth_title": "Margen de mejora",
+      "strength_relative": "Es uno de los puntos más altos de tu perfil, aunque en este rasgo la mayoría de la gente puntúa por encima de ti.",
+      "growth_relative": "Ya estás por encima de la media. Si aparece aquí, es solo porque tus otros rasgos son aún más altos.",
+      "growth_note": "Nada de esto es inamovible. Los hábitos que hay detrás de cada rasgo se pueden practicar.",
+      "try_this": "Prueba esto",
+      "strengths_list_title": "Puntos fuertes",
+      "watchouts_title": "A tener en cuenta",
+      "motto_label": "Lema",
+      "summary_title": "Qué significa esto",
+      "retake": "Repetir el test",
+      "share_title": "Comparte tu resultado",
+      "science_link": "Cómo se calcula la puntuación",
+      "validity_title": "Puede que este resultado no te refleje",
+      "validity_body": "Aquí tienes tu puntuación, pero no se puede publicar en el ranking. Para obtener un resultado fiable, repite el test y responde a tu ritmo.",
+      "validity_reasons": "Lo que llama la atención:",
+      "shared_kicker": "Resultado compartido",
+      "shared_title": "Alguien comparte contigo su LQ",
+      "shared_headline": "Su LQ es {lq}",
+      "vs_ahead": "Le ganas por {n}",
+      "vs_behind": "Te gana por {n}",
+      "vs_tie": "Empate",
+      "shared_cta": "¿Y el tuyo? Haz el test",
+      "shared_note": "Los resultados compartidos se muestran tal como se enviaron y no están verificados.",
+      "shared_invalid": "Este enlace de resultado no funciona o está desactualizado. Aun así, puedes hacer el test."
+    },
+    "leaderboard": {
+      "title": "Los LQ más altos de la semana",
+      "board_title": "Esta semana",
+      "subtitle": "Los LQ más altos de la semana. El ranking se reinicia cada lunes a medianoche, hora de Nueva York.",
+      "empty": "Aún no hay puntuaciones esta semana. ¡Estrena tú el ranking!",
+      "local": "Ranking de este dispositivo",
+      "resets": "Se reinicia en",
+      "units": { "d": "\u00a0d", "h": "\u00a0h", "m": "\u00a0min" },
+      "you": "tú",
+      "score": "{lq}",
+      "row_meta": "{archetype}",
+      "join_title": "Publica tu puntuación",
+      "name_label": "Apodo",
+      "name_placeholder": "Máx. 16 caracteres",
+      "name_hint": "Será público. No hace falta que uses tu nombre real.",
+      "submit": "Publicar mi LQ",
+      "submitting": "Publicando…",
+      "posted": "Estás en el puesto {rank} del ranking de esta semana.",
+      "posted_best": "¡Nuevo récord personal! Estás en el puesto {rank} esta semana.",
+      "posted_local": "Guardado en este dispositivo: puesto {rank}.",
+      "best_only": "En el ranking solo aparece tu mejor puntuación de cada semana.",
+      "local_hint": "Este ranking solo existe en este dispositivo, así que nadie más lo verá.",
+      "invalid": "Este resultado no se puede publicar porque se detectaron problemas en algunas respuestas.",
+      "view": "Ver el ranking",
+      "personal_best": "Tu mejor marca: LQ {lq}",
+      "loading": "Cargando el ranking…",
+      "unavailable": "El ranking se está tomando un descanso. Vuelve a mirar en un rato."
+    },
+    "share": {
+      "title": "Compartir",
+      "share": "Compartir",
+      "copy": "Copiar enlace",
+      "copied": "Enlace copiado",
+      "download": "Guardar imagen",
+      "more": "Compartir en {label}",
+      "targets": {"email": "correo", "line": "LINE", "naver": "NAVER", "band": "BAND", "weibo": "Weibo", "qzone": "Qzone", "douban": "Douban"},
+      "image_kicker": "TEST LQ",
+      "image_lq": "LQ",
+      "image_pct": "Supera al de cerca del {pct}\u00a0% de la gente",
+      "image_cta": "¿Y el tuyo? hoondy.com/apps/leadership/es",
+      "image_file": "mi-lq.png"
+    },
+    "validity": {
+      "incomplete": "Algunas preguntas quedaron sin responder.",
+      "too_fast": "Terminaste más rápido de lo que se tarda en leer las preguntas.",
+      "attention": "No respondiste bien a la pregunta de comprobación.",
+      "straightline": "La mayoría de tus respuestas fueron iguales.",
+      "inconsistent": "Algunas respuestas se contradicen entre sí.",
+      "acquiescence": "Estuviste de acuerdo (o en desacuerdo) con casi todas las afirmaciones, incluso con las que dicen lo contrario.",
+      "idealized": "Tus respuestas parecen más ideales que reales. La mayoría de la gente reconoce en sí misma una mezcla de puntos fuertes y débiles.",
+      "erratic": "Tus respuestas sobre un mismo rasgo apuntaban en direcciones distintas."
+    },
+    "errors": {
+      "bad_body": "Algo salió mal con tu envío. Vuelve a hacer el test.",
+      "bad_answers": "Algo salió mal con tu envío. Vuelve a hacer el test.",
+      "bad_lang": "Algo salió mal con tu envío. Vuelve a hacer el test.",
+      "bad_duration": "Algo salió mal con tu envío. Vuelve a hacer el test.",
+      "too_fast": "Este resultado se completó demasiado rápido para poder publicarse.",
+      "attention": "La pregunta de comprobación no se respondió bien, así que este resultado no se puede publicar.",
+      "straightline": "Hay demasiadas respuestas idénticas para publicar este resultado.",
+      "acquiescence": "Hay demasiadas respuestas contradictorias para publicar este resultado.",
+      "inconsistent": "Hay demasiadas respuestas contradictorias para publicar este resultado.",
+      "erratic": "Estas respuestas parecen aleatorias, así que el resultado no se puede publicar.",
+      "idealized": "Demasiado perfecto para ser verdad. Este resultado no se puede publicar.",
+      "invalid": "Este resultado no se puede publicar.",
+      "name": "Elige otro apodo, por favor.",
+      "rate_limited": "Demasiados intentos. Espera unos minutos.",
+      "too_many_names": "Desde esta red ya hay tres nombres en el ranking de esta semana. Publica con uno de ellos o vuelve a intentarlo la próxima semana.",
+      "network": "No pudimos conectar con el ranking. Revisa tu conexión e inténtalo de nuevo.",
+      "unknown": "Algo salió mal. Inténtalo de nuevo."
+    },
+    "common": {
+      "close": "Cerrar",
+      "try_again": "Reintentar",
+      "loading": "Cargando…",
+      "or": "o"
+    },
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "简体中文"
+    },
+    "disclaimer": "Solo con fines educativos y de entretenimiento. El Test LQ no es una herramienta de contratación, de ascensos, clínica ni diagnóstica, y no debe usarse para tomar decisiones sobre nadie."
+  },
+  "scale": {
+    "labels": ["Totalmente en desacuerdo", "En desacuerdo", "Ni de acuerdo ni en desacuerdo", "De acuerdo", "Totalmente de acuerdo"],
+    "low": "En desacuerdo",
+    "high": "De acuerdo"
+  },
+  "items": {
+    "drive_1": "Tomo el mando cuando un grupo necesita dirección.",
+    "drive_2": "Espero a que otras personas marquen el camino.",
+    "drive_3": "Intento influir en las decisiones de mi grupo.",
+    "drive_4": "Sé convencer a la gente de que pruebe mis ideas.",
+    "drive_5": "En las conversaciones en grupo, me guardo mi opinión.",
+    "presence_1": "Me siento a gusto con personas que acabo de conocer.",
+    "presence_2": "En grupo, me quedo en segundo plano.",
+    "presence_3": "Inicio conversaciones con personas desconocidas.",
+    "presence_4": "Con la gente que no conozco bien, hablo poco.",
+    "presence_5": "Evito ser el centro de atención.",
+    "dependability_1": "Termino lo que empiezo.",
+    "dependability_2": "Hago solo lo justo para salir del paso.",
+    "dependability_3": "Cumplo mis promesas, incluso cuando no me conviene.",
+    "dependability_4": "Empiezo a planificar mi trabajo mucho antes de la fecha de entrega.",
+    "dependability_5": "Necesito un empujón para empezar mis tareas.",
+    "composure_1": "Mantengo la calma bajo presión.",
+    "composure_2": "Me estreso con facilidad.",
+    "composure_3": "Me recupero rápidamente de los contratiempos.",
+    "composure_4": "Entro en pánico cuando las cosas salen mal.",
+    "composure_5": "A menudo siento ansiedad.",
+    "vision_1": "Me gusta imaginar cómo podrían hacerse las cosas de otra manera.",
+    "vision_2": "Prefiero quedarme con lo que ya conozco.",
+    "vision_3": "Disfruto resolviendo problemas complejos.",
+    "vision_4": "Me gusta pensar en el futuro a largo plazo.",
+    "vision_5": "Los cambios me incomodan.",
+    "empathy_1": "Noto cómo se sienten las personas sin que me lo digan.",
+    "empathy_2": "Me cuesta ver las cosas desde el punto de vista de otras personas.",
+    "empathy_3": "Hago que la gente se sienta a gusto.",
+    "empathy_4": "Digo cosas que hieren a la gente sin querer.",
+    "empathy_5": "Pierdo la paciencia cuando la gente me cuenta sus problemas.",
+    "motivation_1": "Me gusta más liderar que seguir a otras personas.",
+    "motivation_2": "Prefiero seguir a otras personas antes que liderar.",
+    "motivation_3": "Me veo en un rol de liderazgo en el futuro.",
+    "motivation_4": "Cuando nadie se ofrece a liderar, siento que debo dar un paso al frente.",
+    "motivation_5": "Evito los roles en los que soy responsable del trabajo de otras personas.",
+    "decisiveness_1": "Soy capaz de tomar decisiones difíciles con rapidez.",
+    "decisiveness_2": "Pospongo las decisiones importantes.",
+    "decisiveness_3": "Me siento capaz de liderar bien un equipo.",
+    "decisiveness_4": "Me cuesta decidirme entre varias opciones.",
+    "decisiveness_5": "Dudo de mi capacidad para liderar a otras personas."
+  },
+  "attention": {
+    "check_1": "Esta es una pregunta de control para comprobar que estás leyendo. Selecciona “{label}”."
+  },
+  "sjt": {
+    "sjt_1": {
+      "title": "El viaje en grupo",
+      "stem": "Acordaste con cinco amistades hacer un viaje de fin de semana. Dos semanas después, no hay nada reservado y el chat del grupo está en silencio.",
+      "options": [
+        "Esperar. Ya lo organizará alguien con más interés en el viaje.",
+        "Escribir en el chat para preguntar si todavía quieren ir.",
+        "Proponer dos fechas y un presupuesto, y pedir que todo el mundo vote a más tardar el viernes.",
+        "Reservarlo todo por tu cuenta y mandar a cada persona lo que le toca pagar."
+      ]
+    },
+    "sjt_2": {
+      "title": "Sin rumbo en la noche",
+      "stem": "Durante un ejercicio de entrenamiento nocturno, el GPS de tu equipo deja de funcionar. La gente empieza a discutir sobre la ruta y la persona al mando parece dudar.",
+      "options": [
+        "Decir en voz alta que el equipo está perdido por culpa de una mala planificación.",
+        "Proponer con calma una pausa de dos minutos para revisar el mapa en grupo y acordar una ruta.",
+        "Tomar el control y decirle a todo el mundo por dónde ir.",
+        "Guardar silencio y hacer lo que decida la persona al mando."
+      ]
+    },
+    "sjt_3": {
+      "title": "Silencio en el equipo",
+      "stem": "Una persona de tu equipo que suele ser de fiar ha incumplido dos plazos este mes y parece distante. El proyecto común va con retraso.",
+      "options": [
+        "Informar de inmediato a tu superior sobre los plazos incumplidos.",
+        "Sacar el tema de los plazos incumplidos en la próxima reunión de equipo.",
+        "Hacer tú su parte, sin decir nada, para que el proyecto no se retrase.",
+        "Hablar en privado con esa persona, preguntarle cómo está y acordar un plan en conjunto."
+      ]
+    },
+    "sjt_4": {
+      "title": "Una decisión para hoy",
+      "stem": "Diriges un proyecto pequeño y tienes que elegir entre dos proveedores antes de que termine el día. Tienes alrededor del 70\u00a0% de la información que te gustaría tener.",
+      "options": [
+        "Decidir lo mejor posible con lo que sabes, explicar por qué y fijar una fecha para revisarlo.",
+        "Pedir más tiempo y seguir investigando hasta tenerlo claro.",
+        "Someterlo a votación en el equipo y hacer lo que decida la mayoría.",
+        "Elegir el proveedor más barato para que nadie pueda cuestionar el precio."
+      ]
+    },
+    "sjt_5": {
+      "title": "Limpieza del parque",
+      "stem": "Tu barrio necesita a alguien que organice la limpieza anual del parque. Es un trabajo voluntario, sin paga, y te llevará varias tardes.",
+      "options": [
+        "No decir nada. Tienes mucho que hacer y ya lo hará otra persona.",
+        "Ofrecerte para organizarla y pedir ayuda a algunas personas del barrio.",
+        "Ofrecer tu ayuda, pero solo si otra persona está al mando.",
+        "Ofrecerte, con la idea de hacer tú la mayor parte del trabajo para que quede bien hecho."
+      ]
+    },
+    "sjt_6": {
+      "title": "Una forma mejor",
+      "stem": "Tu equipo lleva años usando el mismo proceso y funciona lo bastante bien. Encuentras un método nuevo que podría ahorrar horas cada semana, pero cambiar cuesta esfuerzo y algunas personas se muestran escépticas.",
+      "options": [
+        "Redactar una propuesta detallada y enviársela a tu superior.",
+        "Implantar el nuevo método en el equipo de inmediato, porque sabes que es mejor.",
+        "Dejar las cosas como están. Funciona lo bastante bien.",
+        "Hacer una prueba piloto con quien se ofrezca, compartir los resultados y luego decidir en equipo."
+      ]
+    },
+    "sjt_7": {
+      "title": "Con retraso",
+      "stem": "Le prometiste a tu equipo un informe para el viernes. El miércoles te das cuenta de que te va a llevar más tiempo del que esperabas.",
+      "options": [
+        "Avisar ahora al equipo, explicar por qué y proponer otra fecha o una primera versión más breve.",
+        "Entregar el viernes lo que tengas sin mencionar lo que falta.",
+        "Esperar al viernes para ver hasta dónde llegas y entonces dar explicaciones.",
+        "Quedarte trabajando hasta tarde cada noche y confiar en terminar a tiempo."
+      ]
+    },
+    "sjt_8": {
+      "title": "Primer día",
+      "stem": "Te incorporas a un equipo nuevo en el que no conoces a nadie. En la primera reunión, la gente habla sobre todo entre sí.",
+      "options": [
+        "Escuchar en silencio y esperar a que la gente se acerque a ti.",
+        "Irte temprano. Más adelante será más fácil conocer a cada persona por separado.",
+        "Presentarte a algunas personas y preguntarles por su trabajo.",
+        "Dar al grupo un resumen detallado de tu experiencia para que sepa de lo que eres capaz."
+      ]
+    }
+  },
+  "dimensions": {
+    "drive": {
+      "name": "Empuje",
+      "tagline": "Tomar el mando y marcar el ritmo",
+      "high": "Das un paso al frente cuando un grupo necesita dirección, dices lo que piensas y conviertes las ideas en acción. Cuando estás en la sala, se nota.",
+      "low": "Sueles dejar que otras personas lleven el timón y te guardas tu opinión hasta que te la piden. Puede que tus ideas sean buenas; el problema es que no siempre se oyen.",
+      "tip": "En tu próxima reunión, adelántate y propón el siguiente paso, aunque sea pequeño."
+    },
+    "presence": {
+      "name": "Presencia",
+      "tagline": "Energía y soltura con la gente",
+      "high": "Te sientes a gusto con gente nueva y frente a un grupo. Esa soltura hace que otras personas quieran seguirte.",
+      "low": "Recargas energía a solas y prefieres conversar con una persona a la vez antes que con una multitud. Es algo frecuente entre grandes líderes: planifican sus momentos de mayor visibilidad.",
+      "tip": "En tu próximo encuentro social, preséntate a dos personas que no conozcas."
+    },
+    "dependability": {
+      "name": "Fiabilidad",
+      "tagline": "Cumplir lo prometido y predicar con el ejemplo",
+      "high": "Cumples tus promesas, te anticipas y terminas lo que empiezas. La gente te confía lo importante.",
+      "low": "Trabajas a rachas y a veces dejas cosas a medias. El liderazgo se mide por lo que se logra, así que vale la pena pulir esto.",
+      "tip": "Anota todas las promesas que hagas esta semana y cúmplelas una a una."
+    },
+    "composure": {
+      "name": "Serenidad",
+      "tagline": "Mantener la calma bajo presión",
+      "high": "Mantienes la calma cuando las cosas salen mal y te recuperas rápido. En momentos de estrés, la gente se fija en ti para saber cómo reaccionar.",
+      "low": "La presión te afecta más que a la mayoría de la gente, y quienes te rodean lo notan. La serenidad se puede entrenar, y es una de las señales más visibles de liderazgo.",
+      "tip": "Cuando algo salga mal, respira hondo una vez antes de hablar."
+    },
+    "vision": {
+      "name": "Visión",
+      "tagline": "Curiosidad y mirada amplia",
+      "high": "Te atraen las ideas nuevas, los problemas difíciles y la mirada a largo plazo, y sabes imaginar hacia dónde deberían ir las cosas.",
+      "low": "Prefieres el camino conocido y la tarea que tienes delante. Eso mantiene las cosas en marcha; liderar un cambio te exigirá mirar más lejos.",
+      "tip": "Una vez por semana, plantea esta pregunta: ¿qué haríamos distinto si empezáramos hoy de cero?"
+    },
+    "empathy": {
+      "name": "Empatía",
+      "tagline": "Leer a las personas y hacer que se sientan escuchadas",
+      "high": "Captas cómo se sienten las personas y las ayudas a relajarse. Así se construye la confianza que convierte a un grupo en un equipo.",
+      "low": "Te centras más en la tarea que en las emociones, y tu franqueza puede restarte simpatías. Este rasgo importa más para liderar bien que para destacar.",
+      "tip": "En tu próxima conversación, haz una pregunta más antes de dar tu opinión."
+    },
+    "motivation": {
+      "name": "Motivación para liderar",
+      "short": "Motivación",
+      "tagline": "Querer el rol y la responsabilidad que implica",
+      "high": "Quieres liderar y sientes el deber de dar un paso al frente. A menudo, la motivación es lo que convierte el potencial en un rol de liderazgo real.",
+      "low": "Estar al mando no te atrae especialmente. No tiene nada de malo, y aun así puedes liderar cuando el momento lo pida.",
+      "tip": "Este mes, ofrécete a liderar algo pequeño: una reunión, un viaje o un proyecto."
+    },
+    "decisiveness": {
+      "name": "Decisión",
+      "tagline": "Seguridad para decidir",
+      "high": "Tomas decisiones sin titubear y confías en tu capacidad para liderar. Con alguien como tú, los equipos avanzan más rápido.",
+      "low": "Le das muchas vueltas a las opciones y puedes llegar a dudar de ti. Una buena decisión a tiempo suele valer más que una perfecta demasiado tarde.",
+      "tip": "Para las decisiones pequeñas, date dos minutos; luego elige y sigue adelante."
+    }
+  },
+  "archetypes": {
+    "commander": {
+      "name": "Comandante",
+      "tagline": "Toma el mando cuando más importa.",
+      "summary": "Lideras desde la primera línea. Cuando una situación es confusa o urgente, tomas la decisión, asumes la responsabilidad y esperas que el resto se ponga en marcha. Los equipos bajo presión agradecen tenerte cerca.",
+      "strengths": ["Decide rápido bajo presión", "Asume los resultados como propios", "Da al grupo una dirección clara"],
+      "watchouts": ["Puede acallar las voces más discretas", "Puede decidir antes de conocer toda la historia"],
+      "motto": "Toma la decisión. Asume el resultado."
+    },
+    "visionary": {
+      "name": "Vanguardista",
+      "tagline": "Ve la próxima estación antes que nadie.",
+      "summary": "Lideras con ideas. Ves hacia dónde podrían ir las cosas y tienes el empuje necesario para llevar a la gente hasta allí. Das lo mejor de ti cuando un equipo necesita un nuevo rumbo.",
+      "strengths": ["Transmite una imagen clara del futuro", "Ve oportunidades que a otras personas se les escapan", "Entusiasma a la gente con el cambio"],
+      "watchouts": ["Puede perder el interés por los detalles", "Puede pasar a otra cosa antes de rematar la idea anterior"],
+      "motto": "Construye lo que viene."
+    },
+    "connector": {
+      "name": "Puente",
+      "tagline": "Convierte una multitud en un equipo.",
+      "summary": "Lideras a través de las personas. Sabes leer el ambiente, haces que todo el mundo se sienta parte del grupo y tejes redes que hacen que las cosas salgan adelante. La gente te sigue porque le gusta estar a tu lado.",
+      "strengths": ["Genera confianza enseguida", "Une a personas muy distintas", "Mantiene la moral alta"],
+      "watchouts": ["Puede evitar conversaciones difíciles para mantener la paz", "Le puede costar tomar decisiones impopulares"],
+      "motto": "Que nadie se quede en el andén."
+    },
+    "anchor": {
+      "name": "Ancla",
+      "tagline": "Firme cuando todo lo demás tiembla.",
+      "summary": "Lideras siendo de fiar. Mantienes la calma, cumples tu palabra y te aseguras de que el trabajo se haga de verdad. Cuando algo sale mal, todas las miradas se dirigen a ti.",
+      "strengths": ["Mantiene la calma en una crisis", "Cumple lo que promete", "Marca estándares exigentes"],
+      "watchouts": ["Puede resistirse a cambios que parecen arriesgados", "Tal vez no defienda lo bastante sus propias ideas"],
+      "motto": "Mano firme, siempre."
+    },
+    "catalyst": {
+      "name": "Chispa",
+      "tagline": "Pone en marcha todo el tren.",
+      "summary": "Lideras con energía. Te encanta poner a la gente en movimiento, tienes ganas de tomar la iniciativa y tu entusiasmo se propaga. Eres la chispa que necesita un grupo estancado.",
+      "strengths": ["Moviliza a la gente rápidamente", "Da un paso al frente con ganas", "Hace que las ideas entusiasmen"],
+      "watchouts": ["Puede empezar más cosas de las que termina", "Puede pasar por alto los detalles menos visibles"],
+      "motto": "La energía se contagia."
+    },
+    "strategist": {
+      "name": "Estratega",
+      "tagline": "Siempre va tres estaciones por delante.",
+      "summary": "Lideras con la cabeza. Ves la partida a largo plazo, planificas con cuidado y mantienes la sangre fría mientras el resto reacciona. Quizá no seas quien más se hace oír en la sala, pero tu plan suele ser el que funciona.",
+      "strengths": ["Planifica a largo plazo", "Resuelve problemas complejos", "Mantiene la objetividad bajo presión"],
+      "watchouts": ["Puede guardarse buenas ideas", "Puede parecer distante a quien busca más cercanía"],
+      "motto": "Primero piensa, después lidera."
+    },
+    "coach": {
+      "name": "Guía",
+      "tagline": "Lidera haciendo crecer a su gente.",
+      "summary": "Lideras desarrollando a las personas. Escuchas, notas lo que necesita cada persona y te sientes responsable de que crezca. Los equipos que trabajan contigo mejoran con el tiempo.",
+      "strengths": ["Sabe escuchar", "Ayuda a otras personas a crecer", "Se gana la lealtad y la confianza"],
+      "watchouts": ["Le puede costar exigir mucho a la gente", "Puede cargar con problemas ajenos como si fueran suyos"],
+      "motto": "Tu éxito es mi éxito."
+    },
+    "maverick": {
+      "name": "Inconformista",
+      "tagline": "Va por su propia vía.",
+      "summary": "Piensas y decides por tu cuenta. Estar al mando no es tu objetivo, pero cuando algo te importa, actúas rápido y aportas una mirada fresca. Cuando llevas la contraria, el grupo lo nota.",
+      "strengths": ["Piensa con independencia", "Toma decisiones audaces", "Cuestiona la forma habitual de hacer las cosas"],
+      "watchouts": ["Puede dar la impresión de que el grupo no le interesa", "Puede actuar por su cuenta cuando un equipo lo haría mejor"],
+      "motto": "Traza tu propia ruta."
+    },
+    "allrounder": {
+      "name": "Todoterreno",
+      "tagline": "Un poco de cada línea.",
+      "summary": "Tus rasgos están a un nivel parecido: ninguno queda muy por encima ni muy por debajo de los demás. Ese equilibrio te permite adaptar tu estilo a lo que pida el momento, ya sea tomar el mando, escuchar o planificar con antelación.",
+      "strengths": ["Se adapta a situaciones distintas", "Ningún rasgo desentona con el resto", "Flexible a la hora de elegir qué papel asumir"],
+      "watchouts": ["Puede faltarle un punto fuerte distintivo que la gente recuerde", "Puede dispersarse en demasiadas direcciones"],
+      "motto": "El estilo justo en el momento justo."
+    }
+  },
+  "bands": {
+    "exceptional": { "label": "Excepcional", "line": "Expreso a la cima", "range": "130 o más" },
+    "strong": { "label": "Alto", "line": "Servicio expreso", "range": "115–129" },
+    "solid": { "label": "Sólido", "line": "Sin retrasos", "range": "100–114" },
+    "emerging": { "label": "En desarrollo", "line": "Ganando velocidad", "range": "85–99" },
+    "untapped": { "label": "Por descubrir", "line": "Aún en el andén", "range": "Menos de 85" }
+  },
+  "templates": {
+    "headline": "Tu LQ es {lq}",
+    "percentile": "Supera al de cerca del {pct}\u00a0% de la gente",
+    "archetype": "Tu arquetipo: {archetype}",
+    "summary": "Con un LQ de {lq}, puntúas más alto que alrededor del {pct}\u00a0% de la gente. Tu estilo se acerca más al arquetipo {archetype}.",
+    "strengths": "Tus rasgos más fuertes: {list}.",
+    "growth": "Donde más margen tienes para crecer: {list}.",
+    "list_separator": ", ",
+    "list_last_separator": " y ",
+    "rank": "Puesto {rank} esta semana",
+    "document_title": "LQ {lq} · {archetype} · Test LQ"
+  },
+  "share_text": {
+    "title": "Test LQ: ¿cuál es tu cociente de liderazgo?",
+    "default": "Mi LQ es {lq} y supera al de cerca del {pct}\u00a0% de la gente. ¿Y el tuyo?",
+    "archetype": "Mi arquetipo de líder es {archetype}, con un LQ de {lq}. Descubre en 7 minutos qué tipo de líder eres:",
+    "challenge": "LQ {lq}. ¿Crees que lideras mejor? Demuéstralo:",
+    "leaderboard": "Estoy en el puesto {rank} del ranking LQ de esta semana, con {lq} puntos. Te toca.",
+    "invite": "¿Cuál es tu cociente de liderazgo? 49 preguntas, 7 minutos, un solo número.",
+    "email_subject": "Mi LQ es {lq}. ¿Y el tuyo?",
+    "hashtag": "LQTest"
+  },
+  "science": {
+    "title": "La ciencia detrás del LQ",
+    "intro": "El Test LQ es un cuestionario de personalidad breve, basado en décadas de investigación sobre quién acaba liderando y quién lidera bien. Abajo verás cómo se calcula la puntuación y cuáles son sus limitaciones.",
+    "sections": [
+      {
+        "id": "how",
+        "heading": "Cómo se calcula tu LQ",
+        "paragraphs": [
+          "Respondes a 40 afirmaciones sobre ti y a 8 situaciones breves. La mitad de las afirmaciones van en sentido contrario (por ejemplo, “Espero a que otras personas marquen el camino”), así que estar de acuerdo con todo no sube tu puntuación.",
+          "Cada uno de los 8 rasgos recibe una puntuación a partir de sus 5 afirmaciones y de 1 situación. Esa puntuación se compara con unos datos normativos provisionales (ver más abajo) y se convierte en un percentil.",
+          "Después, los rasgos se combinan con pesos que siguen la investigación: los rasgos más relacionados con el liderazgo, como el empuje y la motivación para liderar, cuentan más que los que tienen una relación más débil, como la empatía. Los pesos son sencillos a propósito, porque los pesos simples suelen sostenerse mejor al aplicarse a personas nuevas que los muy ajustados (Dawes, 1979). Como los rasgos están relacionados entre sí (van der Linden et al., 2010), la puntuación combinada se reescala para que, igual que con el CI, la media sea 100 y alrededor de dos de cada tres personas queden entre 85 y 115. Las puntuaciones van de 55 a 145.",
+          "Tu percentil es el porcentaje de personas que, previsiblemente, puntuarían por debajo de ti. La cifra del “grupo de 5” sale de un modelo estadístico sencillo que supone que tu LQ guarda una relación moderada con quién acaba liderando un grupo (una correlación de 0,35, deliberadamente más baja que la que indican los grandes estudios). Tómala solo como una ilustración aproximada."
+        ]
+      },
+      {
+        "id": "research",
+        "heading": "La investigación detrás de los 8 rasgos",
+        "paragraphs": [
+          "Durante buena parte del siglo XX, en la comunidad científica abundaban las dudas sobre si la personalidad tenía mucho que ver con el liderazgo. Una influyente revisión de Ralph Stogdill (1948) concluyó que una persona que lidera en una situación puede no hacerlo en otra. Los reanálisis posteriores de ese mismo tipo de estudios, empezando por el de Lord, De Vader y Alliger (1986), encontraron vínculos más fuertes y consistentes de lo que se creía.",
+          "Los estudios que hacen rotar a las personas por distintos grupos y tareas muestran que suelen ser las mismas quienes surgen como líderes una y otra vez. En un reanálisis, entre el 49\u00a0% y el 82\u00a0% de las diferencias en quién surgía como líder se debían a la persona y no a la situación (Kenny y Zaccaro, 1983; Zaccaro, 2007).",
+          "El metaanálisis de referencia de Judge, Bono, Ilies y Gerhardt (2002) reunió 222 correlaciones de 73 muestras. La extraversión (0,31), la responsabilidad (0,28), la apertura (0,24) y la estabilidad emocional (0,24) predecían el liderazgo. La amabilidad apenas lo hacía en conjunto (0,08), aunque importaba más para liderar con eficacia (0,21) que para surgir como líder (0,05). Juntos, los cinco rasgos predecían quién surgía como líder con una correlación múltiple de 0,53.",
+          "Trabajos posteriores afinaron el análisis. El vínculo de la extraversión con el liderazgo se debe sobre todo a su faceta asertiva, la de tomar el mando, más que a la sociable (Do y Minbashian, 2014). Una revisión de 25 diferencias individuales y su relación con la eficacia del liderazgo encontró que, entre las características de tipo rasgo, la más relacionada era el carisma (0,57), seguido de la dominancia (0,35), la creatividad (0,31), la energía (0,29), la integridad (0,29), la motivación de logro (0,28) y la autoconfianza (0,24); entre las habilidades, la más relacionada era la toma de decisiones (0,52) (Hoffman et al., 2011).",
+          "Querer liderar también importa. Las personas que disfrutan liderando, y que sienten el deber de dar un paso al frente, tienen más probabilidades de surgir como líderes y de desempeñar bien ese papel (Chan y Drasgow, 2001; Badura et al., 2020). La confianza de cadetes militares en su propia capacidad para liderar predijo la evaluación que recibieron en un programa de verano de formación en liderazgo del Ejército de Estados Unidos (Chemers, Watson y May, 2000). Y la autoobservación, el hábito de leer una situación social y adaptarse a ella, está vinculada con surgir como líder (Day et al., 2002)."
+        ]
+      },
+      {
+        "id": "history",
+        "heading": "Breve historia, con acento militar",
+        "paragraphs": [
+          "Buena parte de esta investigación la pagaron fuerzas armadas que necesitaban elegir líderes rápido y bien. Los Estudios de Liderazgo de la Universidad Estatal de Ohio, iniciados en 1945, llevaron a cabo una serie de estudios sobre el liderazgo naval por contrato con la Oficina de Investigación Naval de Estados Unidos, y una versión para la Fuerza Aérea de su cuestionario de conducta del líder se elaboró a partir de las descripciones que las tripulaciones de bombarderos hacían de sus comandantes de aeronave (Shartle, 1979; Stogdill y Coons, 1957).",
+          "El concepto de “motivación para liderar” se desarrolló con 1594 reclutas militares de Singapur, además de dos muestras de estudiantes (Chan y Drasgow, 2001). El Instituto de Investigación del Ejército de Estados Unidos desarrolló pruebas de personalidad para nuevos soldados: primero la Assessment of Individual Motivation y después el Tailored Adaptive Personality Assessment System, que el Ejército utiliza desde 2009 para filtrar a los reclutas según su riesgo de abandono y su desempeño previsto (Kirkendall et al., 2020)."
+        ]
+      },
+      {
+        "id": "limits",
+        "heading": "Lo que tu LQ puede y no puede decirte",
+        "paragraphs": [
+          "Puede resumir hasta qué punto tu forma de describirte coincide con los rasgos que, en promedio, acompañan al surgimiento de líderes y a un liderazgo percibido como eficaz. Eso lo hace útil para reflexionar: en qué fortalezas apoyarte y qué hábitos desarrollar.",
+          "No puede decirte si liderarás bien. Que te elijan para liderar y liderar bien son cosas distintas (Hogan y Kaiser, 2005). Algunos rasgos que ayudan a destacar, como el narcisismo, no hacen a nadie más eficaz (Grijalva et al., 2015), y el exceso de asertividad puede perjudicar tanto como su falta (Ames y Flynn, 2007). Las habilidades, la experiencia, la inteligencia, los valores y la situación también importan, y nada de eso se mide aquí.",
+          "Los autoinformes son fáciles de inflar. El test comprueba la atención, la coherencia y la velocidad, pero quien se empeñe en quedar bien puede lograrlo. Tómate los primeros puestos del ranking con una sonrisa.",
+          "Los datos normativos son provisionales. Son estimaciones basadas en estadísticas típicas de ítems de personalidad de dominio público, no en personas que hayan hecho este test, así que toma cada percentil como una referencia aproximada. Este sitio no recoge respuestas anónimas; si eso cambia algún día, la política de privacidad lo dirá antes.",
+          "Las personas de distintas culturas se describen de maneras diferentes. En algunas se tiende a responder con más modestia o más cerca del centro de la escala, así que lo mejor es comparar los LQ dentro de una misma versión lingüística del test.",
+          "Una puntuación baja no es un veredicto. Muchas de las habilidades que convierten los rasgos en un liderazgo eficaz se pueden aprender (Zaccaro, 2007)."
+        ]
+      },
+      {
+        "id": "items",
+        "heading": "Sobre las preguntas",
+        "paragraphs": [
+          "La mayoría de las afirmaciones están adaptadas del International Personality Item Pool, un banco de ítems de personalidad de dominio público que se usa en investigación en todo el mundo (Goldberg et al., 2006). El resto, y todas las situaciones, se escribieron para este test. Ningún ítem procede de tests comerciales.",
+          "Las respuestas a las situaciones se puntúan según cuánto se acercan a la conducta de liderazgo que la investigación describe como eficaz. Los tests bien construidos con situaciones como estas predicen por sí mismos el desempeño laboral (McDaniel et al., 2001); las ocho de este test son breves y no se han validado por separado.",
+          "Algunas afirmaciones están emparejadas con su contraria y aparecen muy separadas en el test, y una pregunta te pide elegir una respuesta concreta. Junto con el tiempo que tardas, estas comprobaciones detectan las respuestas apresuradas, aleatorias o contradictorias."
+        ]
+      }
+    ],
+    "faq_title": "Preguntas frecuentes",
+    "faq": [
+      {
+        "q": "¿El LQ es como el CI?",
+        "a": "Solo en la escala: una media de 100 y una desviación estándar de 15. Los tests de CI miden el razonamiento con respuestas correctas e incorrectas. El Test LQ mide rasgos de personalidad, sobre todo a partir de cómo te describes."
+      },
+      {
+        "q": "¿En qué se diferencia del MBTI?",
+        "a": "El MBTI clasifica a las personas en tipos. El Test LQ puntúa los rasgos en una escala continua y les da más o menos peso según la fuerza con que la investigación relaciona cada uno con el liderazgo. Tu arquetipo solo pone nombre a la forma general de tu perfil."
+      },
+      {
+        "q": "¿Por qué algunas preguntas parecían repetidas?",
+        "a": "Algunas afirmaciones están emparejadas a propósito con su contraria, muy separadas en el test. Así es fácil detectar respuestas aleatorias o descuidadas."
+      },
+      {
+        "q": "¿Puedo subir mi LQ?",
+        "a": "Los rasgos son bastante estables, pero la conducta no. Practicar los hábitos que hay detrás de cada rasgo, como dar tu opinión, cumplir lo que prometes y mantener la calma, cambia tu forma de actuar y, con el tiempo, cómo te ves."
+      },
+      {
+        "q": "¿Por qué mi resultado aparece marcado como dudoso?",
+        "a": "Los resultados se marcan como dudosos cuando las respuestas parecen apresuradas, aleatorias, contradictorias o demasiado perfectas. Aun así, ves tu puntuación, pero no se publica en el ranking."
+      },
+      {
+        "q": "¿Qué pasa con mis respuestas?",
+        "a": "Se puntúan en tu navegador. Si publicas en el ranking semanal, tus respuestas se envían una vez para que el servidor pueda verificar la puntuación, y el ranking muestra tu apodo, tu LQ, tu arquetipo y tu país. Consulta la política de privacidad para más detalles."
+      }
+    ],
+    "disclaimer_title": "Aviso",
+    "disclaimer": "El Test LQ tiene fines educativos y de entretenimiento. No se ha contrastado con resultados reales de liderazgo. No es una herramienta de contratación, de ascensos, clínica ni diagnóstica, y no debe usarse para tomar decisiones sobre nadie.",
+    "references_title": "Referencias",
+    "references": [
+      "Ames, D. R., & Flynn, F. J. (2007). What breaks a leader: The curvilinear relation between assertiveness and leadership. Journal of Personality and Social Psychology, 92(2), 307–324. https://doi.org/10.1037/0022-3514.92.2.307",
+      "Badura, K. L., Grijalva, E., Galvin, B. M., Owens, B. P., & Joseph, D. L. (2020). Motivation to lead: A meta-analysis and distal-proximal model of motivation and leadership. Journal of Applied Psychology, 105(4), 331–354. https://doi.org/10.1037/apl0000439",
+      "Chan, K.-Y., & Drasgow, F. (2001). Toward a theory of individual differences and leadership: Understanding the motivation to lead. Journal of Applied Psychology, 86(3), 481–498. https://doi.org/10.1037/0021-9010.86.3.481",
+      "Chemers, M. M., Watson, C. B., & May, S. T. (2000). Dispositional affect and leadership effectiveness: A comparison of self-esteem, optimism, and efficacy. Personality and Social Psychology Bulletin, 26(3), 267–277. https://doi.org/10.1177/0146167200265001",
+      "Dawes, R. M. (1979). The robust beauty of improper linear models in decision making. American Psychologist, 34(7), 571–582. https://doi.org/10.1037/0003-066X.34.7.571",
+      "Day, D. V., Schleicher, D. J., Unckless, A. L., & Hiller, N. J. (2002). Self-monitoring personality at work: A meta-analytic investigation of construct validity. Journal of Applied Psychology, 87(2), 390–401. https://doi.org/10.1037/0021-9010.87.2.390",
+      "Do, M. H., & Minbashian, A. (2014). A meta-analytic examination of the effects of the agentic and affiliative aspects of extraversion on leadership outcomes. The Leadership Quarterly, 25(5), 1040–1053. https://doi.org/10.1016/j.leaqua.2014.04.004",
+      "Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40(1), 84–96. https://doi.org/10.1016/j.jrp.2005.08.007",
+      "Grijalva, E., Harms, P. D., Newman, D. A., Gaddis, B. H., & Fraley, R. C. (2015). Narcissism and leadership: A meta-analytic review of linear and nonlinear relationships. Personnel Psychology, 68(1), 1–47. https://doi.org/10.1111/peps.12072",
+      "Hoffman, B. J., Woehr, D. J., Maldagen-Youngjohn, R., & Lyons, B. D. (2011). Great man or great myth? A quantitative review of the relationship between individual differences and leader effectiveness. Journal of Occupational and Organizational Psychology, 84(2), 347–381. https://doi.org/10.1348/096317909X485207",
+      "Hogan, R., & Kaiser, R. B. (2005). What we know about leadership. Review of General Psychology, 9(2), 169–180. https://doi.org/10.1037/1089-2680.9.2.169",
+      "Judge, T. A., Bono, J. E., Ilies, R., & Gerhardt, M. W. (2002). Personality and leadership: A qualitative and quantitative review. Journal of Applied Psychology, 87(4), 765–780. https://doi.org/10.1037/0021-9010.87.4.765",
+      "Kenny, D. A., & Zaccaro, S. J. (1983). An estimate of variance due to traits in leadership. Journal of Applied Psychology, 68(4), 678–685. https://doi.org/10.1037/0021-9010.68.4.678",
+      "Kirkendall, C., Bynum, B., Nesbitt, C., & Hughes, M. (2020). Validation of the TAPAS for predicting in-unit soldier outcomes. Military Psychology, 32(1), 24–35. https://doi.org/10.1080/08995605.2019.1652484",
+      "Lord, R. G., De Vader, C. L., & Alliger, G. M. (1986). A meta-analysis of the relation between personality traits and leadership perceptions: An application of validity generalization procedures. Journal of Applied Psychology, 71(3), 402–410. https://doi.org/10.1037/0021-9010.71.3.402",
+      "McDaniel, M. A., Morgeson, F. P., Finnegan, E. B., Campion, M. A., & Braverman, E. P. (2001). Use of situational judgment tests to predict job performance: A clarification of the literature. Journal of Applied Psychology, 86(4), 730–740. https://doi.org/10.1037/0021-9010.86.4.730",
+      "Shartle, C. L. (1979). Early years of the Ohio State University leadership studies. Journal of Management, 5(2), 127–134. https://doi.org/10.1177/014920637900500203",
+      "Stogdill, R. M. (1948). Personal factors associated with leadership: A survey of the literature. The Journal of Psychology, 25(1), 35–71. https://doi.org/10.1080/00223980.1948.9917362",
+      "Stogdill, R. M., & Coons, A. E. (Eds.). (1957). Leader behavior: Its description and measurement (Research Monograph No. 88). Ohio State University, Bureau of Business Research.",
+      "van der Linden, D., te Nijenhuis, J., & Bakker, A. B. (2010). The General Factor of Personality: A meta-analysis of Big Five intercorrelations and a criterion-related validity study. Journal of Research in Personality, 44(3), 315–327. https://doi.org/10.1016/j.jrp.2010.03.003",
+      "Zaccaro, S. J. (2007). Trait-based perspectives of leadership. American Psychologist, 62(1), 6–16. https://doi.org/10.1037/0003-066X.62.1.6"
+    ]
+  }
+}
