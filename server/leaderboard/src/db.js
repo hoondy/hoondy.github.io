@@ -1,0 +1,129 @@
+// D1 queries. Board order is best score first; on a tie, whoever got there first wins.
+
+import { HttpError } from './http.js';
+
+async function run(work) {
+  try {
+    return await work();
+  } catch (err) {
+    console.error('d1', err?.message || err);
+    throw new HttpError(503, 'unavailable');
+  }
+}
+
+export function topScores(db, game, week, limit) {
+  return run(async () => {
+    const { results } = await db
+      .prepare(
+        `SELECT id, name, score, country, detail, updated_at AS ts
+           FROM scores
+          WHERE game = ?1 AND week = ?2
+          ORDER BY score DESC, updated_at, id
+          LIMIT ?3`,
+      )
+      .bind(game, week, limit)
+      .all();
+    return results;
+  });
+}
+
+// Keeps the player's best score for the week and returns where that best now stands.
+// `improved` is false when an earlier post this week was at least as good.
+//
+// A network may only start `maxNames` rows per game per week; otherwise one person could take
+// over the whole board under a stream of nicknames. Returns null when this post would have
+// been a row over that cap. The check and the insert are one statement, so racing posts
+// can't slip past it.
+export function saveScore(db, { game, week, client, player, name, score, country, detail, now, maxNames }) {
+  return run(async () => {
+    const [saved, standing] = await db.batch([
+      db
+        .prepare(
+          `INSERT INTO scores (game, week, client, player, name, score, country, detail, created_at, updated_at)
+           SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?9
+            WHERE EXISTS (SELECT 1 FROM scores WHERE game = ?1 AND week = ?2 AND client = ?3 AND player = ?4)
+               OR (SELECT COUNT(*) FROM scores WHERE game = ?1 AND week = ?2 AND client = ?3) < ?10
+           ON CONFLICT (game, week, client, player) DO UPDATE SET
+             name = excluded.name,
+             score = excluded.score,
+             country = excluded.country,
+             detail = excluded.detail,
+             updated_at = excluded.updated_at
+           WHERE excluded.score > scores.score
+           RETURNING id`,
+        )
+        .bind(game, week, client, player, name, score, country, detail, now, maxNames),
+      db
+        .prepare(
+          `SELECT s.id, s.score,
+                  1 + (SELECT COUNT(*) FROM scores b
+                        WHERE b.game = s.game AND b.week = s.week AND b.score > s.score)
+                    + (SELECT COUNT(*) FROM scores b
+                        WHERE b.game = s.game AND b.week = s.week AND b.score = s.score
+                          AND (b.updated_at < s.updated_at OR (b.updated_at = s.updated_at AND b.id < s.id))) AS rank
+             FROM scores s
+            WHERE s.game = ?1 AND s.week = ?2 AND s.client = ?3 AND s.player = ?4`,
+        )
+        .bind(game, week, client, player),
+    ]);
+    const row = standing.results[0];
+    if (!row) return null;
+    return { id: row.id, best: row.score, rank: row.rank, improved: saved.results.length > 0 };
+  });
+}
+
+// Counts a post against the client's sliding window and returns true if it fits under the
+// limit. Posts that are turned away are not counted, so waiting always helps.
+export function takeSlot(db, { client, game, minute, window, limit }) {
+  return run(async () => {
+    const row = await db
+      .prepare(
+        `INSERT INTO hits (client, game, bucket, count)
+         SELECT ?1, ?2, ?3, 1
+          WHERE (SELECT COALESCE(SUM(count), 0) FROM hits
+                  WHERE client = ?1 AND game = ?2 AND bucket > ?3 - ?4) < ?5
+         ON CONFLICT (client, game, bucket) DO UPDATE SET count = count + 1
+         RETURNING count`,
+      )
+      .bind(client, game, minute, window, limit)
+      .first();
+    return row != null;
+  });
+}
+
+// Minutes until enough old posts fall out of the window for one more to fit.
+export function minutesUntilSlot(db, { client, game, minute, window, limit }) {
+  return run(async () => {
+    const { results } = await db
+      .prepare(
+        `SELECT bucket, count FROM hits
+          WHERE client = ?1 AND game = ?2 AND bucket > ?3 - ?4
+          ORDER BY bucket`,
+      )
+      .bind(client, game, minute, window)
+      .all();
+    let used = results.reduce((sum, r) => sum + r.count, 0);
+    for (const r of results) {
+      used -= r.count;
+      if (used < limit) return Math.max(1, r.bucket + window - minute);
+    }
+    return 1;
+  });
+}
+
+// Daily housekeeping: forget rate-limit rows after a day, drop the IP-derived hashes once a
+// week is over (nobody can post to it any more), and delete weeks past the retention period.
+export function cleanup(db, { minute, currentWeek, oldestWeek }) {
+  return run(() =>
+    db.batch([
+      db.prepare('DELETE FROM hits WHERE bucket < ?1').bind(minute - 24 * 60),
+      db
+        .prepare(
+          `UPDATE scores SET client = NULL, player = 'closed:' || id
+            WHERE week < ?1 AND player NOT LIKE 'closed:%'`,
+        )
+        .bind(currentWeek),
+      db.prepare('DELETE FROM scores WHERE week < ?1').bind(oldestWeek),
+    ]),
+  );
+}

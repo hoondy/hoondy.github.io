@@ -1,0 +1,30 @@
+name = "hoondy-leaderboard"
+main = "src/index.js"
+compatibility_date = "2026-09-15"
+workers_dev = true
+
+# Serve the API from your own domain instead of (or as well as) workers.dev. The zone has to
+# be on the same Cloudflare account. Then set leaderboard_api in the site's _config.yml to
+# "https://api.hoondy.com".
+# routes = [{ pattern = "api.hoondy.com", custom_domain = true }]
+
+[vars]
+# Comma-separated list of sites allowed to call the API from a browser. An entry like
+# "http://localhost:*" matches any port. Under `wrangler dev`, localhost pages are always allowed.
+ALLOWED_ORIGINS = "https://hoondy.com,https://www.hoondy.com"
+RATE_LIMIT = "6"            # posts per client per game...
+RATE_WINDOW_MINUTES = "10"  # ...within this many minutes
+NAMES_PER_CLIENT = "3"      # nicknames one network can put on a game's board each week
+RETAIN_WEEKS = "52"         # older weeks are deleted by the daily cleanup
+# IP_SALT is a secret: `npx wrangler secret put IP_SALT` (see README).
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hoondy-leaderboard"
+database_id = "00000000-0000-0000-0000-000000000000" # replace with the id from `wrangler d1 create`
+
+[triggers]
+crons = ["17 6 * * *"] # daily cleanup, a little after 1-2 a.m. New York time
+
+[observability]
+enabled = true

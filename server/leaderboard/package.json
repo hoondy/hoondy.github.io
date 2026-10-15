@@ -1,0 +1,20 @@
+{
+  "name": "hoondy-leaderboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Weekly leaderboards for the apps on hoondy.com (Cloudflare Worker + D1).",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init:local": "wrangler d1 execute hoondy-leaderboard --local --file schema.sql",
+    "db:init:remote": "wrangler d1 execute hoondy-leaderboard --remote --file schema.sql",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4.144.0"
+  }
+}
