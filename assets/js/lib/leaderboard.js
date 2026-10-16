@@ -100,6 +100,7 @@ async function request(path, init) {
   if (!res.ok) {
     const err = new Error(body?.error || `HTTP ${res.status}`);
     err.status = res.status;
+    err.retryAfter = Number(res.headers.get('retry-after')) || 0;
     err.body = body;
     throw err;
   }
@@ -171,7 +172,9 @@ export async function getTop(game, { limit = 20, fresh = false } = {}) {
  * Submit a score. `payload` is game specific; it always has `name`, and either `score`
  * (+ optional `detail`) or the raw data the server re-scores (e.g. `answers` for the
  * leadership test). `localScore` is what to store when no server is configured.
- * @returns {Promise<{ok:boolean, global:boolean, rank?:number, score?:number, period?:string, best?:boolean, error?:string}>}
+ * `best` is true when this post set a new personal best on this device; `serverBest` and `improved`
+ * come from the server. Errors carry the HTTP `status` and, for 429s, `retryAfter` in seconds.
+ * @returns {Promise<{ok:boolean, global:boolean, rank?:number, score?:number, period?:string, best?:boolean, improved?:boolean, serverBest?:number, error?:string, status?:number, retryAfter?:number}>}
  */
 export async function submit(game, payload, { localScore = payload.score, detail = payload.detail } = {}) {
   const name = cleanName(payload.name);
@@ -187,9 +190,9 @@ export async function submit(game, payload, { localScore = payload.score, detail
       if (res.id) addMine(game, res.id);
       clearCache(game);
       const best = rememberBest(game, res.score, detail);
-      return { ok: true, global: true, rank: res.rank, score: res.score, period: res.period, best };
+      return { ok: true, global: true, rank: res.rank, score: res.score, period: res.period, best, improved: res.improved, serverBest: res.best };
     } catch (err) {
-      return { ok: false, global: true, error: err.message || 'unavailable', status: err.status };
+      return { ok: false, global: true, error: err.message || 'unavailable', status: err.status, retryAfter: err.retryAfter };
     }
   }
 

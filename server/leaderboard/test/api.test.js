@@ -10,10 +10,12 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { lqResultBody, rushHourRun } from './fixtures.js';
+import { cpuSelfHitLog, lqResultBody, rushHourRun, scorchedMatch } from './fixtures.js';
 
 const API = (process.env.LB_URL || 'http://127.0.0.1:8787').replace(/\/+$/, '');
 const RUN = Math.random().toString(36).slice(2, 7);
+// Fixture matches start from a fresh seed each run: the board only takes each match once.
+const SEED = 100 + Math.floor(Math.random() * 1_000_000);
 const SITE = 'http://127.0.0.1:4000';
 const PERIOD = /^\d{4}-(0[1-9]|1[0-2])$/;
 const RATE_LIMIT = Number(process.env.LB_RATE_LIMIT || 6);
@@ -57,7 +59,7 @@ const MID = { drive: 3, presence: 3, dependability: 4, composure: 3, vision: 3, 
 test('health check lists the board games', async () => {
   const r = await call('/');
   assert.equal(r.status, 200);
-  assert.deepEqual(r.data.games, ['rush-hour']);
+  assert.deepEqual(r.data.games, ['rush-hour', 'scorched-borough']);
   assert.match(r.data.period, PERIOD);
 });
 
@@ -184,6 +186,85 @@ test('rush hour: the log decides the score', async () => {
   const lied = await post('rush-hour', { name: `Rider${RUN}`, ...run, detail: { ...run.detail, stage: 30 } });
   assert.equal(lied.status, 422);
   assert.equal(lied.data.error, 'detail mismatch');
+
+  // The same ride can't go on the board twice, even under another name.
+  const again = await post('rush-hour', { name: `Rider${RUN}x`, ...run });
+  assert.equal(again.status, 409);
+  assert.deepEqual(again.data, { ok: false, error: 'duplicate' });
+});
+
+test('scorched borough: the server replays the match and scores it', async () => {
+  const body = scorchedMatch({ level: 'hard', seed: SEED });
+  const ok = await post('scorched-borough', { name: `Gunner${RUN}`, ...body });
+  assert.equal(ok.status, 200, JSON.stringify(ok.data));
+  assert.equal(ok.data.ok, true);
+  assert.equal(ok.data.score, body.score);
+  assert.equal(ok.data.name, `Gunner${RUN}`);
+  assert.match(ok.data.period, PERIOD);
+  assert.ok(Number.isInteger(ok.data.rank) && ok.data.rank >= 1);
+
+  const board = await top('scorched-borough', 50);
+  assert.equal(board.status, 200);
+  const row = board.data.entries.find((e) => e.id === ok.data.id);
+  if (row) {
+    assert.equal(row.score, body.score);
+    assert.deepEqual(row.detail, body.detail);
+  }
+  // Boards are kept apart per game.
+  assert.equal((await top('rush-hour', 50)).data.entries.some((e) => e.id === ok.data.id), false);
+
+  // A match goes on the board once, under whatever name it's sent and with whatever timings.
+  const again = await post('scorched-borough', { name: `Gunner${RUN}b`, ...body });
+  assert.equal(again.status, 409);
+  assert.deepEqual(again.data, { ok: false, error: 'duplicate' });
+  const retimed = structuredClone(body);
+  let shots = 0;
+  retimed.log.rounds.forEach((r) => r.shots.forEach((s) => { s[4] += 250; shots++; }));
+  retimed.log.durationMs += 250 * shots + 1000;
+  const late = await post('scorched-borough', { name: `Gunner${RUN}c`, ...retimed });
+  assert.equal(late.status, 409, JSON.stringify(late.data));
+
+  // The page always sends its score, but the server doesn't need it.
+  const other = scorchedMatch({ level: 'hard', seed: SEED + 100 });
+  const bare = await post('scorched-borough', { name: `Gunner${RUN}b`, log: other.log });
+  assert.equal(bare.status, 200, JSON.stringify(bare.data));
+  assert.equal(bare.data.score, other.score);
+});
+
+test('scorched borough: tampered and lost matches are refused', async () => {
+  const body = scorchedMatch({ level: 'normal', seed: SEED + 200 });
+  const name = `Cheat${RUN}`;
+  const tampered = (fn) => {
+    const b = structuredClone(body);
+    fn(b);
+    return b;
+  };
+  const winning = (b) => b.log.rounds.at(-1).shots.findLast((s) => s[0] === 0);
+  const cases = [
+    ['score mismatch', tampered((b) => { b.score += 400; })],
+    ['unfinished', tampered((b) => { winning(b)[1] += winning(b)[1] < 900 ? 250 : -250; })],
+    ['unfinished', tampered((b) => { winning(b)[2] = Math.max(0, winning(b)[2] - 250); })],
+    ['unfinished', tampered((b) => { winning(b)[3] = 3; })],
+    ['ammo', tampered((b) => { b.log.rounds[0].shots.filter((s) => s[0] === 0).forEach((s) => { s[3] = 3; }); })],
+    ['turn order', tampered((b) => { const s = b.log.rounds[0].shots; [s[0], s[1]] = [s[1], s[0]]; })],
+    ['version', tampered((b) => { b.log.v = '0.0.1'; })],
+    ['duration', tampered((b) => { b.log.durationMs = 10_000; })],
+    ['not a win', scorchedMatch({ level: 'normal', seed: SEED + 200, want: 1 })],
+    // A forged CPU shot that lands on the CPU itself would be free damage.
+    ['cpu self-hit', tampered((b) => { b.log = cpuSelfHitLog(b.log); })],
+  ];
+  for (const [error, payload] of cases) {
+    const r = await post('scorched-borough', { name, ...payload });
+    assert.equal(r.status, 422, error);
+    assert.deepEqual(r.data, { ok: false, error });
+  }
+  // Claiming Hard for a Normal match replays a different match, which the shots don't win.
+  const harder = await post('scorched-borough', { name, ...tampered((b) => { b.log.level = 'hard'; b.score = (b.score / 2) * 3; b.detail.level = 'hard'; }) });
+  assert.equal(harder.status, 422);
+  assert.ok(['unfinished', 'extra shots', 'cpu self-hit'].includes(harder.data.error), harder.data.error);
+
+  const { entries } = (await top('scorched-borough', 50)).data;
+  assert.equal(entries.filter((e) => e.name === name).length, 0);
 });
 
 test('one row per player per month, best score kept', async () => {
@@ -338,6 +419,12 @@ test('malformed requests', async () => {
   assert.equal(huge.status, 413);
   assert.equal(huge.data.error, 'too_large');
   assert.equal((await streamed('/v1/leadership/results', JSON.stringify({ ...body, pad: 'x'.repeat(20_000) }))).status, 413);
+
+  // Scorched Borough match logs are small, and so is their cap.
+  const match = scorchedMatch({ level: 'easy', seed: 7 });
+  const bigMatch = await post('scorched-borough', { name: `Big${RUN}`, ...match, pad: 'x'.repeat(20_000) });
+  assert.equal(bigMatch.status, 413);
+  assert.equal(bigMatch.data.error, 'too_large');
 
   const run = rushHourRun({ words: 12 });
   const bigRun = await post('rush-hour', { name: `Big${RUN}`, ...run, pad: 'x'.repeat(300_000) });

@@ -72,6 +72,15 @@ export function saveScore(db, { game, period, client, player, name, score, count
   });
 }
 
+// True if this exact run was posted before (see `fingerprint` in games.js).
+export function matchSeen(db, game, fp) {
+  return run(async () => (await db.prepare('SELECT 1 FROM matches WHERE game = ?1 AND fp = ?2').bind(game, fp).first()) != null);
+}
+
+export function rememberMatch(db, game, fp, period) {
+  return run(() => db.prepare('INSERT INTO matches (game, fp, period) VALUES (?1, ?2, ?3) ON CONFLICT DO NOTHING').bind(game, fp, period).run());
+}
+
 // Counts a post against the client's sliding window and returns true if it fits under the
 // limit. Posts that are turned away are not counted, so waiting always helps.
 export function takeSlot(db, { client, game, minute, window, limit }) {
@@ -125,6 +134,7 @@ export function cleanup(db, { minute, currentPeriod, oldestPeriod }) {
         )
         .bind(currentPeriod),
       db.prepare('DELETE FROM scores WHERE period < ?1').bind(oldestPeriod),
+      db.prepare('DELETE FROM matches WHERE period < ?1').bind(oldestPeriod),
     ]),
   );
 }

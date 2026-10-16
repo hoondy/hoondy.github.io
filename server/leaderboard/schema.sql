@@ -59,3 +59,12 @@ CREATE TABLE IF NOT EXISTS lq_hist (
   count       INTEGER NOT NULL,
   updated_at  INTEGER NOT NULL              -- midnight UTC (ms since epoch) of the day of the latest result in this bin
 );
+
+-- Runs already posted, by fingerprint (see games.js), so one ride or match can't be posted
+-- again under another nickname or in a later month. Deleted with the boards they belong to.
+CREATE TABLE IF NOT EXISTS matches (
+  game    TEXT NOT NULL,
+  fp      TEXT NOT NULL,                    -- SHA-256 of the game id and the run without timings
+  period  TEXT NOT NULL,                    -- month it was first posted in
+  PRIMARY KEY (game, fp)
+) WITHOUT ROWID;

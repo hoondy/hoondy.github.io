@@ -212,6 +212,10 @@ async function postScore(request, env, url, game, def, cfg) {
   let detail = JSON.stringify(verdict.detail ?? {});
   if (detail.length > MAX_DETAIL) detail = '{}';
 
+  // The validator has accepted the body, so its log is well formed.
+  const fp = def.fingerprint ? await sha256(`${game}|${JSON.stringify(def.fingerprint(body))}`) : null;
+  if (fp && (await db.matchSeen(env.DB, game, fp))) throw new HttpError(409, 'duplicate');
+
   const period = periodInfo(new Date(now));
   const client = await sha256(`${cfg.salt}|client|${period.key}|${net}`);
   const player = await sha256(`${cfg.salt}|player|${game}|${period.key}|${net}|${name.toLowerCase()}`);
@@ -232,6 +236,8 @@ async function postScore(request, env, url, game, def, cfg) {
     const wait = Math.max(1, Math.ceil((period.resetsAt.getTime() - now) / 1000));
     throw new HttpError(429, 'too_many_names', { 'retry-after': String(wait) });
   }
+  // Only counted once it made it onto the board, so a post turned away above can be retried.
+  if (fp) await db.rememberMatch(env.DB, game, fp, period.key);
 
   await cacheDelete(boardKey(url, game, period.key));
 

@@ -2,7 +2,7 @@
 
 This is the small backend for the apps on hoondy.com. It does two things:
 
-- **Monthly high-score boards** for the games (today that's Rush Hour).
+- **Monthly high-score boards** for the games: Rush Hour and Scorched Borough.
 - **Anonymous LQ test statistics.** The LQ test has no board, since it's a test for yourself. Instead,
   people who keep the "add my anonymous result" box ticked add their result to a histogram, and
   the results page uses it to show where someone lands among real test takers.
@@ -22,7 +22,7 @@ one board per game per month and the LQ page can use the real distribution.
 - `POST /v1/:game/scores` takes a run. The worker doesn't take the page's word for the score. It
   replays the Rush Hour play log (one entry per cleared word, missed word or wrong key) with the
   same rules module the page uses (`assets/apps/rush-hour/rules.js`) and rejects anything that
-  doesn't add up.
+  doesn't add up. Scorched Borough posts are replayed shot by shot (see below).
 - A month starts on the 1st at midnight New York time (`assets/js/lib/period.js`). Nicknames go
   through the same filter as in the browser (`assets/js/lib/names.js`).
 - Each player keeps one row per game per month, holding their best score. A "player" is a
@@ -35,6 +35,52 @@ one board per game per month and the LQ page can use the real distribution.
   has. A household or office behind one address shares that allowance.
 - Posting is rate limited to 6 posts per 10 minutes per network per game.
 - Boards are cached at the edge for 20 seconds. Posting clears the cache for that board.
+
+### Scorched Borough
+
+- Only won matches go on the board. The page posts the match log: the seed, the difficulty and
+  every shot either tank fired (angle and power in tenths, the weapon, and how long that turn
+  took), plus how long the whole match took.
+- The worker replays the whole match with `assets/apps/scorched-borough/rules.js` and the game
+  code it imports, the same files the page runs. It rebuilds each round's terrain and wind from
+  the seed and the level, checks the turn order and each round's ammo, flies every shell and
+  applies the craters, dirt piles, falls and damage. A post only counts if the replay ends in a
+  win for the player with the last shot in the log. The worker works the points out itself, and
+  a `score` sent along has to match.
+- The seed is 30 bits. The match's random generator starts from the seed in its top 30 bits and
+  the level in the bottom two, so no seed on one level starts it where a seed on another level
+  does, and every round's terrain mixes the level in again, so a forged first round can't line
+  up the rounds after it either. A win relabelled as a harder level, with its own seed or any
+  other, replays as a different match.
+- The CPU's shots come from the log too, and the server doesn't re-run the CPU's aim (that would
+  cost far more CPU than a post is allowed), so a forged log can make the CPU shoot however it
+  likes. Nothing the CPU's shots do is allowed to earn points: a CPU shot that lowers the CPU's
+  own armor (a direct hit, a blast or a fall) gets the whole post refused, and the real CPU
+  checks its aim so it never does that.
+- Points: `k × max(100, 1000 − 40 × your shots in the two rounds you won)`, with `k` = 1, 2 or 3
+  for Easy, Normal or Hard. A round the CPU took doesn't count either way, and neither does the
+  armor left over, since both depend on how well the CPU shot. `detail.shots` is that count.
+- It also turns away matches that couldn't have been played: a CPU turn quicker than the CPU ever
+  thinks, a match shorter than its turns and shells in the air add up to, more than 120 shots in
+  a round, a turn over an hour or a match over six hours, and logs from another `VERSION`.
+- What it can't stop: the page picks the seed, and a log says nothing about who played it or
+  when. A script can try a win on a harder level with seed after seed until one happens to
+  replay as a win too. The shots almost never win a different match, but in testing about one
+  win in twelve turned up such a seed within 64 tries. A bot that plays the game itself would do
+  as well. The same winning log could also be posted under another nickname or again next
+  month. Logs aren't shown on the board, so that takes the player's own log.
+- The replay has to land every shell exactly where it landed in the browser, in any engine. Plain
+  arithmetic and `Math.sqrt` round the same everywhere, but `Math.sin`, `Math.exp` and friends
+  don't have to, so the physics uses its own versions (`detmath.js`). `test/units.test.js` pins
+  the exact bits of the math, the terrain and a scripted match. If those tests fail after a
+  change to the game, matches recorded before it won't replay any more: bump `VERSION` in
+  `rules.js` and deploy the worker together with the site.
+- Replaying a typical match (10 to 40 shots) takes about a third of a millisecond on a warm
+  isolate, and a very long one (three rounds of 20 to 55 shots, heavy weapons, lots of dirt)
+  about a millisecond (p99 under 3 ms). A fresh isolate runs that code in the interpreter at
+  first, which costs a first post about 10 ms more, so `src/games.js` replays one short built-in
+  match at startup.
+- The body cap is 16 KB.
 
 ### LQ statistics
 
@@ -126,6 +172,7 @@ has a `scores` table with a `week` column and no LQ tables. Update it once, then
 
 ```sh
 npm run db:migrate:remote    # runs sql/0002-monthly-and-lq-stats.sql
+npx wrangler d1 execute hoondy-leaderboard --remote --file sql/0003-match-fingerprints.sql   # adds the duplicate check; safe to repeat
 npm run deploy
 ```
 
@@ -265,6 +312,12 @@ the player set that score. Ties go to whoever got there first.
 `POST /v1/:game/scores` with `Content-Type: application/json`:
 
 - rush-hour: `{ "name", "score", "detail": { "stage", "words", "misses", "accuracy", "wpm", "durationMs", "pack" }, "log": [...] }`
+- scorched-borough: `{ "name", "score", "detail": { "level", "rounds", "shots" }, "log": { "v", "level", "seed", "durationMs", "rounds": [{ "first": "you" | "cpu", "shots": [[who, angle, power, weapon, ms], ...] }] } }`.
+  `seed` is 0 to 2³⁰ − 1, `who` is 0 for the player and 1 for the CPU, `angle` (0–1800) and
+  `power` (0–1000) are in tenths, `weapon` is 0–3 for standard, heavy, splitter and dirt, and
+  `ms` is how long that turn took. `score` and `detail` are optional; the board stores the
+  detail the replay produces, for example `{ "level": "hard", "rounds": "2-1", "shots": 6 }`,
+  where `shots` counts the player's shots in the rounds they won.
 
 A successful post returns
 `{ "ok": true, "id", "rank", "score", "best", "improved", "name", "period" }`. Here `score` is
@@ -306,9 +359,10 @@ Errors come back as `{ "ok": false, "error": "<code>" }`:
 | 403 | `origin` | The request came from a page on a site that isn't allowed. |
 | 404 | `unknown_game`, `not_found` | Includes `/v1/leadership/top` and `/v1/leadership/scores`: the LQ test has no board. |
 | 405 | `method` | |
-| 413 | `too_large` | The body is over 256 KB (rush-hour) or 4 KB (LQ results). |
+| 413 | `too_large` | The body is over 256 KB (rush-hour), 16 KB (scorched-borough) or 4 KB (LQ results). |
 | 415 | `content_type` | The request isn't `application/json`. |
-| 422 | (game-specific) | The rules rejected the result: `score mismatch`, `speed` or `detail mismatch` for Rush Hour; `version`, `too_fast`, `attention`, `straightline`, `bad_answers`, `bad_lang` and so on for LQ results. |
+| 409 | `duplicate` | This ride or match is already on a board (posted under any nickname, in any month). Timings don't count, so re-timing a log doesn't make it new. |
+| 422 | (game-specific) | The rules rejected the result: `score mismatch`, `speed` or `detail mismatch` for Rush Hour; `not a win`, `unfinished`, `extra shots`, `turn order`, `ammo`, `turn time`, `duration`, `cpu self-hit`, `score mismatch`, `version` and so on for Scorched Borough; `version`, `too_fast`, `attention`, `straightline`, `bad_answers`, `bad_lang` and so on for LQ results. |
 | 429 | `rate_limited` | Too many posts. The `Retry-After` header says how many seconds to wait. |
 | 429 | `too_many_names` | This network already has `NAMES_PER_CLIENT` nicknames on this month's board. Posting under one of those still works; `Retry-After` counts down to the monthly reset. |
 | 503 | `unavailable` | The database didn't answer. |
@@ -327,7 +381,8 @@ Errors come back as `{ "ok": false, "error": "<code>" }`:
 These were the limits when this was written. Check Cloudflare's pricing pages for the current ones.
 
 - Workers: 100,000 requests a day, 10 ms of CPU time per request. Checking an LQ result or a
-  normal Rush Hour run (a few hundred log entries) takes about a millisecond. A Rush Hour log
+  normal Rush Hour run (a few hundred log entries) takes about a millisecond, and replaying a
+  Scorched Borough match about the same. A Rush Hour log
   near its 8,000-entry cap (`MAX_LOG` in `rules.js`) is different: on a cold isolate, parsing
   and replaying it can take 10 to 15 ms, so on the free plan a post like that may be cut off
   and fail. If very long runs start failing, move to Workers Paid or lower `MAX_LOG`.
