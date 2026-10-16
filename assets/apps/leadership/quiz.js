@@ -1,5 +1,5 @@
 // One question per screen. Items are shown in ITEM_ORDER but answers are stored in ITEMS
-// order, which is what scoring.js and the leaderboard expect.
+// order, which is what scoring.js and the statistics endpoint expect.
 
 import { ITEMS, ITEM_ORDER, ITEM_INDEX } from './scoring.js';
 import { fill, escapeHtml } from './i18n.js';

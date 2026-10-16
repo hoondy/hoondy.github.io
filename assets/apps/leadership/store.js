@@ -1,11 +1,14 @@
-// Everything the test keeps in this browser. Answers never leave the device unless the
-// person posts to the leaderboard.
+// Everything the test keeps in this browser. Answers only leave the device when the person
+// leaves the statistics box ticked, and then once per finished test (see stats.js).
 
 import { ITEMS } from './scoring.js';
 
 const PROGRESS_KEY = 'lq:progress';
 const LAST_KEY = 'lq:last';
 const SHARED_KEY = 'lq:shared';
+const CONTRIBUTE_KEY = 'lq:contribute';
+const SENT_KEY = 'lq:sent';
+const SENT_KEEP = 30;
 
 // Saved answers stay usable across re-norming (same items, new norms) but not across a
 // change to the questions themselves, so they are tagged with the item list, not VERSION.
@@ -88,4 +91,37 @@ export function loadShared() {
 
 export function saveShared(code) {
   write('session', SHARED_KEY, code ? { code } : null);
+}
+
+// The statistics opt-in. It defaults to on, and the in-memory copy keeps the choice for this
+// visit when storage is blocked.
+let contributeMem = null;
+
+export function loadContribute() {
+  if (contributeMem !== null) return contributeMem;
+  const v = read('local', CONTRIBUTE_KEY);
+  return typeof v === 'boolean' ? v : true;
+}
+
+export function saveContribute(on) {
+  contributeMem = Boolean(on);
+  write('local', CONTRIBUTE_KEY, contributeMem);
+}
+
+// Finished tests that have already been dealt with, keyed by a hash of the result, so a
+// reload or a second look at the same result never sends it twice.
+let sentMem = {};
+
+export function loadSent() {
+  const v = read('local', SENT_KEY);
+  return { ...(v && typeof v === 'object' && !Array.isArray(v) ? v : {}), ...sentMem };
+}
+
+export function markSent(key, status) {
+  sentMem[key] = status;
+  const all = { ...loadSent(), [key]: status };
+  const keys = Object.keys(all);
+  // Object keys keep insertion order, so the oldest go first.
+  const kept = Object.fromEntries(keys.slice(-SENT_KEEP).map((k) => [k, all[k]]));
+  write('local', SENT_KEY, kept);
 }

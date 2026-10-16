@@ -1,5 +1,5 @@
-// SVG charts for the result page: trait radar, the LQ bell curve and the emergence gauge.
-// They return markup strings; every piece of text that goes in is escaped here.
+// SVG charts for the result page: trait radar, the LQ bell curve, the emergence gauge and the
+// score distribution. They return markup strings; every piece of text that goes in is escaped here.
 
 import { DIM_IDS, LQ_MIN, LQ_MAX, LQ_MEAN, LQ_SD } from './scoring.js';
 import { escapeHtml } from './i18n.js';
@@ -110,4 +110,34 @@ export function gaugeSvg(value, { baseline = 20 } = {}) {
 <circle class="lq-gauge__value" cx="60" cy="60" r="${r}" stroke-dasharray="${f((c * v) / 100)} ${f(c)}" transform="rotate(-90 60 60)"/>
 <line class="lq-gauge__tick" x1="${f(t1[0])}" y1="${f(t1[1])}" x2="${f(t2[0])}" y2="${f(t2[1])}"/>
 </svg>`;
+}
+
+/**
+ * The score distribution as an LED matrix: one column of cells per bin, lit up to the bin's
+ * height, with the visitor's column (`you`) lit red. `values` are counts or shares; only their
+ * proportions matter. Text lives outside the SVG so it keeps its size on a phone.
+ */
+export function distSvg(values, you, { rows = 16 } = {}) {
+  const cols = values.length;
+  const pitchX = 20;
+  const cellW = 15;
+  const pitchY = 7.5;
+  const cellH = 5;
+  const W = cols * pitchX;
+  const H = rows * pitchY;
+  const max = Math.max(...values);
+  let s = `<svg class="lq-dist__svg" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">`;
+  values.forEach((v, c) => {
+    // Any non-empty bin gets at least one cell, so a rare score still shows up, and so does the
+    // visitor's own bin even when the counts they were served don't include them yet.
+    const lit = (max > 0 && v > 0) || c === you ? Math.max(1, Math.round((max > 0 ? v / max : 0) * rows)) : 0;
+    const cls = c === you ? 'd-you' : 'd-on';
+    s += `<g style="--c:${c}">`;
+    for (let r = 0; r < rows; r++) {
+      const y = H - (r + 1) * pitchY + (pitchY - cellH) / 2;
+      s += `<rect x="${f(c * pitchX + (pitchX - cellW) / 2)}" y="${f(y)}" width="${cellW}" height="${cellH}" rx="1.2" class="${r < lit ? `${cls}" style="--r:${r}` : 'd-off'}"/>`;
+    }
+    s += '</g>';
+  });
+  return `${s}</svg>`;
 }

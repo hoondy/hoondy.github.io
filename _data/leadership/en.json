@@ -22,13 +22,13 @@
         "Your LQ on an IQ-style scale where 100 is average",
         "Your percentile: how your LQ compares with other people’s",
         "Your leader archetype and your profile across 8 traits",
-        "A weekly leaderboard, if you want to compete"
+        "A share card to challenge your friends"
       ],
       "steps_title": "How it works",
       "steps": [
         { "title": "Answer 49 questions", "body": "40 short statements about you and 8 short scenarios. Go with your first instinct." },
         { "title": "Get your LQ", "body": "See your score, your percentile, your archetype and where you stand on each trait." },
-        { "title": "Compare and share", "body": "Post your score to this week’s board and challenge your friends." }
+        { "title": "See where you land", "body": "Find your spot on the score chart, then share your card and challenge your friends." }
       ],
       "demo_label": "Sample",
       "start": "Start the test",
@@ -36,7 +36,8 @@
       "restart": "Start over",
       "language": "Language",
       "honesty_note": "Answer as you are, not as you wish you were. The test checks for rushed or contradictory answers.",
-      "privacy_note": "Your answers are scored in your browser and only leave it if you choose to post your score."
+      "privacy_note": "Your answers are scored in your browser. If the statistics box is ticked, they’re also added once to the LQ statistics, with no name and nothing that identifies you.",
+      "contribute": "Add my anonymous result to the LQ statistics (no name, nothing that identifies you)"
     },
     "quiz": {
       "progress": "Question {n} of {total}",
@@ -93,9 +94,11 @@
       "summary_title": "What this means",
       "retake": "Retake the test",
       "share_title": "Share your result",
+      "share_note": "Your link shows friends your LQ and archetype, then lets them take the test and compare.",
+      "legend_you": "You",
       "science_link": "How the score works",
       "validity_title": "This result may not reflect you",
-      "validity_body": "Your score is shown, but it can’t be posted to the leaderboard. For an accurate result, retake the test and answer at your own pace.",
+      "validity_body": "Your score is shown, but it won’t be added to the LQ statistics. For an accurate result, retake the test and answer at your own pace.",
       "validity_reasons": "What stood out:",
       "shared_kicker": "Shared result",
       "shared_title": "Someone shared their LQ with you",
@@ -107,33 +110,27 @@
       "shared_note": "Shared results are shown as they were sent and are not verified.",
       "shared_invalid": "This result link is broken or out of date. You can still take the test."
     },
-    "leaderboard": {
-      "title": "This week’s highest LQs",
-      "board_title": "This week",
-      "subtitle": "The highest LQs this week. The board resets every Monday at midnight, New York time.",
-      "empty": "No scores yet this week. Be the first.",
-      "local": "Scores saved on this device",
-      "resets": "Resets in",
-      "units": { "d": "d", "h": "h", "m": "m" },
-      "you": "you",
-      "score": "{lq}",
-      "row_meta": "{archetype}",
-      "join_title": "Post your score",
-      "name_label": "Nickname",
-      "name_placeholder": "Up to 16 characters",
-      "name_hint": "Shown publicly. No need to use your real name.",
-      "submit": "Post my score",
-      "submitting": "Posting…",
-      "posted": "You’re #{rank} on this week’s board.",
-      "posted_best": "New personal best. You’re #{rank} this week.",
-      "posted_local": "Saved on this device. You’re #{rank} here.",
-      "best_only": "Only your best score each week appears on the board.",
-      "local_hint": "This board lives on this device only, so nobody else will see it.",
-      "invalid": "This result can’t be posted because some answers were flagged.",
-      "view": "See the leaderboard",
-      "personal_best": "Your best: LQ {lq}",
-      "loading": "Loading the board…",
-      "unavailable": "The leaderboard is taking a break. Check back in a little while."
+    "distribution": {
+      "title": "Where you land",
+      "you_are_here": "You are here",
+      "badge_real": "Live",
+      "badge_model": "Expected",
+      "real_pct": "Higher than {pct}% of people who took the test",
+      "real_label": "Based on {n} completed tests.",
+      "model_label": "Expected distribution from the scoring model.",
+      "model_note": "The real distribution appears once enough people have taken the test.",
+      "chart_label": "Bar chart of LQ scores from 55 to 145, in steps of 5. Your LQ of {lq} is in the {range} bar.",
+      "col_range": "LQ",
+      "col_share": "Share of people"
+    },
+    "contribute": {
+      "sending": "Adding your result to the LQ statistics…",
+      "added": "Added anonymously to the LQ statistics.",
+      "off": "Not added to the LQ statistics. You turned this off on the start page.",
+      "invalid": "Not added to the LQ statistics, because some answers were flagged.",
+      "later": "Not added yet: the LQ statistics server is busy right now. It will be added when you open this result again later.",
+      "failed": "Couldn’t reach the LQ statistics, so this result wasn’t added.",
+      "privacy": "Privacy"
     },
     "share": {
       "title": "Share",
@@ -147,7 +144,9 @@
       "image_lq": "LQ",
       "image_pct": "Higher than about {pct}% of people",
       "image_cta": "What’s yours? hoondy.com/apps/leadership",
-      "image_file": "my-lq.png"
+      "image_file": "my-lq.png",
+      "challenge": "Challenge a friend",
+      "challenge_copied": "Challenge copied. Paste it to a friend."
     },
     "validity": {
       "incomplete": "Some questions were left unanswered.",
@@ -158,25 +157,6 @@
       "acquiescence": "You agreed (or disagreed) with almost every statement, including ones that say opposite things.",
       "idealized": "Your answers look more ideal than real. Most people see a mix of strengths and weak spots in themselves.",
       "erratic": "Your answers about the same trait pointed in different directions."
-    },
-    "errors": {
-      "bad_body": "Something went wrong with your submission. Please retake the test.",
-      "bad_answers": "Something went wrong with your submission. Please retake the test.",
-      "bad_lang": "Something went wrong with your submission. Please retake the test.",
-      "bad_duration": "Something went wrong with your submission. Please retake the test.",
-      "too_fast": "This result was finished too quickly to be posted.",
-      "attention": "This result missed the quick check, so it can’t be posted.",
-      "straightline": "Too many identical answers to post this result.",
-      "acquiescence": "Too many contradictory answers to post this result.",
-      "inconsistent": "Too many contradictory answers to post this result.",
-      "erratic": "These answers look random, so the result can’t be posted.",
-      "idealized": "Too perfect to be true. This result can’t be posted.",
-      "invalid": "This result can’t be posted.",
-      "name": "Please choose a different nickname.",
-      "rate_limited": "Too many tries. Please wait a few minutes.",
-      "too_many_names": "This network already has three names on this week’s board. Post under one of them, or try again next week.",
-      "network": "Couldn’t reach the leaderboard. Check your connection and try again.",
-      "unknown": "Something went wrong. Please try again."
     },
     "common": {
       "close": "Close",
@@ -474,7 +454,6 @@
     "growth": "Your biggest room to grow: {list}.",
     "list_separator": ", ",
     "list_last_separator": " and ",
-    "rank": "#{rank} this week",
     "document_title": "LQ {lq} · {archetype} · LQ Test"
   },
   "share_text": {
@@ -482,7 +461,6 @@
     "default": "My LQ is {lq}, higher than about {pct}% of people. What’s yours?",
     "archetype": "My leader archetype: {archetype}, with an LQ of {lq}. Seven minutes to find out what kind of leader you are:",
     "challenge": "LQ {lq}. Think you can lead better? Prove it:",
-    "leaderboard": "I’m #{rank} on this week’s LQ leaderboard with {lq}. Your move.",
     "invite": "What’s your Leadership Quotient? 49 questions, 7 minutes, one number.",
     "email_subject": "My LQ is {lq}. What’s yours?",
     "hashtag": "LQTest"
@@ -498,7 +476,7 @@
           "You answer 40 statements about yourself and 8 short scenarios. Half of the statements point the opposite way (for example, “I wait for others to lead the way”), so agreeing with everything does not push your score up.",
           "Each of the 8 traits gets a score from its 5 statements and 1 scenario. That score is compared with provisional norms (see below) and turned into a percentile.",
           "The traits are then combined with weights that follow the research: traits with stronger links to leadership, such as drive and motivation to lead, count more than traits with weaker links, such as empathy. The weights are kept simple on purpose, because simple weights tend to hold up better on new people than finely tuned ones (Dawes, 1979). Because the traits are related to each other (van der Linden et al., 2010), the combined score is rescaled so that, as with IQ, the average is 100 and about two in three people fall between 85 and 115. Scores run from 55 to 145.",
-          "Your percentile is the share of people expected to score below you. The “group of 5” figure comes from a simple statistical model that assumes your LQ is moderately related to who ends up leading a group (a correlation of 0.35, deliberately lower than what large studies report). Treat it as a rough illustration only."
+          "Your percentile is the share of people expected to score below you. The “Where you land” chart on your results shows the same scale as bars, and once enough people have taken the test it switches to their real, anonymous results. The “group of 5” figure comes from a simple statistical model that assumes your LQ is moderately related to who ends up leading a group (a correlation of 0.35, deliberately lower than what large studies report). Treat it as a rough illustration only."
         ]
       },
       {
@@ -526,8 +504,8 @@
         "paragraphs": [
           "It can summarize how the way you describe yourself lines up with traits that, on average, go with emerging as a leader and being seen as effective. That makes it useful for reflection: which strengths to lean on and which habits to build.",
           "It can’t tell you whether you will be a good leader. Being picked to lead and leading well are different things (Hogan & Kaiser, 2005). Some traits that help people get noticed, such as narcissism, do not make them more effective (Grijalva et al., 2015), and too much assertiveness can hurt as much as too little (Ames & Flynn, 2007). Skills, experience, intelligence, values and the situation all matter, and none of them are measured here.",
-          "Self-reports are easy to inflate. The test checks for attention, consistency and speed, but anyone determined to look good can manage it. Treat the top of the leaderboard with a smile.",
-          "The norms are provisional. They are estimates built from typical statistics for public-domain personality items, not from people who took this test, so treat every percentile as a rough guide. This site does not collect anonymous answers; if that ever changes, the privacy policy will say so first.",
+          "Self-reports are easy to inflate. The test checks for attention, consistency and speed, but anyone determined to look good can manage it. That’s one reason there is no leaderboard: the LQ is a mirror, not a contest.",
+          "The norms are provisional. They are estimates built from typical statistics for public-domain personality items, not from people who took this test, so treat every percentile as a rough guide. To improve them, the test keeps anonymous results from people who leave the statistics box ticked: their answers, score, language and the date, with no name and nothing that identifies them. Those results build the real distribution on the results page, and once there are enough of them they will be used to recalibrate the norms.",
           "People in different cultures describe themselves differently. Some answer more modestly or stay closer to the middle of the scale, so LQs are best compared within the same language version.",
           "A low score is not a verdict. Many of the skills that turn traits into effective leadership can be learned (Zaccaro, 2007)."
         ]
@@ -562,11 +540,19 @@
       },
       {
         "q": "Why was my result flagged?",
-        "a": "Results are flagged when answers look rushed, random, contradictory or too perfect. You still see your score, but it isn’t posted to the leaderboard."
+        "a": "Results are flagged when answers look rushed, random, contradictory or too perfect. You still see your score, but it isn’t added to the LQ statistics."
       },
       {
         "q": "What happens to my answers?",
-        "a": "They are scored in your browser. If you post to the weekly leaderboard, your answers are sent once so the server can check the score, and the board shows your nickname, LQ, archetype and country. See the privacy policy for details."
+        "a": "They’re scored in your browser. If the statistics box on the start page is ticked (it is unless you untick it), your answers are sent once and stored with your score, language and the date, without a name or anything that identifies you. They build the real score distribution and will be used to recalibrate the norms. Untick the box and your answers never leave your device. See the privacy policy for details."
+      },
+      {
+        "q": "Is my percentile based on real people?",
+        "a": "Not yet. The percentile in your result comes from provisional norms. Once at least 200 people have added their results, the “Where you land” chart switches to the real distribution and shows where you fall in it. Those results will also be used to recalibrate the norms."
+      },
+      {
+        "q": "Why is there no leaderboard?",
+        "a": "Because the LQ is a test for yourself, not a contest. Answers about yourself are easy to polish, and a ranking would reward exactly that. Share your card with friends instead, and see where you land among everyone who has taken the test."
       }
     ],
     "disclaimer_title": "Disclaimer",

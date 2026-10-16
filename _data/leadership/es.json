@@ -22,13 +22,13 @@
         "Tu LQ, en una escala como la del CI, donde 100 es la media",
         "Tu percentil: cómo se compara tu LQ con el de otras personas",
         "Tu arquetipo de líder y tu perfil en 8 rasgos",
-        "Un ranking semanal, si quieres competir"
+        "Una tarjeta para compartir y retar a tus amistades"
       ],
       "steps_title": "Cómo funciona",
       "steps": [
         { "title": "Responde 49 preguntas", "body": "40 afirmaciones breves sobre ti y 8 situaciones cortas. Fíate de tu primer instinto." },
-        { "title": "Obtén tu LQ", "body": "Descubre tu puntuación, tu percentil, tu arquetipo y dónde te sitúas en cada rasgo." },
-        { "title": "Compara y comparte", "body": "Publica tu puntuación en el ranking de esta semana y reta a tus amistades." }
+        { "title": "Obtén tu LQ", "body": "Descubre tu puntuación, tu percentil, tu arquetipo y tu posición en cada rasgo." },
+        { "title": "Mira dónde te sitúas", "body": "Busca tu lugar en el gráfico de puntuaciones. Después, comparte tu tarjeta y reta a tus amistades." }
       ],
       "demo_label": "Ejemplo",
       "start": "Empezar el test",
@@ -36,7 +36,8 @@
       "restart": "Empezar de nuevo",
       "language": "Idioma",
       "honesty_note": "Responde como eres, no como te gustaría ser. El test detecta respuestas apresuradas o contradictorias.",
-      "privacy_note": "Tus respuestas se puntúan en tu navegador y solo salen de él si decides publicar tu puntuación."
+      "privacy_note": "Tus respuestas se puntúan en tu navegador. Si la casilla de estadísticas está marcada, también se suman una sola vez a las estadísticas del LQ, sin nombre ni nada que te identifique.",
+      "contribute": "Añadir mi resultado anónimo a las estadísticas del LQ (sin nombre ni nada que me identifique)"
     },
     "quiz": {
       "progress": "Pregunta {n} de {total}",
@@ -93,9 +94,11 @@
       "summary_title": "Qué significa esto",
       "retake": "Repetir el test",
       "share_title": "Comparte tu resultado",
+      "share_note": "Con tu enlace, tus amistades verán tu LQ y tu arquetipo, y podrán hacer el test y compararse contigo.",
+      "legend_you": "Tú",
       "science_link": "Cómo se calcula la puntuación",
       "validity_title": "Puede que este resultado no te refleje",
-      "validity_body": "Aquí tienes tu puntuación, pero no se puede publicar en el ranking. Para obtener un resultado fiable, repite el test y responde a tu ritmo.",
+      "validity_body": "Aquí tienes tu puntuación, pero no se añadirá a las estadísticas del LQ. Para obtener un resultado fiable, repite el test y responde a tu ritmo.",
       "validity_reasons": "Lo que llama la atención:",
       "shared_kicker": "Resultado compartido",
       "shared_title": "Alguien comparte contigo su LQ",
@@ -107,33 +110,27 @@
       "shared_note": "Los resultados compartidos se muestran tal como se enviaron y no están verificados.",
       "shared_invalid": "Este enlace de resultado no funciona o está desactualizado. Aun así, puedes hacer el test."
     },
-    "leaderboard": {
-      "title": "Los LQ más altos de la semana",
-      "board_title": "Esta semana",
-      "subtitle": "Los LQ más altos de la semana. El ranking se reinicia cada lunes a medianoche, hora de Nueva York.",
-      "empty": "Aún no hay puntuaciones esta semana. ¡Estrena tú el ranking!",
-      "local": "Ranking de este dispositivo",
-      "resets": "Se reinicia en",
-      "units": { "d": "\u00a0d", "h": "\u00a0h", "m": "\u00a0min" },
-      "you": "tú",
-      "score": "{lq}",
-      "row_meta": "{archetype}",
-      "join_title": "Publica tu puntuación",
-      "name_label": "Apodo",
-      "name_placeholder": "Máx. 16 caracteres",
-      "name_hint": "Será público. No hace falta que uses tu nombre real.",
-      "submit": "Publicar mi LQ",
-      "submitting": "Publicando…",
-      "posted": "Estás en el puesto {rank} del ranking de esta semana.",
-      "posted_best": "¡Nuevo récord personal! Estás en el puesto {rank} esta semana.",
-      "posted_local": "Guardado en este dispositivo: puesto {rank}.",
-      "best_only": "En el ranking solo aparece tu mejor puntuación de cada semana.",
-      "local_hint": "Este ranking solo existe en este dispositivo, así que nadie más lo verá.",
-      "invalid": "Este resultado no se puede publicar porque se detectaron problemas en algunas respuestas.",
-      "view": "Ver el ranking",
-      "personal_best": "Tu mejor marca: LQ {lq}",
-      "loading": "Cargando el ranking…",
-      "unavailable": "El ranking se está tomando un descanso. Vuelve a mirar en un rato."
+    "distribution": {
+      "title": "Dónde te sitúas",
+      "you_are_here": "Estás aquí",
+      "badge_real": "En vivo",
+      "badge_model": "Estimación",
+      "real_pct": "Por encima del {pct}\u00a0% de quienes han hecho el test",
+      "real_label": "Basado en {n} tests completados.",
+      "model_label": "Distribución esperada según el modelo de puntuación.",
+      "model_note": "La distribución real aparecerá cuando suficientes personas hayan hecho el test.",
+      "chart_label": "Gráfico de barras con las puntuaciones LQ de 55 a 145, en tramos de 5. Tu LQ, {lq}, está en la barra {range}.",
+      "col_range": "LQ",
+      "col_share": "Porcentaje de personas"
+    },
+    "contribute": {
+      "sending": "Añadiendo tu resultado a las estadísticas del LQ…",
+      "added": "Tu resultado se añadió de forma anónima a las estadísticas del LQ.",
+      "off": "Este resultado no se añadió a las estadísticas del LQ porque desactivaste la opción en la página de inicio del test.",
+      "invalid": "Este resultado no se añadió a las estadísticas del LQ porque algunas respuestas se marcaron como dudosas.",
+      "later": "Este resultado aún no se añadió porque el servidor de estadísticas del LQ está saturado en este momento. Se añadirá cuando vuelvas a abrirlo más tarde.",
+      "failed": "No se pudo conectar con las estadísticas del LQ, así que este resultado no se añadió.",
+      "privacy": "Privacidad"
     },
     "share": {
       "title": "Compartir",
@@ -147,7 +144,9 @@
       "image_lq": "LQ",
       "image_pct": "Supera al de cerca del {pct}\u00a0% de la gente",
       "image_cta": "¿Y el tuyo? hoondy.com/apps/leadership/es",
-      "image_file": "mi-lq.png"
+      "image_file": "mi-lq.png",
+      "challenge": "Reta a tus amistades",
+      "challenge_copied": "Reto copiado. Envíaselo a quien quieras retar."
     },
     "validity": {
       "incomplete": "Algunas preguntas quedaron sin responder.",
@@ -158,25 +157,6 @@
       "acquiescence": "Estuviste de acuerdo (o en desacuerdo) con casi todas las afirmaciones, incluso con las que dicen lo contrario.",
       "idealized": "Tus respuestas parecen más ideales que reales. La mayoría de la gente reconoce en sí misma una mezcla de puntos fuertes y débiles.",
       "erratic": "Tus respuestas sobre un mismo rasgo apuntaban en direcciones distintas."
-    },
-    "errors": {
-      "bad_body": "Algo salió mal con tu envío. Vuelve a hacer el test.",
-      "bad_answers": "Algo salió mal con tu envío. Vuelve a hacer el test.",
-      "bad_lang": "Algo salió mal con tu envío. Vuelve a hacer el test.",
-      "bad_duration": "Algo salió mal con tu envío. Vuelve a hacer el test.",
-      "too_fast": "Este resultado se completó demasiado rápido para poder publicarse.",
-      "attention": "La pregunta de comprobación no se respondió bien, así que este resultado no se puede publicar.",
-      "straightline": "Hay demasiadas respuestas idénticas para publicar este resultado.",
-      "acquiescence": "Hay demasiadas respuestas contradictorias para publicar este resultado.",
-      "inconsistent": "Hay demasiadas respuestas contradictorias para publicar este resultado.",
-      "erratic": "Estas respuestas parecen aleatorias, así que el resultado no se puede publicar.",
-      "idealized": "Demasiado perfecto para ser verdad. Este resultado no se puede publicar.",
-      "invalid": "Este resultado no se puede publicar.",
-      "name": "Elige otro apodo, por favor.",
-      "rate_limited": "Demasiados intentos. Espera unos minutos.",
-      "too_many_names": "Desde esta red ya hay tres nombres en el ranking de esta semana. Publica con uno de ellos o vuelve a intentarlo la próxima semana.",
-      "network": "No pudimos conectar con el ranking. Revisa tu conexión e inténtalo de nuevo.",
-      "unknown": "Algo salió mal. Inténtalo de nuevo."
     },
     "common": {
       "close": "Cerrar",
@@ -474,7 +454,6 @@
     "growth": "Donde más margen tienes para crecer: {list}.",
     "list_separator": ", ",
     "list_last_separator": " y ",
-    "rank": "Puesto {rank} esta semana",
     "document_title": "LQ {lq} · {archetype} · Test LQ"
   },
   "share_text": {
@@ -482,7 +461,6 @@
     "default": "Mi LQ es {lq} y supera al de cerca del {pct}\u00a0% de la gente. ¿Y el tuyo?",
     "archetype": "Mi arquetipo de líder es {archetype}, con un LQ de {lq}. Descubre en 7 minutos qué tipo de líder eres:",
     "challenge": "LQ {lq}. ¿Crees que lideras mejor? Demuéstralo:",
-    "leaderboard": "Estoy en el puesto {rank} del ranking LQ de esta semana, con {lq} puntos. Te toca.",
     "invite": "¿Cuál es tu cociente de liderazgo? 49 preguntas, 7 minutos, un solo número.",
     "email_subject": "Mi LQ es {lq}. ¿Y el tuyo?",
     "hashtag": "LQTest"
@@ -498,7 +476,7 @@
           "Respondes a 40 afirmaciones sobre ti y a 8 situaciones breves. La mitad de las afirmaciones van en sentido contrario (por ejemplo, “Espero a que otras personas marquen el camino”), así que estar de acuerdo con todo no sube tu puntuación.",
           "Cada uno de los 8 rasgos recibe una puntuación a partir de sus 5 afirmaciones y de 1 situación. Esa puntuación se compara con unos datos normativos provisionales (ver más abajo) y se convierte en un percentil.",
           "Después, los rasgos se combinan con pesos que siguen la investigación: los rasgos más relacionados con el liderazgo, como el empuje y la motivación para liderar, cuentan más que los que tienen una relación más débil, como la empatía. Los pesos son sencillos a propósito, porque los pesos simples suelen sostenerse mejor al aplicarse a personas nuevas que los muy ajustados (Dawes, 1979). Como los rasgos están relacionados entre sí (van der Linden et al., 2010), la puntuación combinada se reescala para que, igual que con el CI, la media sea 100 y alrededor de dos de cada tres personas queden entre 85 y 115. Las puntuaciones van de 55 a 145.",
-          "Tu percentil es el porcentaje de personas que, previsiblemente, puntuarían por debajo de ti. La cifra del “grupo de 5” sale de un modelo estadístico sencillo que supone que tu LQ guarda una relación moderada con quién acaba liderando un grupo (una correlación de 0,35, deliberadamente más baja que la que indican los grandes estudios). Tómala solo como una ilustración aproximada."
+          "Tu percentil es el porcentaje de personas que, previsiblemente, puntuarían por debajo de ti. El gráfico “Dónde te sitúas” de tus resultados muestra esa misma escala en forma de barras y, cuando el test reúna suficientes participantes, pasa a mostrar sus resultados reales, que son anónimos. La cifra del “grupo de 5” sale de un modelo estadístico sencillo que supone que tu LQ guarda una relación moderada con quién acaba liderando un grupo (una correlación de 0,35, deliberadamente más baja que la que indican los grandes estudios). Tómala solo como una ilustración aproximada."
         ]
       },
       {
@@ -526,8 +504,8 @@
         "paragraphs": [
           "Puede resumir hasta qué punto tu forma de describirte coincide con los rasgos que, en promedio, acompañan al surgimiento de líderes y a un liderazgo percibido como eficaz. Eso lo hace útil para reflexionar: en qué fortalezas apoyarte y qué hábitos desarrollar.",
           "No puede decirte si liderarás bien. Que te elijan para liderar y liderar bien son cosas distintas (Hogan y Kaiser, 2005). Algunos rasgos que ayudan a destacar, como el narcisismo, no hacen a nadie más eficaz (Grijalva et al., 2015), y el exceso de asertividad puede perjudicar tanto como su falta (Ames y Flynn, 2007). Las habilidades, la experiencia, la inteligencia, los valores y la situación también importan, y nada de eso se mide aquí.",
-          "Los autoinformes son fáciles de inflar. El test comprueba la atención, la coherencia y la velocidad, pero quien se empeñe en quedar bien puede lograrlo. Tómate los primeros puestos del ranking con una sonrisa.",
-          "Los datos normativos son provisionales. Son estimaciones basadas en estadísticas típicas de ítems de personalidad de dominio público, no en personas que hayan hecho este test, así que toma cada percentil como una referencia aproximada. Este sitio no recoge respuestas anónimas; si eso cambia algún día, la política de privacidad lo dirá antes.",
+          "Los autoinformes son fáciles de inflar. El test comprueba la atención, la coherencia y la velocidad, pero quien se empeñe en quedar bien puede lograrlo. Es una de las razones por las que no hay ranking: el LQ es un espejo, no una competición.",
+          "Los datos normativos son provisionales. Son estimaciones basadas en estadísticas típicas de ítems de personalidad de dominio público, no en personas que hayan hecho este test, así que toma cada percentil como una referencia aproximada. Para mejorarlos, el test guarda los resultados anónimos de quienes dejan marcada la casilla de estadísticas: sus respuestas, su puntuación, el idioma y la fecha, sin nombre ni nada que identifique a la persona. Con esos resultados se construye la distribución real que aparece en la página de resultados y, cuando haya suficientes, servirán para recalibrar los datos normativos.",
           "Las personas de distintas culturas se describen de maneras diferentes. En algunas se tiende a responder con más modestia o más cerca del centro de la escala, así que lo mejor es comparar los LQ dentro de una misma versión lingüística del test.",
           "Una puntuación baja no es un veredicto. Muchas de las habilidades que convierten los rasgos en un liderazgo eficaz se pueden aprender (Zaccaro, 2007)."
         ]
@@ -562,11 +540,19 @@
       },
       {
         "q": "¿Por qué mi resultado aparece marcado como dudoso?",
-        "a": "Los resultados se marcan como dudosos cuando las respuestas parecen apresuradas, aleatorias, contradictorias o demasiado perfectas. Aun así, ves tu puntuación, pero no se publica en el ranking."
+        "a": "Los resultados se marcan como dudosos cuando las respuestas parecen apresuradas, aleatorias, contradictorias o demasiado perfectas. Aun así, ves tu puntuación, pero no se añade a las estadísticas del LQ."
       },
       {
         "q": "¿Qué pasa con mis respuestas?",
-        "a": "Se puntúan en tu navegador. Si publicas en el ranking semanal, tus respuestas se envían una vez para que el servidor pueda verificar la puntuación, y el ranking muestra tu apodo, tu LQ, tu arquetipo y tu país. Consulta la política de privacidad para más detalles."
+        "a": "Se puntúan en tu navegador. Si la casilla de estadísticas de la página de inicio del test está marcada (lo está, salvo que la desmarques), tus respuestas se envían una sola vez y se guardan junto con tu puntuación, el idioma y la fecha, sin nombre ni nada que te identifique. Con ellas se construye la distribución real de puntuaciones, y servirán para recalibrar los datos normativos. Si desmarcas la casilla, tus respuestas nunca salen de tu dispositivo. Consulta la política de privacidad para más detalles."
+      },
+      {
+        "q": "¿Mi percentil se basa en personas reales?",
+        "a": "Todavía no. El percentil de tu resultado sale de datos normativos provisionales. Cuando al menos 200 personas hayan añadido sus resultados, el gráfico “Dónde te sitúas” pasará a mostrar la distribución real y tu lugar en ella. Esos resultados también servirán para recalibrar los datos normativos."
+      },
+      {
+        "q": "¿Por qué no hay ranking?",
+        "a": "Porque el LQ es un test para conocerte, no una competición. Cuando respondes sobre ti, es fácil maquillar las respuestas, y un ranking premiaría justo eso. Mejor comparte tu tarjeta con tus amistades y mira dónde te sitúas entre todas las personas que han hecho el test."
       }
     ],
     "disclaimer_title": "Aviso",

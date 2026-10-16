@@ -1,53 +1,28 @@
-// Result screen: score board, archetype, traits, strengths and growth, sharing and the
-// weekly board.
+// Result screen: score board, archetype, traits, strengths and growth, sharing, and where the
+// score lands among everyone else's.
 
 import { DIM_IDS, LQ_MIN, encodeResult } from './scoring.js';
-import { fill, escapeHtml } from './i18n.js';
+import { fill, escapeHtml, sentenceGap } from './i18n.js';
 import { radarSvg, bellSvg, gaugeSvg } from './charts.js';
 import { archetypeIconSvg } from './icons.js';
 import { renderPoster } from './poster.js';
-import { mountShareBar, toast, canNativeShare, nativeShare } from '/assets/js/lib/share.js';
-import { submit, getTop, renderBoard, getPlayerName, cleanName, NAME_MAX, isGlobal, weekInfo } from '/assets/js/lib/leaderboard.js';
+import { mountDistribution } from './dist.js';
+import { contribute } from './stats.js';
+import { mountShareBar, toast, canNativeShare, nativeShare, copyText } from '/assets/js/lib/share.js';
 
-const GAME = 'leadership';
 let posterUrl = '';
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const coarsePointer = () => window.matchMedia?.('(pointer: coarse)').matches;
-// Japanese and Chinese run sentences together; everyone else separates them with a space.
-const sentenceGap = (lang) => (/^(ja|zh)/.test(lang) ? '' : ' ');
 
 const ICON_ALERT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.5 20h19L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><circle cx="12" cy="17.3" r="1.2" fill="currentColor"/></svg>';
 const ICON_RETAKE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v3.8h3.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON_SHARE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON_UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_VS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h15m-4-4 4 4-4 4M20 16H5m4-4-4 4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_CHART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6.5 17v-4m4 4V8m4 9v-6.5m4 6.5v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+const ICON_OK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="m8.2 12.2 2.6 2.6 5-5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 const ICON_GROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20v-8m0 2c0-4 2.7-6.6 7-6.6 0 4.1-2.8 6.6-7 6.6Zm0 2c0-3.3-2.4-5.5-6.2-5.5 0 3.3 2.4 5.5 6.2 5.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
-
-export function errorText(t, res) {
-  const e = t.ui.errors;
-  if (res.error && e[res.error]) return e[res.error];
-  if (res.status === 429) return e.rate_limited;
-  if (!res.status && res.global) return e.network;
-  return e.unknown;
-}
-
-export function boardOptions(t) {
-  const lb = t.ui.leaderboard;
-  return {
-    formatScore: (e) => fill(lb.score, { lq: e.score }),
-    formatMeta: (e) => {
-      const name = t.archetypes[e.detail?.archetype]?.name;
-      return name ? fill(lb.row_meta, { archetype: name }) : '';
-    },
-    locale: t.locale || t.lang,
-    labels: { title: lb.board_title, empty: lb.empty, local: lb.local, unavailable: lb.unavailable, resets: lb.resets, you: lb.you, units: lb.units },
-  };
-}
-
-export async function loadBoard(el, t, { fresh = false, limit = 10 } = {}) {
-  const data = await getTop(GAME, { limit, fresh });
-  renderBoard(el, data, boardOptions(t));
-  return data;
-}
 
 function countUp(el, to, delay = 0) {
   if (reducedMotion()) {
@@ -76,7 +51,7 @@ function countUp(el, to, delay = 0) {
 export function renderResult(view, ctx) {
   const { t, fmt, lang, r, last, shared } = ctx;
   const R = t.ui.result;
-  const lb = t.ui.leaderboard;
+  const D = t.ui.distribution;
   const arch = t.archetypes[r.archetype];
   const band = t.bands[r.band];
   const pct = fmt.pct(r.percentile);
@@ -142,21 +117,8 @@ export function renderResult(view, ctx) {
     .join('');
 
   const legend = shared
-    ? `<p class="lq-legend"><span class="lq-legend__you">${escapeHtml(lb.you)}</span><span class="lq-legend__them">${escapeHtml(fill(R.shared_headline, { lq: shared.lq }))}</span></p>`
+    ? `<p class="lq-legend"><span class="lq-legend__you">${escapeHtml(R.legend_you)}</span><span class="lq-legend__them">${escapeHtml(fill(R.shared_headline, { lq: shared.lq }))}</span></p>`
     : '';
-
-  const post = r.valid
-    ? `<form class="lq-post" data-post novalidate>
-  <h3 class="lq-post__title">${escapeHtml(lb.join_title)}</h3>
-  <label class="lq-post__label" for="lq-nick">${escapeHtml(lb.name_label)}</label>
-  <div class="lq-post__row">
-    <input class="lq-post__input" id="lq-nick" name="name" type="text" maxlength="${NAME_MAX}" autocomplete="nickname" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="${escapeHtml(lb.name_placeholder)}" aria-describedby="lq-nick-hint lq-post-status">
-    <button class="btn btn--primary lq-post__submit" type="submit" data-submit>${escapeHtml(lb.submit)}</button>
-  </div>
-  <p class="lq-post__hint" id="lq-nick-hint">${isGlobal() ? `${escapeHtml(lb.name_hint)}${sentenceGap(lang)}${escapeHtml(lb.best_only)}` : escapeHtml(lb.local_hint)}</p>
-  <p class="lq-post__status" id="lq-post-status" role="status" aria-live="polite" data-status></p>
-</form>`
-    : `<p class="lq-post-off">${ICON_ALERT}<span>${escapeHtml(lb.invalid)}</span></p>`;
 
   view.innerHTML = `<div class="container lq-result">
 ${validity}
@@ -186,7 +148,7 @@ ${validity}
     ${vs}
     <div class="lq-r-jump">
       <button class="btn btn--primary btn--sm lq-btn-go" type="button" data-jump="lq-share-title">${ICON_SHARE}<span>${escapeHtml(t.ui.share.share)}</span></button>
-      <button class="btn btn--ghost btn--sm" type="button" data-jump="lq-board-title">${escapeHtml(lb.view)}</button>
+      <button class="btn btn--ghost btn--sm" type="button" data-jump="lq-dist-title">${ICON_CHART}<span>${escapeHtml(D.title)}</span></button>
     </div>
   </div>
 </section>
@@ -241,20 +203,24 @@ ${validity}
   </div>
 </section>
 
-<section class="lq-r-social">
-  <div class="lq-share" aria-labelledby="lq-share-title">
+<div class="lq-r-social">
+  <section class="lq-share" aria-labelledby="lq-share-title">
     <h2 class="lq-section-title" id="lq-share-title">${escapeHtml(R.share_title)}</h2>
+    <p class="lq-share__note">${escapeHtml(R.share_note)}</p>
     <div class="lq-share__body">
       <figure class="lq-share__poster" data-poster><span class="lq-share__ph"></span></figure>
-      <div class="lq-share__bar" data-sharebar></div>
+      <div class="lq-share__side">
+        <div class="lq-share__bar" data-sharebar></div>
+        <button class="btn btn--ghost btn--sm lq-challenge" type="button" data-challenge>${ICON_VS}<span>${escapeHtml(t.ui.share.challenge)}</span></button>
+      </div>
     </div>
-  </div>
-  <div class="lq-board-card" aria-labelledby="lq-board-title">
-    <h2 class="lq-section-title" id="lq-board-title">${escapeHtml(lb.title)}</h2>
-    ${post}
-    <div class="lq-board-slot" data-board><p class="lq-board-loading">${escapeHtml(lb.loading)}</p></div>
-  </div>
-</section>
+  </section>
+  <section class="lq-where" aria-labelledby="lq-dist-title">
+    <h2 class="lq-section-title" id="lq-dist-title">${escapeHtml(D.title)}</h2>
+    <figure class="lq-dist" data-dist></figure>
+    <p class="lq-contrib" data-contrib-note role="status"></p>
+  </section>
+</div>
 
 <div class="lq-r-actions">
   <button class="btn btn--primary btn--lg" type="button" data-retake>${ICON_RETAKE}<span>${escapeHtml(R.retake)}</span></button>
@@ -263,17 +229,17 @@ ${validity}
 <p class="lq-r-disclaimer">${escapeHtml(t.ui.disclaimer)}</p>
 </div>`;
 
-  // A post from an earlier week no longer stands: that board has been reset.
-  let posted = last.posted?.rank && last.posted.week === weekInfo().key ? last.posted : null;
-
-  // Share. Only a post to the shared board earns the ranking line; a board kept on this
-  // device would make everyone "#1".
   const shareUrl = `${ctx.shareUrl}?r=${code}`;
   const st = t.share_text;
-  const tag = st.hashtag ? ` #${st.hashtag}` : '';
+  // Share sheets and most networks put the link after the text, so a line that ends in a colon
+  // ("Prove it:") is introducing the link. Its hashtag goes up front instead of in between.
+  const withTag = (s) => {
+    if (!st.hashtag) return s;
+    return /[:：]$/.test(s) ? `#${st.hashtag} ${s}` : `${s} #${st.hashtag}`;
+  };
+  const challengeText = fill(st.challenge, { lq: r.lq });
   const shareText = () => {
-    if (posted?.global) return fill(st.leaderboard, { rank: posted.rank, lq: r.lq });
-    if (shared) return fill(st.challenge, { lq: r.lq });
+    if (shared) return challengeText;
     if (r.valid) return fill(st.archetype, { archetype: arch.name, lq: r.lq });
     return fill(st.default, { lq: r.lq, pct });
   };
@@ -302,11 +268,11 @@ ${validity}
         } catch {
           file = undefined;
         }
-        if (await nativeShare({ url: shareUrl, text: shareText() + tag, title: shareTitle, file })) return;
+        if (await nativeShare({ url: shareUrl, text: withTag(shareText()), title: shareTitle, file })) return;
       }
       const target = document.getElementById(b.dataset.jump);
       if (!target) return;
-      (target.closest('.lq-share, .lq-board-card') || target).scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      (target.closest('.lq-share, .lq-where') || target).scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
       target.setAttribute('tabindex', '-1');
       target.focus({ preventScroll: true });
     }),
@@ -314,9 +280,9 @@ ${validity}
   countUp(view.querySelector('[data-lq-num]'), r.lq, ctx.revealDelay || 0);
 
   const s = t.ui.share;
-  const bar = mountShareBar(view.querySelector('[data-sharebar]'), {
+  mountShareBar(view.querySelector('[data-sharebar]'), {
     url: shareUrl,
-    text: shareText() + tag,
+    text: withTag(shareText()),
     title: shareTitle,
     lang,
     image: poster,
@@ -339,62 +305,35 @@ ${validity}
     })
     .catch(() => fig.remove());
 
-  // Leaderboard.
-  const boardEl = view.querySelector('[data-board]');
-  loadBoard(boardEl, t, { fresh: true });
+  // A friend gets the same link with a dare instead of a summary: the share sheet on a phone,
+  // the clipboard elsewhere.
+  view.querySelector('[data-challenge]').addEventListener('click', async () => {
+    if (coarsePointer() && canNativeShare() && (await nativeShare({ url: shareUrl, text: withTag(challengeText), title: shareTitle }))) return;
+    if (await copyText(`${challengeText} ${shareUrl}`)) toast(s.challenge_copied);
+  });
 
-  const form = view.querySelector('[data-post]');
-  if (form) {
-    const input = form.querySelector('input');
-    const btn = form.querySelector('[data-submit]');
-    const status = form.querySelector('[data-status]');
-    input.value = last.posted?.name || getPlayerName() || '';
-
-    const showPosted = (p) => {
-      const msg = p.global ? (p.best ? lb.posted_best : lb.posted) : lb.posted_local;
-      status.textContent = fill(msg, { rank: p.rank });
-      status.classList.add('is-ok');
-      form.classList.add('is-posted');
-      btn.disabled = true;
-      input.readOnly = true;
-    };
-    if (posted) showPosted(posted);
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (form.classList.contains('is-posted')) return;
-      status.classList.remove('is-ok', 'is-err');
-      const name = cleanName(input.value);
-      if (!name) {
-        status.textContent = t.ui.errors.name;
-        status.classList.add('is-err');
-        input.focus();
-        return;
-      }
-      btn.disabled = true;
-      btn.textContent = lb.submitting;
-      const res = await submit(
-        GAME,
-        { name, answers: last.answers, lang, durationMs: last.durationMs },
-        { localScore: r.lq, detail: { archetype: r.archetype, pct: r.percentile, lang } },
-      );
-      btn.textContent = lb.submit;
-      if (!res.ok) {
-        btn.disabled = false;
-        status.textContent = errorText(t, res);
-        status.classList.add('is-err');
-        return;
-      }
-      input.value = name;
-      posted = { rank: res.rank, global: res.global, best: res.best, week: res.week || weekInfo().key, name };
-      last.posted = posted;
-      ctx.onSaveLast(last);
-      showPosted(posted);
-      bar.update({ text: shareText() + tag });
-      toast(fill(res.global ? t.templates.rank : lb.posted_local, { rank: res.rank }));
-      loadBoard(boardEl, t, { fresh: true });
-    });
-  }
+  mountDistribution(view.querySelector('[data-dist]'), { t, fmt, r });
+  showContribution(view.querySelector('[data-contrib-note]'), t, last, lang);
 
   document.title = fill(t.templates.document_title, { lq: r.lq, archetype: arch.name });
+}
+
+// One line under the chart saying whether this result went into the statistics.
+function showContribution(el, t, last, lang) {
+  const C = t.ui.contribute;
+  const say = (state) => {
+    const text = C[state] || C.failed;
+    el.dataset.state = state;
+    el.innerHTML = `${state === 'added' ? ICON_OK : ICON_OFF}<span>${escapeHtml(text)}${sentenceGap(text)}<a href="/privacy/#lq-test-statistics">${escapeHtml(C.privacy)}</a></span>`;
+  };
+  let done = false;
+  // Only say "sending" if the answer takes a moment; most of the time it's already known.
+  const pending = setTimeout(() => {
+    if (!done) say('sending');
+  }, 250);
+  contribute(last, lang).then((state) => {
+    done = true;
+    clearTimeout(pending);
+    if (el.isConnected) say(state);
+  });
 }

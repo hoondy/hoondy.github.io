@@ -2,7 +2,7 @@
 //
 // Everything about the questionnaire that does not depend on language lives here: the trait
 // model, item keys, presentation order, norms and the composite. The page scores answers with
-// it and the leaderboard worker re-scores submissions with the same code, so keep it free of
+// it and the statistics worker re-scores submissions with the same code, so keep it free of
 // DOM, timers and network calls. All wording lives in _data/leadership/<lang>.json.
 //
 // Answers are an array in ITEMS order (not presentation order):
@@ -54,9 +54,9 @@ export const MAX_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 //
 // `norm` is the mean and SD of the 1..5 dimension score in the general adult population.
 // These are provisional: they come from a response model whose item means and spreads follow
-// typical IPIP item statistics (item means 2.3..3.8, SD about 1.1). The leaderboard stores only
-// the LQ, so real norms would need answers collected separately, with consent; posted scores
-// alone would also be a self-selected, high-scoring sample.
+// typical IPIP item statistics (item means 2.3..3.8, SD about 1.1). Results people choose to
+// add anonymously (answers included) are kept by the worker so the norms can be re-estimated
+// once there are enough of them; bump VERSION when they change.
 
 export const DIMENSIONS = [
   { id: 'drive', validity: 0.36, norm: { mean: 3.38, sd: 0.81 } },
@@ -268,7 +268,7 @@ export const BANDS = Object.freeze([
 // ---------------------------------------------------------------------------------------------
 // Answer quality
 
-// Hard flags make a result invalid (shown with a warning, not accepted on the leaderboard).
+// Hard flags make a result invalid (shown with a warning, never added to the statistics).
 export const HARD_FLAGS = Object.freeze([
   'incomplete', 'too_fast', 'attention', 'straightline', 'inconsistent', 'acquiescence', 'idealized', 'erratic',
 ]);
@@ -334,7 +334,7 @@ const round = (x, dp = 0) => {
 const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
 
 // Percentile for a given LQ. Derived from the rounded LQ so that the same LQ always shows the
-// same percentile, on the page, in share text and on the leaderboard.
+// same percentile, on the page and in share text.
 export function pctFromLq(lq) {
   return round(clamp(normalCdf((lq - LQ_MEAN) / LQ_SD) * 100, 0.1, 99.9), 1);
 }
@@ -554,7 +554,7 @@ export function scoreAnswers(answers, { durationMs } = {}) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Leaderboard
+// Submissions
 
 const fail = (error) => ({ ok: false, error });
 
@@ -562,9 +562,9 @@ const fail = (error) => ({ ok: false, error });
 const REJECT_ORDER = ['incomplete', 'too_fast', 'attention', 'straightline', 'acquiescence', 'inconsistent', 'erratic', 'idealized'];
 
 /**
- * Server-side check for a leaderboard submission. The client never sends a score; the
- * answers are re-scored here. `name` is cleaned by the worker, not here.
- * body: { name, answers: number[ITEMS.length], lang, durationMs }
+ * Check for a result sent to the anonymous statistics, run by the worker and, before sending,
+ * by the page. The client never sends a score; the answers are re-scored here.
+ * body: { answers: number[ITEMS.length], lang, durationMs }
  */
 export function validateSubmission(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return fail('bad_body');
@@ -593,7 +593,7 @@ export function validateSubmission(body) {
 //
 // A short, URL-safe code for ?r=: version, LQ, archetype and the eight dimension percentiles,
 // in base 36 with a check character. It only drives what a shared link displays; anyone can
-// make one up, which is fine because the leaderboard never trusts it.
+// make one up, which is fine because nothing on the server ever reads it.
 //
 //   [0]      format version ('a')
 //   [1..2]   LQ - LQ_MIN            (0..90)

@@ -4,9 +4,10 @@
 
 import { ITEMS, ARCHETYPE_IDS, scoreAnswers, decodeResult, pctFromLq } from './scoring.js';
 import { loadStrings, makeFormat, fill, escapeHtml } from './i18n.js';
-import { loadProgress, saveProgress, clearProgress, answeredCount, loadLast, saveLast, loadShared, saveShared } from './store.js';
+import { loadProgress, saveProgress, clearProgress, answeredCount, loadLast, saveLast, loadShared, saveShared, loadContribute, saveContribute } from './store.js';
 import { createQuiz } from './quiz.js';
-import { renderResult, loadBoard } from './result.js';
+import { renderResult } from './result.js';
+import { getDistribution } from './stats.js';
 import { radarSvg } from './charts.js';
 import { archetypeIconSvg } from './icons.js';
 import { toast } from '/assets/js/lib/share.js';
@@ -169,8 +170,10 @@ function boot(root) {
   function finish(state) {
     const durationMs = Math.max(1, Math.round(state.durationMs || state.elapsed || 0));
     const answers = state.answers.slice();
-    rememberLast({ answers, durationMs, lang, ts: Date.now(), posted: null });
+    rememberLast({ answers, durationMs, lang, ts: Date.now() });
     clearProgress();
+    // Fetch the distribution while the loading screen plays, so the chart is ready.
+    getDistribution();
     quiz?.destroy();
     quiz = null;
     history.replaceState(history.state, '', `${location.pathname}${location.search}#result`);
@@ -218,7 +221,6 @@ function boot(root) {
       shared: sessionShared,
       // Hold the count-up until the doors are about halfway open, so it plays in view.
       revealDelay: arriving ? 600 : 0,
-      onSaveLast: rememberLast,
       onRetake: () => enterQuiz(true),
     });
     show('result');
@@ -251,7 +253,6 @@ function boot(root) {
     clearTimeout(loadingTimer);
     show('landing');
     refreshLanding();
-    loadBoard(root.querySelector('[data-board-landing]'), t);
   }
 
   function route() {
@@ -295,6 +296,12 @@ function boot(root) {
       document.getElementById('science')?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth' });
     }
   });
+
+  const optIn = root.querySelector('[data-contribute]');
+  if (optIn) {
+    optIn.checked = loadContribute();
+    optIn.addEventListener('change', () => saveContribute(optIn.checked));
+  }
 
   window.addEventListener('hashchange', route);
   window.addEventListener('popstate', route);

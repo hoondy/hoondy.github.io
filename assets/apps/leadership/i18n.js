@@ -41,15 +41,18 @@ export function fill(str, vars = {}) {
 
 export function makeFormat(t) {
   const locale = t.locale || t.lang || 'en';
-  let pctFmt;
-  try {
-    pctFmt = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
-  } catch {
-    pctFmt = new Intl.NumberFormat('en', { maximumFractionDigits: 0 });
-  }
+  const numberFormat = (opts) => {
+    try {
+      return new Intl.NumberFormat(locale, opts);
+    } catch {
+      return new Intl.NumberFormat('en', opts);
+    }
+  };
+  const intFmt = numberFormat({ maximumFractionDigits: 0 });
+  const shareFmt = numberFormat({ style: 'percent', maximumFractionDigits: 1 });
   // The norms are provisional, so a decimal (or a 0 or 100 at the extremes) would claim more
   // precision than they have.
-  const pct = (n) => pctFmt.format(Math.min(99, Math.max(1, Math.round(n))));
+  const pct = (n) => intFmt.format(Math.min(99, Math.max(1, Math.round(n))));
 
   const list = (items) => {
     const sep = t.templates?.list_separator ?? ', ';
@@ -58,8 +61,19 @@ export function makeFormat(t) {
     return items.slice(0, -1).join(sep) + last + items[items.length - 1];
   };
 
-  return { pct, list };
+  const num = (n) => intFmt.format(n);
+  // A share of people (0..1) as a percentage, for the chart's text alternative.
+  const share = (x) => shareFmt.format(x);
+
+  return { pct, list, num, share };
 }
+
+// Japanese and Chinese sentences follow one another without a space (after 。 or a trailing
+// …); everything else, Korean included, takes one. Deciding by the text rather than the page
+// language also keeps an English fallback string on a Chinese page from running together.
+const CJK_END = /[　-〿぀-ヿ㐀-鿿＀-￯]…*$/;
+export const sentenceGap = (s) => (CJK_END.test(String(s ?? '')) ? '' : ' ');
+export const joinSentences = (a, b) => `${a}${sentenceGap(a)}${b}`;
 
 export function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
