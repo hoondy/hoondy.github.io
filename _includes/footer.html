@@ -26,11 +26,8 @@
       <nav class="site-footer__panel" aria-labelledby="footer-elsewhere">
         <h2 id="footer-elsewhere">{{ ui.elsewhere }}</h2>
         <ul{{ en_attr }}>
-          <li><a href="{{ site.author.lab }}">Lee Lab at Mount Sinai</a></li>
-          <li><a href="{{ site.author.scholar }}">Google Scholar</a></li>
           <li><a href="https://github.com/{{ site.author.github }}">GitHub</a></li>
           <li><a href="https://x.com/{{ site.author.twitter }}">X</a></li>
-          <li><a href="https://www.linkedin.com/in/{{ site.author.linkedin }}">LinkedIn</a></li>
           <li><a href="{{ '/feed.xml' | relative_url }}"{% unless page_lang == 'en' %} lang="{{ page_lang }}"{% endunless %}>{{ ui.rss }}</a></li>
         </ul>
       </nav>

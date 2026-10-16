@@ -3,11 +3,14 @@
   {% include billboard.html format="horizontal|rectangle|vertical" variant="large" %}
   The AdSense unit sits on top of a house-ad layer (promos for the apps). In production
   site.js requests an ad once the panel is visible; the promos appear only once AdSense
-  reports no fill (or never answers). Sizes are fixed per format and container width
-  (see main.css) so nothing shifts. The panel stays in English on translated pages.
+  reports no fill (or never answers). Each format has its own unit (site.adsense.slots).
+  Horizontal is responsive: 970x250, 728x90 or 320x100 by container width. Rectangle
+  (300x250) and vertical (300x600) are fixed-size units, so a vertical panel without
+  room for 300px is hidden and never requested. Sizes live in main.css so nothing
+  shifts. The panel stays in English on translated pages.
   bb_count numbers the panels on a page so neighbours open on different promos; a
   layout that adds panels after the page content sets it from the panels in content.
-  Pages with `ads: false` get the promos only.
+  Pages with `ads: false`, and panels included with promos_only=true, get the promos only.
 {%- endcomment -%}
 {%- assign bb_format = include.format | default: "horizontal" -%}
 {%- assign bb_slot = site.adsense.slots[bb_format] | default: site.adsense.slots.default -%}
@@ -37,7 +40,7 @@
         </a>
         {%- endfor %}
       </div>
-      {%- if site.adsense.client and bb_slot and page.ads != false and page.billboards != false %}
+      {%- if site.adsense.client and bb_slot and page.ads != false and page.billboards != false and include.promos_only != true %}
       <ins class="adsbygoogle billboard__ad" data-ad-client="{{ site.adsense.client }}" data-ad-slot="{{ bb_slot }}"></ins>
       {%- endif %}
     </div>

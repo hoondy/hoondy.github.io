@@ -17,10 +17,10 @@ blog:
   hex: "#FF6319"
   shape: circle
 
-apps:
+projects:
   bullet: S
-  name: Apps
-  url: /apps/
+  name: Projects
+  url: /projects/
   color: var(--line-shuttle)
   hex: "#808183"
   shape: circle

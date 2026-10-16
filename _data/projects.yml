@@ -1,0 +1,57 @@
+# Earlier side projects, all from the blog, oldest first. Shown on the home page and on
+# /projects/. `posts` are the blog posts behind each one; the first is the main link.
+
+earlier:
+  - title: "Brain teasers"
+    kind: "Puzzles"
+    years: "2011–2013"
+    blurb: "A prisoners-and-hats riddle billed as an IQ 148 test, a Mensa-style picture puzzle, and a geometry problem from a Korean 4th-grade math book."
+    posts:
+      - { label: "IQ 148 Quiz", url: /2011/08/22/iq-148-quiz/ }
+      - { label: "Mensa Quiz", url: /2013/01/24/mensa-quiz/ }
+      - { label: "4th-grade math", url: /2013/01/24/korean-4th-grade-math-quiz/ }
+
+  - title: "BMW 1M onboard"
+    kind: "Driving videos"
+    years: "2012–2013"
+    blurb: "GoPro footage from behind the wheel of a BMW 1M: a time-lapse through Seoul, then the mountain roads of Gangwon-do."
+    posts:
+      - { label: "Seoul", url: /2012/08/03/bmw-1m-onboard-driving-in-seoul-korea/ }
+      - { label: "Gangwon-do", url: /2013/04/24/driving-in-korea-ea-b0-95-ec-9b-90-eb-8f-84-ed-8e-b8/ }
+
+  - title: "Caffe on a Mac"
+    kind: "Install guide"
+    years: "2015"
+    blurb: "A step-by-step guide to building the Caffe deep learning framework on a MacBook with an NVIDIA GPU, written after a couple of days of fighting it."
+    posts:
+      - { label: "Read the guide", url: /2015/04/03/how-to-install-caffe-on-mac-os-x-10-10-for-dummies-like-me/ }
+
+  - title: "응메 Reply Meh"
+    kind: "iPhone app"
+    years: "2016"
+    blurb: "A one-button iPhone app that plays the “meh” from Reply 1988 for life’s awkward moments, and my first on the App Store."
+    posts:
+      - { label: "About the app", url: /2016/01/15/reply-meh/ }
+
+# The station's own history, from the blog. The last stop is today.
+history:
+  - year: "2010"
+    title: "Station opens"
+    text: "First post, in May: video from an air show at Andrews Air Force Base."
+    url: /2010/05/18/2010-joint-service-open-house-and-airshow/
+  - year: "2011"
+    title: "A fresh start"
+    text: "Relaunched on a new server, with posts going straight to Facebook and the first AdSense ads."
+    url: /2011/08/19/a-fresh-start/
+  - year: "2016"
+    title: "Reply Meh"
+    text: "My first iPhone app goes live on the App Store."
+    url: /2016/01/15/reply-meh/
+  - year: "2016"
+    title: "Goodbye WordPress"
+    text: "The blog moves to Jekyll on GitHub Pages, where it still lives."
+    url: /2016/05/12/goodbye-wordpress-hello-jekyll/
+  - year: "2026"
+    title: "Hoondy Sq"
+    text: "Rebuilt as a subway station, with the LQ Test, Rush Hour and Scorched Borough."
+    url: /projects/

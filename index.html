@@ -6,23 +6,25 @@ seo:
 ---
 {%- assign apps_list = "" | split: "" -%}
 {%- for pair in site.data.apps -%}{%- assign apps_list = apps_list | push: pair[0] -%}{%- endfor -%}
-{%- assign recent = site.posts | slice: 0, 5 -%}
+{%- assign recent = site.posts | slice: 0, 4 -%}
 {%- comment -%} Trains for the arrivals board: apps and recent posts, interleaved. {%- endcomment -%}
-{%- capture order -%}a0 p0 a1 p1 a2 p2 p3 p4{%- endcapture -%}
+{%- capture order -%}a0 p0 a1 p1 a2 p2 p3{%- endcapture -%}
 {%- assign order = order | split: " " -%}
 {%- assign minutes = "2,4,7,9,12" | split: "," -%}
+{%- comment -%} The blog section skips posts already shown as earlier projects. {%- endcomment -%}
+{%- capture project_urls -%}{% for stop in site.data.projects.earlier %}{% for p in stop.posts %}|{{ p.url }}{% endfor %}{% endfor %}|{%- endcapture -%}
 
 <section class="hero tiles" aria-labelledby="hero-title">
   <div class="container hero__grid">
     <div class="hero__intro">
       {% include mosaic.html sub="New York · Est. 2010" %}
       <div class="hero__plate wall-plate">
-        <h1 class="hero__title" id="hero-title">Donghoon Lee, <span>computational biologist in NYC.</span></h1>
-        <p class="hero__text">I study the human brain one cell at a time at Mount Sinai. This is my personal station: a blog that goes back to 2010, plus a few small games and tests worth a second ride.</p>
+        <h1 class="hero__title" id="hero-title">Side projects, <span>now arriving.</span></h1>
+        <p class="hero__text">Trains from here run to two browser games, a personality test, a blog that goes back to 2010, and whatever gets built next. Free to ride, no account needed.</p>
       </div>
       <div class="hero__actions">
-        <a class="btn btn--primary btn--lg" href="{{ '/apps/' | relative_url }}">See the lines {% include icon.html name="arrow" %}</a>
-        <a class="btn btn--ghost btn--lg" href="{{ '/about/' | relative_url }}">About me</a>
+        <a class="btn btn--primary btn--lg" href="{{ '/projects/' | relative_url }}">See the projects {% include icon.html name="arrow" %}</a>
+        <a class="btn btn--ghost btn--lg" href="{{ '/blog/' | relative_url }}">Read the blog</a>
       </div>
     </div>
 
@@ -46,7 +48,7 @@ seo:
         </li>
         {%- endfor %}
       </ol>
-      <div class="arrivals__ticker" aria-hidden="true"><span>Welcome to Hoondy Sq &middot; Transfer here for the 1, 7 and G &middot; B trains run on a relaxed schedule &middot; Stand clear of the closing doors, please</span></div>
+      <div class="arrivals__ticker" aria-hidden="true"><span>Welcome to Hoondy Sq &middot; Transfer here for the 1, 7 and G &middot; B trains run on a relaxed schedule &middot; New lines under construction &middot; Stand clear of the closing doors, please</span></div>
       <script type="application/json" data-arrivals-data>
       [
       {%- for slot in order -%}
@@ -72,9 +74,9 @@ seo:
     <div class="section-head">
       <h2 class="signpost sign" id="lines-title">
         <span class="bullets">{%- for key in apps_list %}{% assign a = site.data.apps[key] %}{% include bullet.html letter=a.bullet color=a.color shape=a.shape scale="sm" %}{% endfor -%}</span>
-        Lines in service
+        Now running
       </h2>
-      <a class="section-head__link" href="{{ '/apps/' | relative_url }}">Service map {% include icon.html name="arrow" %}</a>
+      <a class="section-head__link" href="{{ '/projects/' | relative_url }}">All projects {% include icon.html name="arrow" %}</a>
     </div>
     <div class="lines-grid">
       {%- for key in apps_list %}
@@ -105,6 +107,16 @@ seo:
   {% include billboard.html format="horizontal" variant="large" %}
 </section>
 
+<section class="section" aria-labelledby="earlier-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="signpost sign" id="earlier-title">{% include bullet.html line="projects" scale="sm" %} Earlier stops</h2>
+      <p class="section-head__note">Side projects from the blog, oldest first.</p>
+    </div>
+    {% include earlier-stops.html construction=true %}
+  </div>
+</section>
+
 <section class="section" aria-labelledby="posts-title">
   <div class="container">
     <div class="section-head">
@@ -112,8 +124,14 @@ seo:
       <a class="section-head__link" href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts {% include icon.html name="arrow" %}</a>
     </div>
     <ol class="post-list post-list--grid">
-      {%- for post in site.posts limit: 6 %}
+      {%- assign shown = 0 %}
+      {%- for post in site.posts %}
+      {%- assign key = post.url | prepend: "|" | append: "|" %}
+      {%- unless project_urls contains key %}
       {% include post-card.html post=post %}
+      {%- assign shown = shown | plus: 1 %}
+      {%- if shown >= 2 %}{% break %}{% endif %}
+      {%- endunless %}
       {%- endfor %}
     </ol>
   </div>
@@ -122,12 +140,12 @@ seo:
 <section class="section" aria-labelledby="about-title">
   <div class="container about-strip">
     <div class="card about-strip__card">
-      <p class="eyebrow">{% include bullet.html line="about" scale="sm" %} About the stationmaster</p>
-      <h2 id="about-title">Hi, I’m Donghoon.</h2>
-      <p>I’m an Assistant Professor of Psychiatry and of Genetics and Genomic Sciences at the Icahn School of Medicine at Mount Sinai, where my lab builds single-cell maps of the human brain to learn what makes it vulnerable to disease. This site is where I keep my side projects.</p>
+      <p class="eyebrow">{% include bullet.html line="about" scale="sm" %} About this station</p>
+      <h2 id="about-title">Built for fun, one line at a time.</h2>
+      <p>Hoondy Sq started in 2010 as a blog about gadgets, cars, puzzles and whatever else came up. These days the side projects live here too.</p>
       <div class="hero__actions">
-        <a class="btn btn--primary" href="{{ '/about/' | relative_url }}">More about me {% include icon.html name="arrow" %}</a>
-        <a class="btn btn--ghost" href="{{ site.author.lab }}">Lee Lab {% include icon.html name="external" %}</a>
+        <a class="btn btn--primary" href="{{ '/about/' | relative_url }}">Meet the stationmaster {% include icon.html name="arrow" %}</a>
+        <a class="btn btn--ghost" href="mailto:{{ site.author.email }}">Suggest a line</a>
       </div>
     </div>
     {% include billboard.html format="rectangle" %}

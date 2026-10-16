@@ -5,6 +5,14 @@ layout: default
 {%- if page.collection == "posts" -%}{%- assign is_post = true -%}{%- endif -%}
 {%- assign show_ads = true -%}
 {%- if page.billboards == false -%}{%- assign show_ads = false -%}{%- endif -%}
+{%- assign words = content | strip_html | number_of_words -%}
+{%- comment -%}
+  A post that is mostly a video or a few photos keeps its panels, but they show only
+  the promos (adsense.min_words; default.html leaves the ad loader out to match).
+{%- endcomment -%}
+{%- assign promos_only = false -%}
+{%- assign min_words = site.adsense.min_words | default: 0 -%}
+{%- if is_post and words < min_words -%}{%- assign promos_only = true -%}{%- endif -%}
 {%- comment -%} Count the panels already in the page so the ones here open on other promos. {%- endcomment -%}
 {%- assign bb_count = content | split: ' data-billboard data-format=' | size | minus: 1 -%}
 <main id="main" class="page">
@@ -23,7 +31,6 @@ layout: default
       {%- endif %}
       <h1 class="post__title">{{ page.title }}</h1>
       {%- if is_post %}
-      {%- assign words = content | strip_html | number_of_words -%}
       {%- assign minutes = words | divided_by: 220 | plus: 1 %}
       <div class="page-head__meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
@@ -74,13 +81,13 @@ layout: default
         </div>
         {%- if show_ads %}
         <div class="post__aside">
-          <div class="kiosk">{% include billboard.html format="vertical" %}</div>
+          <div class="kiosk">{% include billboard.html format="vertical" promos_only=promos_only %}</div>
         </div>
         {%- endif %}
       </div>
 
       {%- if show_ads %}
-      {% include billboard.html format="horizontal" %}
+      {% include billboard.html format="horizontal" promos_only=promos_only %}
       {%- endif %}
 
       {%- if is_post %}

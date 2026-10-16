@@ -1,6 +1,6 @@
 ---
 title: DONGHOON + HAYOUNG
-description: "Donghoon and Hayoung, May 2014."
+description: "A wedding announcement, May 2014."
 date: 2014-05-03T13:31:26+00:00
 author: Hoondy
 layout: single

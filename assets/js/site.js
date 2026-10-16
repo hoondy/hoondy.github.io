@@ -196,6 +196,10 @@ function setupHouse(board) {
   board.addEventListener('billboardstate', syncRotation);
 }
 
+// Rectangle and vertical are fixed-size AdSense units: Google draws them at exactly
+// this size whatever the slot measures, so a screen of any other size is never filled.
+const FIXED_SIZE = { rectangle: [300, 250], vertical: [300, 600] };
+
 function setupAds(boards) {
   const units = [];
 
@@ -213,6 +217,8 @@ function setupAds(boards) {
       const r = u.frame.getBoundingClientRect();
       ok = r.left >= -0.5 && r.right <= document.documentElement.clientWidth + 0.5;
     }
+    const size = FIXED_SIZE[u.format];
+    if (size && (u.screen.offsetWidth !== size[0] || u.screen.offsetHeight !== size[1])) ok = false;
     if (!ok) u.board.dataset.fit = 'no';
     return ok;
   };
@@ -268,6 +274,7 @@ function setupAds(boards) {
     const unit = {
       board,
       ins,
+      format: board.dataset.format,
       frame: board.querySelector('.billboard__frame'),
       screen: board.querySelector('.billboard__screen'),
       pushed: false,
@@ -507,7 +514,34 @@ function initShare() {
   });
 }
 
-for (const init of [initTheme, initMenu, initClock, initBillboards, initArrivals, initComments, initSmilies, initShare]) {
+/* Privacy and cookie settings (privacy page) ------------------------------------ */
+
+// Calls wait in Google's queue until its consent tag has loaded; on a page where it
+// never loads (local builds, blockers) they simply never run.
+function googlefcQueue(item) {
+  const fc = (window.googlefc = window.googlefc || {});
+  (fc.callbackQueue = fc.callbackQueue || []).push(item);
+}
+
+// The button reopens Google's consent message. It stays hidden unless that message
+// applies to this visitor (the EEA, the UK and Switzerland), since elsewhere there is
+// no choice to change.
+function initConsentSettings() {
+  const box = document.querySelector('[data-consent-settings]');
+  const button = box?.querySelector('[data-consent-open]');
+  if (!button) return;
+  googlefcQueue({
+    CONSENT_API_READY: () => {
+      if (typeof window.__tcfapi !== 'function') return;
+      window.__tcfapi('addEventListener', 2, (data, ok) => {
+        if (ok && data?.gdprApplies) box.hidden = false;
+      });
+    },
+  });
+  button.addEventListener('click', () => googlefcQueue(() => window.googlefc.showRevocationMessage()));
+}
+
+for (const init of [initTheme, initMenu, initClock, initBillboards, initArrivals, initComments, initSmilies, initShare, initConsentSettings]) {
   try {
     init();
   } catch (err) {

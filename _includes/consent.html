@@ -1,0 +1,11 @@
+{%- comment -%}
+  Google's Privacy & messaging tag, for pages without the AdSense loader. It shows the
+  consent message to visitors in the EEA, the UK and Switzerland and passes their choice
+  on to Google Analytics, so a page without ads still asks, and remembers, the same way.
+  The second script is Google's own snippet that tells the tag it is on the page.
+{%- endcomment -%}
+{%- if site.adsense.client -%}
+{%- assign fc_pub = site.adsense.client | remove_first: "ca-" -%}
+<script async src="https://fundingchoicesmessages.google.com/i/{{ fc_pub }}?ers=1"></script>
+<script>(function () { function signalGooglefcPresent() { if (!window.frames['googlefcPresent']) { if (document.body) { var iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe); } else { setTimeout(signalGooglefcPresent, 0); } } } signalGooglefcPresent(); })();</script>
+{%- endif -%}

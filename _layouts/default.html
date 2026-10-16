@@ -9,6 +9,12 @@
 {%- assign ads_on = false -%}
 {%- if jekyll.environment == "production" and site.adsense.client -%}{%- assign ads_on = true -%}{%- endif -%}
 {%- if page.ads == false or page.billboards == false -%}{%- assign ads_on = false -%}{%- endif -%}
+{%- if ads_on and page.collection == "posts" -%}
+  {%- comment -%} Same test as single.html: a near-empty post gets no ad code at all. {%- endcomment -%}
+  {%- assign min_words = site.adsense.min_words | default: 0 -%}
+  {%- assign post_words = page.content | strip_html | number_of_words -%}
+  {%- if post_words < min_words -%}{%- assign ads_on = false -%}{%- endif -%}
+{%- endif -%}
 <!doctype html>
 <html lang="{% if page_lang == 'zh' %}zh-Hans{% else %}{{ page_lang }}{% endif %}"{% if ads_on %} data-ads="on"{% endif %}>
 <head>

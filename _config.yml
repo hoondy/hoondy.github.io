@@ -2,8 +2,8 @@
 locale         : "en-US"
 lang           : "en"
 title          : "Hoondy.com"
-tagline        : "Notes, games & experiments from NYC"
-description    : "Donghoon Lee's corner of the internet: a leadership test, a subway typing game, an artillery duel, and a blog going back to 2010."
+tagline        : "Side projects, games and odd ideas"
+description    : "Hoondy Sq, a small station for side projects, games and odd ideas: a leadership test, a subway typing game, an artillery duel, and a blog going back to 2010."
 url            : "https://hoondy.com"
 baseurl        : ""
 # Post permalinks are built from dates in UTC; changing this would move old post URLs.
@@ -11,43 +11,40 @@ timezone       : UTC
 logo           : /assets/img/icon-512.png
 
 author:
-  name         : "Donghoon Lee"
+  name         : "Hoondy"
   handle       : "hoondy"
   location     : "New York, NY"
   email        : "admin@hoondy.com"
   github       : "hoondy"
   twitter      : "hoondy"
-  linkedin     : "hoondy"
-  scholar      : "https://scholar.google.com/citations?user=_a8xSwwAAAAJ"
-  orcid        : "0000-0003-0453-6059"
-  lab          : "https://leelab.us"
-  # avatar     : /assets/img/avatar.jpg   # optional square photo for /about/; the monogram bullet is used without it
 
 twitter:
   username     : hoondy
 social:
-  name         : "Donghoon Lee"
+  name         : "Hoondy"
   links:
-    - "https://twitter.com/hoondy"
-    - "https://www.linkedin.com/in/hoondy"
+    - "https://x.com/hoondy"
     - "https://github.com/hoondy"
-    - "https://leelab.us"
 
-# Google AdSense. Every billboard falls back to `default` when its own slot is empty.
-# Create extra display units in AdSense and paste their slot ids to tune each size.
+# Google AdSense. Each billboard format has its own display unit and falls back to
+# `default` when its slot is empty. Vertical and rectangle are fixed-size units, so
+# those panels are always exactly 300x600 and 300x250 (or not shown at all).
 adsense:
   client       : "ca-pub-2034343186994327"
   slots:
-    default    : "7644190892"
-    horizontal : ""
-    rectangle  : ""
-    vertical   : ""
+    default    : "7644190892"   # hoondy_square (responsive)
+    horizontal : "9689722480"   # hoondy_horizontal (responsive)
+    rectangle  : "4317976303"   # hoondy_300_250 (fixed 300x250)
+    vertical   : "7929918250"   # hoondy_300_600 (fixed 300x600)
+  # Posts with fewer words than this are mostly a video or a few photos, which AdSense
+  # counts as low-value content. Their billboards show only the site's own promos.
+  min_words    : 100
 
 # Google Analytics 4 measurement id (loaded only in production builds).
 ga4_id         : "G-BPDW4JEWCM"
 
-# Weekly leaderboards. Leave empty to keep boards on each visitor's device;
-# set to the deployed worker URL (see server/leaderboard) to make them global.
+# Monthly game boards and the LQ score distribution. Leave empty to keep boards on each
+# visitor's device; set to the deployed worker URL (see server/leaderboard) to share them.
 leaderboard_api: "https://hoondy-leaderboard.hoondy-leaderboard.workers.dev"
 
 comments:

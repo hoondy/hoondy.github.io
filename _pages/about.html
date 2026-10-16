@@ -2,157 +2,65 @@
 layout: page
 title: About
 permalink: /about/
-description: "Donghoon Lee is an Assistant Professor at the Icahn School of Medicine at Mount Sinai in New York, where his lab uses single-cell genomics, human genetics and machine learning to study brain disorders."
+description: "Hoondy Sq is the personal site of Donghoon Lee, hoondy on most of the internet: small games, a personality test, side projects and a blog since 2010."
 body_class: layout-about
 seo:
   type: AboutPage
 ---
 {%- assign a = site.author -%}
-<section class="about-hero">
-  <div class="container about-hero__grid">
-    <div class="avatar" {% unless a.avatar %}role="img" aria-label="Monogram DL"{% endunless %}>
-      {%- if a.avatar -%}
-      <img src="{{ a.avatar | relative_url }}" alt="Portrait of {{ a.name }}" width="184" height="184">
-      {%- else -%}
-      <span aria-hidden="true">DL</span>
-      {%- endif -%}
-    </div>
-    <div>
-      <p class="eyebrow">{% include bullet.html line="about" scale="sm" %} About</p>
-      <h1 class="about-hero__name">Donghoon Lee</h1>
-      <p class="about-hero__role">Assistant Professor of Psychiatry and of Genetics and Genomic Sciences at the <strong>Icahn School of Medicine at Mount Sinai</strong>, New&nbsp;York.</p>
-      <ul class="chips about-hero__links" aria-label="Profiles">
-        <li><a class="chip" href="https://leelab.us">Lee Lab</a></li>
-        <li><a class="chip" href="{{ a.scholar }}">Google Scholar</a></li>
-        <li><a class="chip" href="https://orcid.org/{{ a.orcid }}">ORCID</a></li>
-        <li><a class="chip" href="https://github.com/{{ a.github }}">GitHub</a></li>
-        <li><a class="chip" href="https://www.linkedin.com/in/{{ a.linkedin }}">LinkedIn</a></li>
-        <li><a class="chip" href="https://x.com/{{ a.twitter }}">X</a></li>
-      </ul>
+{%- assign stops = site.data.projects.history -%}
+<header class="page-head page-head--sign about-head">
+  <div class="sign page-head__band">
+    <div class="container">
+      {% include bullet.html letter="H" color="var(--line-yellow)" dark=true %}
+      <div>
+        <h1 class="page-head__title">Hi, I’m Donghoon.</h1>
+        <p class="lede">hoondy on most of the internet.</p>
+      </div>
     </div>
   </div>
-</section>
+</header>
 
-<section class="container about-body">
+<div class="container section about-body">
   <div class="prose">
-    <p class="lede">I’m a computational biologist in New York City. I direct the Single Cell Neurogenomics Group, the <a href="https://leelab.us">Lee Lab</a>, in the Center for Disease Neurogenomics at Mount Sinai.</p>
-    <p>My lab connects single-cell genomics, human genetics and machine learning to understand what makes the brain vulnerable, and resilient, to disease. In practice that means building very large maps: we profile millions of individual cells from human brain tissue, then ask which cell types change in neurodegenerative and neuropsychiatric disorders, what those disorders share, and in which cells the genetic risk variants actually do their work.</p>
-    <p>I took the scenic route here. I trained as a biomedical engineer at Washington University in St. Louis, spent four years writing software at NCBI, the home of PubMed and GenBank, and then moved to Korea to work on cancer genomics at the National Cancer Center. I did my PhD in Computational Biology &amp; Bioinformatics at Yale with Mark Gerstein, where I contributed to the ENCODE and PCAWG consortia and built STARRPeaker for ENCODE, before coming to New York to start my lab.</p>
-    <p>Outside the lab I still like building things for the web, which is why this site exists.</p>
+    <p class="lede">I live in the New York / New Jersey area. Since 2010 this site has been my personal station for whatever I make for fun.</p>
+    <p>So far that’s two small games, a personality test, a few how-tos, and the odd idea that needed somewhere to go. By day I’m a scientist; if you’re curious about the day job, it lives at <a href="https://leelab.us">leelab.us</a>. This site is the other side of things.</p>
+    <p>The blog gives away what I like to play with. Cars and driving, with a <a href="{{ '/2012/08/03/bmw-1m-onboard-driving-in-seoul-korea/' | relative_url }}">BMW 1M and a GoPro</a>. Gadgets and <a href="{{ '/2012/06/13/ios-6-beta-hands-on/' | relative_url }}">iOS betas</a>. <a href="{{ '/categories/' | relative_url }}#quiz">Puzzles and quizzes</a>. Small apps, like <a href="{{ '/2016/01/15/reply-meh/' | relative_url }}">Reply Meh</a> for the iPhone. And tinkering, like the couple of days it took to get a <a href="{{ '/2015/04/03/how-to-install-caffe-on-mac-os-x-10-10-for-dummies-like-me/' | relative_url }}">deep learning framework building on a Mac</a>.</p>
+    <p>Hoondy Sq is the latest rebuild: the whole site as a New York subway station, with a few <a href="{{ '/projects/' | relative_url }}">lines</a> to ride. Thanks for stopping by.</p>
   </div>
-  <aside class="card about-facts" aria-label="At a glance">
-    <dl>
-      <div><dt>Now</dt><dd>Assistant Professor, Icahn School of Medicine at Mount Sinai</dd></div>
-      <div><dt>Lab</dt><dd>Single Cell Neurogenomics Group, Center for Disease Neurogenomics</dd></div>
-      <div><dt>Focus</dt><dd>Single-cell genomics, human genetics and machine learning for brain disorders</dd></div>
-      <div><dt>Based in</dt><dd>New York City area</dd></div>
-      <div><dt>Email</dt><dd><a href="mailto:donghoon.lee@mssm.edu">donghoon.lee@mssm.edu</a></dd></div>
+
+  <aside class="station-plate" aria-labelledby="plate-title">
+    <h2 class="station-plate__head sign" id="plate-title">{% include bullet.html letter="H" color="var(--line-yellow)" dark=true scale="sm" %} Station facts</h2>
+    <dl class="station-plate__facts">
+      <div><dt>Station</dt><dd>Hoondy Sq</dd></div>
+      <div><dt>Opened</dt><dd>May 2010</dd></div>
+      <div><dt>Stationmaster</dt><dd>Donghoon Lee <span class="station-plate__aka">(hoondy)</span></dd></div>
+      <div><dt>Location</dt><dd>New York / New Jersey</dd></div>
+      <div><dt>Lines</dt><dd class="station-plate__lines">
+        {%- for pair in site.data.apps %}{% assign app = pair[1] %}{% include bullet.html letter=app.bullet color=app.color shape=app.shape label=app.title %}{% endfor -%}
+        {%- include bullet.html line="blog" label="Blog" -%}
+      </dd></div>
     </dl>
   </aside>
-</section>
+</div>
 
-<section class="section" aria-labelledby="highlights-title">
+<section class="section" aria-labelledby="history-title">
   <div class="container">
     <div class="section-head">
-      <h2 class="signpost sign" id="highlights-title">{% include bullet.html letter="★" color="var(--line-yellow)" dark=true scale="sm" %} 2026 highlights</h2>
-    </div>
-    <div class="highlights">
-      <a class="card card--hover highlight-card" href="https://doi.org/10.1038/s41586-025-09573-z" style="--line: var(--line-red)">
-        <span class="highlight-card__journal"><em>Nature</em> <span class="highlight-card__tag led">Cover story</span></span>
-        <h3>Single-cell atlas of transcriptomic vulnerability across brain disorders</h3>
-        <p>PsychAD: a population-scale map of how each brain cell type changes across eight brain disorders, and what they share. First and co-corresponding author.</p>
-        <div class="highlight-card__stats">
-          <div><b>6.3M</b><span>nuclei</span></div>
-          <div><b>1,494</b><span>donors</span></div>
-          <div><b>8</b><span>brain disorders</span></div>
-        </div>
-      </a>
-      <a class="card card--hover highlight-card" href="https://doi.org/10.1038/s41588-026-02716-6" style="--line: var(--line-lime)">
-        <span class="highlight-card__journal"><em>Nature Genetics</em> <span class="highlight-card__tag led">Cover story</span></span>
-        <h3>Plasticity of human microglia and brain perivascular macrophages in aging and Alzheimer’s disease</h3>
-        <p>FreshMG: an atlas of the brain’s immune cells as we age and in Alzheimer’s disease. First and co-corresponding author, and I made the cover art too.</p>
-        <div class="highlight-card__stats">
-          <div><b>832,505</b><span>myeloid cells</span></div>
-          <div><b>1,607</b><span>donors</span></div>
-        </div>
-      </a>
-      <a class="card card--hover highlight-card highlight-card--wide" href="https://doi.org/10.1038/s41597-025-04687-5">
-        <span class="highlight-card__journal"><span><em>Scientific Data</em> &middot; 2025</span></span>
-        <h3>Population-scale cross-disorder atlas of the human prefrontal cortex at single-cell resolution</h3>
-        <p>The data resource behind PsychAD, released for everyone to use. Co-first author.</p>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="areas-title">
-  <div class="container">
-    <div class="section-head">
-      <h2 class="signpost sign" id="areas-title">{% include bullet.html line="about" scale="sm" %} What my lab works on</h2>
-    </div>
-    <ul class="areas">
-      <li class="card area">
-        {% include bullet.html letter="1" color="var(--line-red)" %}
-        <div><h3>Population-scale single-cell atlases</h3><p>Mapping how every cell type in the brain changes across disorders, and which changes they have in common.</p></div>
-      </li>
-      <li class="card area">
-        {% include bullet.html letter="2" color="var(--line-red)" %}
-        <div><h3>Microglia and brain immunity</h3><p>How the brain’s own immune cells shift with aging and in Alzheimer’s disease.</p></div>
-      </li>
-      <li class="card area">
-        {% include bullet.html letter="3" color="var(--line-red)" %}
-        <div><h3>Cell-type-specific genetics</h3><p>Finding the cells where genetic risk variants for brain disorders act.</p></div>
-      </li>
-      <li class="card area">
-        {% include bullet.html letter="4" color="var(--line-green)" %}
-        <div><h3>Machine learning</h3><p>Methods such as PASCode and iBrainMap that pull disease signals out of millions of single cells.</p></div>
-      </li>
-      <li class="card area">
-        {% include bullet.html letter="5" color="var(--line-green)" %}
-        <div><h3>Gene regulation and networks</h3><p>How regulatory elements and gene networks shape cell identity, going back to STARRPeaker for ENCODE.</p></div>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="route-title">
-  <div class="container">
-    <div class="section-head">
-      <h2 class="signpost sign" id="route-title">{% include bullet.html line="about" scale="sm" %} The route so far</h2>
+      <h2 class="signpost sign" id="history-title">{% include bullet.html line="about" scale="sm" %} Station history</h2>
+      <p class="section-head__note">From the blog, 2010 to now.</p>
     </div>
     <ol class="route">
-      <li class="route__stop">
-        <span class="route__years">2002–2007</span>
-        <span class="route__place">Washington University in St.&nbsp;Louis</span>
-        <span class="route__role">BS &amp; MS, Biomedical Engineering</span>
-      </li>
-      <li class="route__stop">
-        <span class="route__years">2007–2011</span>
-        <span class="route__place">NCBI</span>
-        <span class="route__role">Senior Software Engineer, National Center for Biotechnology Information</span>
-      </li>
-      <li class="route__stop">
-        <span class="route__years">2011–2014</span>
-        <span class="route__place">National Cancer Center Korea</span>
-        <span class="route__role">Scientist, Cancer Genomics Branch</span>
-      </li>
-      <li class="route__stop">
-        <span class="route__years">2014–2019</span>
-        <span class="route__place">Yale University</span>
-        <span class="route__role">PhD, Computational Biology &amp; Bioinformatics, with Mark Gerstein</span>
-        <span class="route__transfer" aria-label="Consortia"><span class="chip">ENCODE</span><span class="chip">PCAWG</span></span>
-      </li>
-      <li class="route__stop">
-        <span class="route__years">2019–2020</span>
-        <span class="route__place">Yale University</span>
-        <span class="route__role">Postdoctoral Associate</span>
-      </li>
-      <li class="route__stop route__stop--here">
-        <span class="route__years">Now</span>
-        <span class="route__place">Mount Sinai</span>
-        <span class="route__role">Assistant Professor, Icahn School of Medicine at Mount Sinai</span>
+      {%- for stop in stops %}
+      <li class="route__stop{% if forloop.last %} route__stop--here{% endif %}">
+        <span class="route__years">{{ stop.year }}</span>
+        <h3 class="route__place"><a href="{{ stop.url | relative_url }}">{{ stop.title }}</a></h3>
+        <p class="route__role">{{ stop.text }}</p>
+        {%- if forloop.last %}
         <span class="route__here led">You are here</span>
+        {%- endif %}
       </li>
+      {%- endfor %}
     </ol>
   </div>
 </section>
@@ -160,49 +68,25 @@ seo:
 <section class="section" aria-labelledby="contact-title">
   <div class="container">
     <div class="section-head">
-      <h2 class="signpost sign" id="contact-title">{% include bullet.html line="about" scale="sm" %} Get in touch</h2>
+      <h2 class="signpost sign" id="contact-title">{% include bullet.html line="about" scale="sm" %} Say hello</h2>
     </div>
     <div class="card contact-panel">
       <div>
-        <h3>Research</h3>
-        <ul>
-          <li><a href="mailto:donghoon.lee@mssm.edu">donghoon.lee@mssm.edu</a></li>
-          <li>Questions about the lab, data or collaborations.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>This site</h3>
+        <h3>Email</h3>
         <ul>
           <li><a href="mailto:{{ a.email }}">{{ a.email }}</a></li>
-          <li>Advertising, press and business inquiries.</li>
+          <li>Ideas for a new line, bug reports, or advertising and business inquiries.</li>
         </ul>
       </div>
       <div>
         <h3>Elsewhere</h3>
-        <ul class="link-list">
-          <li><a href="https://github.com/{{ a.github }}">GitHub (personal)</a></li>
-          <li><a href="https://github.com/leelaboratory">GitHub (lab)</a></li>
+        <ul>
+          <li><a href="https://github.com/{{ a.github }}">GitHub: {{ a.github }}</a></li>
           <li><a href="https://x.com/{{ a.twitter }}">X: @{{ a.twitter }}</a></li>
-          <li><a href="https://x.com/leelaboratory">X: @leelaboratory</a></li>
-          <li><a href="https://www.linkedin.com/in/{{ a.linkedin }}">LinkedIn</a></li>
+          <li><a href="https://leelab.us">Work: leelab.us</a></li>
         </ul>
       </div>
     </div>
+    {% include billboard.html format="horizontal" %}
   </div>
 </section>
-
-<section class="section" aria-labelledby="site-title">
-  <div class="container">
-    <div class="section-head">
-      <h2 class="signpost sign" id="site-title">{% include bullet.html letter="H" color="var(--line-yellow)" dark=true scale="sm" %} About this site</h2>
-    </div>
-    <div class="prose">
-      <p>I started blogging here in 2010 on WordPress and moved everything to Jekyll on GitHub Pages in 2016. The old posts are still up as they were: iOS betas, BMW onboard videos, Mensa puzzles and a Caffe install guide from 2015.</p>
-      <p>These days Hoondy Sq is also a home for small apps and games I build for fun: a <a href="{{ '/apps/leadership/' | relative_url }}">leadership test</a>, a <a href="{{ '/apps/rush-hour/' | relative_url }}">typing game</a> and an <a href="{{ '/apps/scorched-borough/' | relative_url }}">artillery duel</a>. The test and Rush Hour keep weekly leaderboards, so come back and ride again.</p>
-    </div>
-  </div>
-</section>
-
-<div class="container">
-  {% include billboard.html format="horizontal" %}
-</div>

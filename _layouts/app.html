@@ -34,7 +34,7 @@ body_class: layout-app
       <a href="{{ other.url | relative_url }}">{% include bullet.html letter=other.bullet color=other.color shape=other.shape %}<span class="app-header__label"{{ en_attr }}>{{ other.title }}</span></a>
       {%- endunless %}
       {%- endfor %}
-      <a href="{{ '/apps/' | relative_url }}">{% include bullet.html line="apps" %}<span class="app-header__label">{{ ui.all_lines }}</span></a>
+      <a href="{{ '/projects/' | relative_url }}">{% include bullet.html line="projects" %}<span class="app-header__label">{{ ui.all_lines }}</span></a>
     </nav>
   </div>
 </div>

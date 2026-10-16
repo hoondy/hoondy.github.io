@@ -1,7 +1,7 @@
 {
   "name": "Hoondy Sq",
   "short_name": "Hoondy Sq",
-  "description": "Donghoon Lee's personal site: a blog since 2010 and a few small games and tests.",
+  "description": "A small station for side projects, games and odd ideas, with a blog since 2010.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

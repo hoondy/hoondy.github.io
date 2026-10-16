@@ -3,8 +3,9 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
-  // Visitors in the EEA, the UK and Switzerland start with storage denied; the
-  // consent message served through AdSense updates it once they choose.
+  // Visitors in the EEA, the UK and Switzerland start with storage denied; Google's
+  // consent message (adsense.html or consent.html, on every page) updates it once
+  // they choose.
   gtag('consent', 'default', {
     ad_storage: 'denied',
     ad_user_data: 'denied',

@@ -1,4 +1,4 @@
-# The apps that run on this site. Keys match `app_id` in each app page and _data/lines.yml.
+# The projects running now. Keys match `app_id` in each app page and _data/lines.yml.
 # `color` is a CSS value (custom property), `hex` the raw color.
 
 leadership:
@@ -14,11 +14,11 @@ leadership:
   hex: "#EE352E"
   image: /assets/apps/leadership/og.png
   kind: "Personality test"
-  stops: ["5 languages", "Trait profile", "Percentile rank", "Weekly board"]
+  stops: ["5 languages", "Trait profile", "Share card", "Score distribution"]
   promo:
     kicker: "Now boarding"
     headline: "Are you leadership material?"
-    body: "Take the 1 to your Leadership Quotient and see where you rank."
+    body: "Take the 1 to your Leadership Quotient and see where you land."
     cta: "Board the 1"
 
 rush-hour:
@@ -34,7 +34,7 @@ rush-hour:
   hex: "#B933AD"
   image: /assets/apps/rush-hour/og.png
   kind: "Typing game"
-  stops: ["Falling words", "Faster every stage", "Share your score", "Weekly high scores"]
+  stops: ["Falling words", "Faster every stage", "Share your score", "Monthly high scores"]
   promo:
     kicker: "Express service"
     headline: "Now boarding: Rush Hour"

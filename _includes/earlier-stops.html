@@ -1,0 +1,31 @@
+{%- comment -%}
+  Earlier side projects as stops on one line, oldest first (_data/projects.yml).
+  construction=true ends the line with the station that's still being dug.
+  links=true lists every post behind a stop, not just the first.
+{%- endcomment -%}
+<ol class="route route--projects{% if include.class %} {{ include.class }}{% endif %}">
+  {%- for stop in site.data.projects.earlier %}
+  {%- assign main_post = stop.posts | first %}
+  <li class="route__stop">
+    <span class="route__years">{{ stop.years }}</span>
+    <h3 class="route__place"><a href="{{ main_post.url | relative_url }}">{{ stop.title }}</a></h3>
+    <span class="route__kind">{{ stop.kind }}</span>
+    <p class="route__role">{{ stop.blurb }}</p>
+    {%- if include.links and stop.posts.size > 1 %}
+    <ul class="route__links" aria-label="Posts: {{ stop.title }}">
+      {%- for post in stop.posts %}
+      <li><a href="{{ post.url | relative_url }}">{{ post.label }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </li>
+  {%- endfor %}
+  {%- if include.construction %}
+  <li class="route__stop route__stop--planned">
+    <span class="route__years">Next</span>
+    <h3 class="route__place">Under construction</h3>
+    <span class="route__kind">New line</span>
+    <p class="route__role">New lines are being dug. Got an idea for a small game, test or tool? Send it to <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>.</p>
+  </li>
+  {%- endif %}
+</ol>

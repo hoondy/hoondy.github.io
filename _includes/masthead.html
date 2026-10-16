@@ -3,7 +3,7 @@
     <a class="masthead__brand" href="{{ '/' | relative_url }}" aria-label="{{ ui.home }}">
       {% include bullet.html letter="H" color="var(--line-yellow)" dark=true %}
       <span>Hoondy Sq</span>
-      <span class="masthead__brand-sub">Donghoon Lee</span>
+      <span class="masthead__brand-sub"{{ en_attr }}>Est. 2010</span>
     </a>
     {%- capture nav_items -%}
     {%- for item in site.data.navigation.main %}
@@ -13,7 +13,7 @@
     {%- if item.line == 'blog' %}
       {%- if page.collection == 'posts' or page.url == '/tags/' or page.url == '/categories/' %}{% assign is_here = true %}{% endif %}
     {%- endif %}
-    {%- if item.line == 'apps' and page.app_id %}{% assign is_here = true %}{% endif %}
+    {%- if item.line == 'projects' and page.app_id %}{% assign is_here = true %}{% endif %}
         <li><a href="{{ line.url | relative_url }}"{% if is_here %} aria-current="page"{% endif %}>{% include bullet.html line=item.line %}<span>{{ ui.nav[item.line] | default: line.name }}</span></a></li>
     {%- endfor %}
     {%- endcapture %}

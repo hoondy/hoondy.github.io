@@ -637,6 +637,11 @@ abbr[title] {
   text-decoration: underline;
 }
 
+.section-head__note {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
 .section-head__link .arrow {
   transition: transform .2s var(--ease);
 }
@@ -1444,15 +1449,17 @@ a.chip:hover {
   --ad-h: 250px;
 }
 
+/* The vertical unit is a fixed 300 x 600. A column too narrow for it (300 plus the
+   bezel) gets no panel at all rather than a smaller one; site.js never requests it. */
 .billboard--vertical .billboard__frame {
-  --ad-w: 160px;
+  --ad-w: 300px;
   --ad-h: 600px;
   --bezel: 8px;
 }
 
-@container billboard (min-width: 316px) {
+@container billboard (max-width: 315.98px) {
   .billboard--vertical .billboard__frame {
-    --ad-w: 300px;
+    display: none;
   }
 }
 
@@ -1815,52 +1822,6 @@ a.chip:hover {
 
   .house__cta {
     display: inline-flex;
-  }
-}
-
-/* 160 x 600 */
-@container screen (max-width: 200px) and (min-height: 500px) {
-  .house {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto auto 1fr auto;
-    grid-template-areas: "kicker" "bullet" "headline" "body" "stops" "cta";
-    justify-items: start;
-    align-content: stretch;
-    row-gap: 14px;
-    padding: 22px 14px 20px;
-    background:
-      radial-gradient(160% 50% at 50% 0%, color-mix(in srgb, var(--line) 40%, transparent), transparent 62%),
-      linear-gradient(180deg, #0D0D10, #121316);
-  }
-
-  .house__kicker {
-    white-space: normal;
-    line-height: 1.3;
-  }
-
-  .house__bullet {
-    --size: 76px;
-  }
-
-  .house__headline {
-    font-size: 21px;
-    margin-top: 0;
-  }
-
-  .house__body {
-    -webkit-line-clamp: 5;
-    font-size: 13px;
-  }
-
-  .house__stops {
-    display: grid;
-    width: 100%;
-  }
-
-  .house__cta {
-    display: inline-flex;
-    padding: 0 12px;
-    font-size: 12px;
   }
 }
 
@@ -2425,6 +2386,7 @@ a.chip:hover {
 
 .hero__text {
   max-width: 32em;
+  text-wrap: pretty;
   color: var(--muted);
   font-size: var(--step-1);
   line-height: 1.55;
@@ -3269,7 +3231,7 @@ a.chip:hover {
   font-size: 17px;
 }
 
-.board__week {
+.board__period {
   font-size: 12px;
   opacity: .7;
 }
@@ -3596,74 +3558,8 @@ a.chip:hover {
 }
 
 /* --------------------------------------------------------------------------
-   14. About
+   14. About, and the strip maps shared with Projects
    -------------------------------------------------------------------------- */
-
-.about-hero {
-  padding-block: clamp(36px, 6vw, 80px) clamp(28px, 4vw, 48px);
-}
-
-.about-hero__grid {
-  display: grid;
-  gap: var(--space-6);
-  align-items: center;
-}
-
-@media (min-width: 860px) {
-  .about-hero__grid {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-7);
-  }
-}
-
-.avatar {
-  --size: clamp(112px, 18vw, 184px);
-  position: relative;
-  margin: 8px;
-  display: grid;
-  place-items: center;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: var(--line-blue);
-  color: #FFF;
-  font: 700 calc(var(--size) * .4)/1 var(--font-sign);
-  letter-spacing: -.04em;
-  box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--line-blue), var(--shadow-2);
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.about-hero__name {
-  font-size: var(--step-5);
-  letter-spacing: -.035em;
-  line-height: .98;
-}
-
-.about-hero__role {
-  text-wrap: balance;
-  margin-top: var(--space-4);
-  font: 500 var(--step-1)/1.45 var(--font-sign);
-  color: var(--muted);
-  max-width: 27.8em;
-}
-
-.about-hero__role strong {
-  color: var(--fg);
-  font-weight: 700;
-}
-
-.about-hero__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: var(--space-5);
-}
 
 .about-body {
   display: grid;
@@ -3672,184 +3568,90 @@ a.chip:hover {
 
 @media (min-width: 1000px) {
   .about-body {
-    grid-template-columns: minmax(0, var(--maxw-text)) minmax(260px, 1fr);
+    grid-template-columns: minmax(0, var(--maxw-text)) minmax(280px, 340px);
+    justify-content: space-between;
     gap: var(--space-8);
     align-items: start;
   }
 }
 
-.about-facts {
-  display: grid;
-  gap: var(--space-4);
-  padding: var(--space-5);
-}
-
-.about-facts dl {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.about-facts dt {
-  font: 600 var(--step--2)/1 var(--font-sign);
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.about-facts dd {
-  margin: 6px 0 0;
-  font-size: var(--step--1);
-}
-
-.highlights {
-  display: grid;
-  gap: var(--space-5);
-}
-
-@media (min-width: 760px) {
-  .highlights {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.highlight-card {
-  --line: var(--line-red);
-  position: relative;
-  display: grid;
-  gap: var(--space-3);
-  align-content: start;
-  padding: var(--space-5);
+/* An enamel plate by the turnstiles: the station's particulars. */
+.station-plate {
   overflow: hidden;
-  color: var(--fg);
-  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
 }
 
-.highlight-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 6px;
-  background: var(--line);
-}
-
-.highlight-card__journal {
+.station-plate__head {
+  --rule-gap: 7px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font: 700 var(--step-1)/1 var(--font-sign);
-  margin-top: 6px;
+  gap: 10px;
+  padding: calc(var(--rule-gap) + 13px) var(--space-5) 13px;
+  font: 700 var(--step-0)/1.1 var(--font-sign);
+  box-shadow: none;
 }
 
-.highlight-card__journal em {
-  font-style: italic;
+.station-plate__facts {
+  display: grid;
+  margin: 0;
+  padding: var(--space-1) var(--space-5) var(--space-2);
 }
 
-.highlight-card__tag {
-  padding: 5px 9px 4px;
-  border-radius: 4px;
-  font-size: 11px;
-  letter-spacing: .1em;
+.station-plate__facts > div {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: 13px;
+}
+
+.station-plate__facts > div + div {
+  border-top: 1px solid var(--border);
+}
+
+.station-plate__facts dt {
+  font: 600 var(--step--2)/1.3 var(--font-sign);
+  letter-spacing: .12em;
   text-transform: uppercase;
-}
-
-.highlight-card h3 {
-  font-size: var(--step-1);
-  line-height: 1.3;
-  font-weight: 600;
-}
-
-.highlight-card p {
   color: var(--muted);
-  font-size: var(--step--1);
 }
 
-.highlight-card__stats {
+.station-plate__facts dd {
+  margin: 0;
+  font: 600 var(--step--1)/1.4 var(--font-sign);
+}
+
+.station-plate__aka {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.station-plate__lines {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
-  margin-top: var(--space-2);
+  align-items: center;
+  gap: 6px;
 }
 
-.highlight-card__stats div {
-  display: grid;
+.station-plate__lines .bullet {
+  --size: 26px;
 }
 
-.highlight-card__stats b {
-  font: 700 var(--step-2)/1 var(--font-sign);
-  letter-spacing: -.02em;
-}
-
-.highlight-card__stats span {
-  font-size: var(--step--2);
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.highlight-card--wide {
-  grid-column: 1 / -1;
-  --line: var(--line-blue);
-}
-
-.areas {
-  display: grid;
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-@media (min-width: 680px) {
-  .areas {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 680px) and (max-width: 1079.98px) {
-  .areas > .area:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (min-width: 1080px) {
-  .areas {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .area {
-    grid-column: span 2;
-  }
-
-  .area:nth-child(n + 4) {
-    grid-column: span 3;
-  }
-}
-
-.area {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--space-3) var(--space-4);
-  padding: var(--space-5);
-}
-
-.area h3 {
-  font-size: var(--step-1);
-  line-height: 1.25;
-}
-
-.area p {
-  margin-top: 6px;
-  color: var(--muted);
-  font-size: var(--step--1);
-}
-
-/* Career strip map */
+/* Strip map: stops on one line. Down the page on a phone, across it on a wide
+   screen. The line between two stops is drawn by the first of them. */
 .route {
   --line: var(--line-blue);
   position: relative;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.route--projects {
+  --line: var(--line-shuttle);
 }
 
 .route__stop {
@@ -3874,6 +3676,10 @@ a.chip:hover {
   top: 8px;
 }
 
+.route__stop:last-child {
+  padding-bottom: 0;
+}
+
 .route__stop:last-child::before {
   bottom: auto;
   height: 14px;
@@ -3896,6 +3702,17 @@ a.chip:hover {
   box-shadow: inset 0 0 0 5px #111;
 }
 
+/* Track still being laid: the last stretch is dashed and the station is a work zone. */
+.route__stop--planned::before,
+.route__stop:has(+ .route__stop--planned)::before {
+  background: repeating-linear-gradient(180deg, var(--line) 0 9px, transparent 9px 16px);
+}
+
+.route__stop--planned::after {
+  background: repeating-linear-gradient(-45deg, #111 0 2.5px, var(--line-yellow) 2.5px 6px);
+  box-shadow: inset 0 0 0 3.5px var(--line-yellow), 0 0 0 1px rgba(0, 0, 0, .4);
+}
+
 .route__years {
   font: 700 var(--step--1)/1.2 var(--font-sign);
   font-variant-numeric: tabular-nums;
@@ -3908,10 +3725,41 @@ a.chip:hover {
   text-wrap: balance;
 }
 
+.route__place a {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.route__place a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-decoration-thickness: 2px;
+}
+
+.route__kind {
+  font: 600 var(--step--2)/1.3 var(--font-sign);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .route__role {
+  margin-top: 2px;
   font-size: var(--step--1);
   color: var(--muted);
   line-height: 1.5;
+  max-width: 34em;
+  text-wrap: pretty;
+}
+
+.route__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font: 600 var(--step--1)/1.4 var(--font-sign);
 }
 
 .route__here {
@@ -3919,7 +3767,7 @@ a.chip:hover {
   align-items: center;
   gap: 6px;
   justify-self: start;
-  margin-top: 6px;
+  margin-top: 8px;
   padding: 5px 9px 4px;
   border-radius: 4px;
   font-size: 12px;
@@ -3927,23 +3775,17 @@ a.chip:hover {
   text-transform: uppercase;
 }
 
-.route__transfer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
-}
-
 @media (min-width: 980px) {
   .route {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     gap: 0;
     padding-top: 6px;
   }
 
   .route__stop {
-    padding: 44px 18px 0 0;
+    padding: 44px 24px 0 0;
   }
 
   .route__stop::before {
@@ -3970,6 +3812,11 @@ a.chip:hover {
     left: 0;
     top: 2px;
   }
+
+  .route__stop--planned::before,
+  .route__stop:has(+ .route__stop--planned)::before {
+    background: repeating-linear-gradient(90deg, var(--line) 0 9px, transparent 9px 16px);
+  }
 }
 
 .contact-panel {
@@ -3980,7 +3827,8 @@ a.chip:hover {
 
 @media (min-width: 760px) {
   .contact-panel {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
   }
 }
 
@@ -4004,25 +3852,8 @@ a.chip:hover {
   font-weight: 500;
 }
 
-.link-list a {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--fg);
-  text-decoration: none;
-}
-
-.link-list a:hover {
-  text-decoration: underline;
-}
-
-.link-list .bullet {
-  --size: 22px;
-  font-size: 10px;
-}
-
 /* --------------------------------------------------------------------------
-   15. Apps hub
+   15. Projects hub
    -------------------------------------------------------------------------- */
 
 .service-map {
@@ -4136,17 +3967,17 @@ a.chip:hover {
   gap: 4px 14px;
 }
 
-.service__title h2 {
+.service__title :is(h2, h3) {
   font-size: var(--step-3);
   letter-spacing: -.02em;
 }
 
-.service__title h2 a {
+.service__title :is(h2, h3) a {
   color: var(--fg);
   text-decoration: none;
 }
 
-.service__title h2 a::after {
+.service__title :is(h2, h3) a::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -4206,15 +4037,26 @@ a.chip:hover {
   transform: translateY(-1px);
 }
 
+/* Under construction: dashed outline, a barricade stripe and a work-zone bullet. */
 .service__row--planned {
-  --line: var(--line-gray);
   border-style: dashed;
   box-shadow: none;
   background: transparent;
 }
 
 .service__row--planned::before {
-  background: repeating-linear-gradient(180deg, var(--line) 0 10px, transparent 10px 18px);
+  background: repeating-linear-gradient(180deg, var(--line-yellow) 0 10px, #111 10px 20px);
+}
+
+.construction-bullet {
+  background:
+    radial-gradient(circle, var(--line-yellow) 0 62%, #111 63% 66%, transparent 67%),
+    repeating-linear-gradient(-45deg, var(--line-yellow) 0 5px, #111 5px 10px);
+  color: #111;
+}
+
+.projects-earlier.section {
+  padding-bottom: var(--space-7);
 }
 
 /* --------------------------------------------------------------------------
@@ -4361,14 +4203,17 @@ a.chip:hover {
   display: none;
 }
 
-/* Wide screens get one vertical billboard in the right margin. The app keeps the
-   header's left edge, and the gap plus the app's own gutter keep the rail more than
-   150px from the game, the distance AdSense asks for around games. The app's track
-   stops at --maxw and the grid packs to the start, so on very wide monitors the app
-   doesn't drift off that edge and the rail stays next to it, not at the window edge. */
-@media (min-width: 1400px) {
+/* Wide screens get one vertical billboard in the right margin: the fixed 300 x 600
+   unit in a 316px column, from the width where it fits without squeezing the game
+   much. The app keeps the header's left edge, and the gap plus the app's own gutter
+   keep the rail more than 150px from the game, the distance AdSense asks for around
+   games. The app's track stops at --maxw and the grid packs to the start, so on very
+   wide monitors the rail stays next to the app, not at the window edge. Only with a
+   mouse: on a big touch screen a game can go full screen while you play, which would
+   sit on top of the ad, so the rail (and its ad request) is left out there. */
+@media (min-width: 1600px) and (hover: hover) and (pointer: fine) {
   .app-shell--rails {
-    grid-template-columns: minmax(0, var(--maxw)) 176px;
+    grid-template-columns: minmax(0, var(--maxw)) 316px;
     justify-content: start;
     column-gap: 128px;
     padding-inline: max(0px, (100% - var(--maxw)) / 2 - var(--gutter)) var(--gutter);
@@ -4386,12 +4231,6 @@ a.chip:hover {
 
   .app-rail .billboard {
     margin: 0;
-  }
-}
-
-@media (min-width: 1800px) {
-  .app-shell--rails {
-    grid-template-columns: minmax(0, var(--maxw)) 316px;
   }
 }
 

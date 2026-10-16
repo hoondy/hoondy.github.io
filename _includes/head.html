@@ -37,7 +37,13 @@
 {%- if jekyll.environment == "production" %}
 {% include ga4.html %}
 {%- endif %}
-{%- comment %} The ad loader only goes on pages that run Google ads (not the 404, privacy or index pages). {% endcomment %}
+{%- comment %}
+  The ad loader only goes on pages that run Google ads (not the 404, privacy or index
+  pages, or near-empty posts). It also brings Google's consent message, so the pages
+  without it load the message on its own.
+{% endcomment %}
 {%- if ads_on %}
 {% include adsense.html %}
+{%- elsif jekyll.environment == "production" %}
+{% include consent.html %}
 {%- endif %}
