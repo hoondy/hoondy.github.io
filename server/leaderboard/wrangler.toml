@@ -21,7 +21,7 @@ RETAIN_WEEKS = "52"         # older weeks are deleted by the daily cleanup
 [[d1_databases]]
 binding = "DB"
 database_name = "hoondy-leaderboard"
-database_id = "00000000-0000-0000-0000-000000000000" # replace with the id from `wrangler d1 create`
+database_id = "fbf041ce-e478-483c-b6e2-84a91778a82d"
 
 [triggers]
 crons = ["17 6 * * *"] # daily cleanup, a little after 1-2 a.m. New York time

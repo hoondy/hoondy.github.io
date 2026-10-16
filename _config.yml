@@ -48,7 +48,7 @@ ga4_id         : "G-BPDW4JEWCM"
 
 # Weekly leaderboards. Leave empty to keep boards on each visitor's device;
 # set to the deployed worker URL (see server/leaderboard) to make them global.
-leaderboard_api: ""
+leaderboard_api: "https://hoondy-leaderboard.hoondy-leaderboard.workers.dev"
 
 comments:
   provider     : "disqus"
