@@ -3,6 +3,12 @@
 // Everything here is plain data and pure-ish functions with no DOM access, so the CPU can run the
 // exact same simulation the game runs when it plans a shot, and so it can all be tested in node.
 // The playfield is a fixed 1200 x 675 world (y grows downward); the renderer scales it to fit.
+//
+// The records board replays matches on the server, so anything that decides the state of the
+// world sticks to arithmetic every engine rounds the same way: + - * /, Math.sqrt, rounding, and
+// the sin/cos/exp/log in detmath.js. Native Math.sin and friends stay out of this file.
+
+import { sin, cos, exp, log } from './detmath.js';
 
 export const W = 1200;
 export const H = 675;
@@ -50,7 +56,7 @@ export function mulberry32(seed) {
 export function gauss(rng) {
   let u = 0;
   while (u === 0) u = rng();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng());
+  return Math.sqrt(-2 * log(u)) * cos(2 * Math.PI * rng());
 }
 
 export const randomSeed = () => (Math.random() * 4294967296) >>> 0;
@@ -84,19 +90,20 @@ export function generateTerrain(seed, shape) {
   const h = new Float32Array(W + 1);
   for (let x = 0; x <= W; x++) {
     const t = x / W;
+    const d = t - c;
     let y = base;
     switch (kind) {
       case 'hill':
-        y -= amp * Math.exp(-((t - c) ** 2) / (2 * 0.1 ** 2));
+        y -= amp * exp(-(d * d) / (2 * 0.1 * 0.1));
         break;
       case 'valley':
-        y += amp * 0.55 * Math.exp(-((t - c) ** 2) / (2 * 0.13 ** 2)) - amp * 0.3;
+        y += amp * 0.55 * exp(-(d * d) / (2 * 0.13 * 0.13)) - amp * 0.3;
         break;
       case 'rolling':
-        y -= amp * 0.33 * Math.sin(t * Math.PI * 2 * 1.6 + phase);
+        y -= amp * 0.33 * sin(t * Math.PI * 2 * 1.6 + phase);
         break;
       case 'ridges':
-        y -= amp * 0.75 * (Math.exp(-((t - c + 0.14) ** 2) / 0.0035) + Math.exp(-((t - c - 0.14) ** 2) / 0.0035));
+        y -= amp * 0.75 * (exp(-((d + 0.14) * (d + 0.14)) / 0.0035) + exp(-((d - 0.14) * (d - 0.14)) / 0.0035));
         break;
       case 'mesa':
         y -= amp * 0.7 * (smoothstep(c - 0.17, c - 0.1, t) - smoothstep(c + 0.1, c + 0.17, t));
@@ -168,7 +175,7 @@ export function pivot(tank) {
 
 export function muzzle(tank, angle) {
   const a = (angle * Math.PI) / 180;
-  return { x: tank.x + Math.cos(a) * BARREL, y: tank.y - PIVOT_Y - Math.sin(a) * BARREL };
+  return { x: tank.x + cos(a) * BARREL, y: tank.y - PIVOT_Y - sin(a) * BARREL };
 }
 
 export function hitsTank(tank, x, y) {
@@ -187,8 +194,8 @@ export function launch(world, owner, angle, power, weapon = 'standard') {
   return {
     x: m.x,
     y: m.y,
-    vx: Math.cos(a) * v,
-    vy: -Math.sin(a) * v,
+    vx: cos(a) * v,
+    vy: -sin(a) * v,
     t: 0,
     owner,
     weapon,
@@ -200,38 +207,92 @@ export function launch(world, owner, angle, power, weapon = 'standard') {
   };
 }
 
-// Advance one fixed step. Returns null while the shell is still flying, otherwise what it hit.
-export function step(world, p) {
-  const prevVy = p.vy;
-  p.vx += world.wind * WIND_ACCEL * DT;
-  p.vy += GRAVITY * DT;
-  p.x += p.vx * DT;
-  p.y += p.vy * DT;
-  p.t += DT;
-
-  // Side walls are solid: every shot lands somewhere the player can see. The sky has no ceiling.
-  if (p.x <= 0 || p.x >= W) return { type: 'wall', x: clamp(p.x, 0, W), y: p.y };
-
-  const tanks = world.tanks;
-  for (let i = 0; i < tanks.length; i++) {
-    if (i === p.owner && p.t < SELF_SAFE_T) continue;
-    if (hitsTank(tanks[i], p.x, p.y)) return { type: 'tank', tank: i, x: p.x, y: p.y };
-  }
-
-  // A buried shell only digs upward. Once it starts to fall it bursts in the dirt it is in, and
-  // nothing goes through bedrock.
-  if (p.burrow && p.vy > 0) p.burrow = false;
-  if (p.y >= FLOOR) return { type: 'ground', x: p.x, y: FLOOR };
-  if (p.y >= groundAt(world.h, p.x)) {
-    if (!p.burrow) return { type: 'ground', x: p.x, y: p.y };
-  } else {
-    p.burrow = false;
-  }
-
-  if (p.splits && prevVy < 0 && p.vy >= 0) return { type: 'split', x: p.x, y: p.y };
-  if (p.t > MAX_FLIGHT) return { type: 'lost', x: p.x, y: p.y };
-  return null;
+// Nothing a shell can hit reaches above this line: not the ground, and not a tank, whose top is
+// 24 above its tracks and which only ever moves down. The game keeps it in world.clear so a
+// shell high in the sky can skip the collision tests. Craters only lower the ground, so it only
+// has to be drawn again when dirt piles up.
+export function clearLine(h, tanks) {
+  let top = FLOOR;
+  for (let x = 0; x <= W; x++) if (h[x] < top) top = h[x];
+  for (const t of tanks) if (t.y < top) top = t.y;
+  return top - 26;
 }
+
+// Advance a shell by up to `max` fixed steps, stopping at the first one where it hits something.
+// Returns null while it is still flying, otherwise what it hit, with `steps` taken. The game loop
+// moves shells one step per tick; the CPU's planner and the records replay let a lone shell run.
+// The shell lives in locals for the loop, which keeps those long runs quick.
+export function fly(world, p, max = 1) {
+  const ax = world.wind * WIND_ACCEL * DT;
+  const tanks = world.tanks;
+  const h = world.h;
+  const clear = world.clear;
+  const owner = p.owner;
+  const splits = p.splits;
+  let { x, y, vx, vy, t, burrow } = p;
+  let hit = null;
+  let k = 0;
+  while (k < max) {
+    k++;
+    const prevVy = vy;
+    vx += ax;
+    vy += GRAVITY * DT;
+    x += vx * DT;
+    y += vy * DT;
+    t += DT;
+
+    // Side walls are solid: every shot lands somewhere the player can see. No ceiling, though.
+    if (x <= 0 || x >= W) {
+      hit = { type: 'wall', x: clamp(x, 0, W), y };
+      break;
+    }
+
+    if (y < clear) {
+      burrow = false;
+    } else {
+      for (let i = 0; i < tanks.length && !hit; i++) {
+        if (i === owner && t < SELF_SAFE_T) continue;
+        if (hitsTank(tanks[i], x, y)) hit = { type: 'tank', tank: i, x, y };
+      }
+      if (hit) break;
+      // A buried shell only digs upward. Once it starts to fall it bursts in the dirt it is in,
+      // and nothing goes through bedrock.
+      if (burrow && vy > 0) burrow = false;
+      if (y >= FLOOR) {
+        hit = { type: 'ground', x, y: FLOOR };
+        break;
+      }
+      if (y >= groundAt(h, x)) {
+        if (!burrow) {
+          hit = { type: 'ground', x, y };
+          break;
+        }
+      } else {
+        burrow = false;
+      }
+    }
+
+    if (splits && prevVy < 0 && vy >= 0) {
+      hit = { type: 'split', x, y };
+      break;
+    }
+    if (t > MAX_FLIGHT) {
+      hit = { type: 'lost', x, y };
+      break;
+    }
+  }
+  p.x = x;
+  p.y = y;
+  p.vx = vx;
+  p.vy = vy;
+  p.t = t;
+  p.burrow = burrow;
+  if (hit) hit.steps = k;
+  return hit;
+}
+
+// One fixed step.
+export const step = (world, p) => fly(world, p, 1);
 
 export function splitShell(p) {
   const n = WEAPONS[p.weapon].split;
@@ -249,7 +310,7 @@ export function simulateShot(world, owner, angle, power, weapon = 'standard') {
   const p = launch(world, owner, angle, power, weapon);
   p.splits = false;
   for (;;) {
-    const r = step(world, p);
+    const r = fly(world, p, 100000);
     if (r) {
       r.t = p.t;
       return r;
@@ -318,32 +379,49 @@ export function carve(terr, cx, cy, r) {
 
 // Loose dirt can't stand steeper than this (rise over run), so a dirt bomb ends up as a pile.
 const REPOSE = 1.4;
+const SLUMP_TOL = 1e-3;
+
+// Let everything between columns a and b slump until no step is steeper than REPOSE, keeping the
+// amount of dirt the same. Where a slope is too steep, dirt slides off the top into a straight
+// ramp at the angle of repose, with as much taken off the top as lands at the foot. That ramp
+// is the level stretch of h - REPOSE * x (or h + REPOSE * x for slopes the other way), so the
+// settled shape is the closest non-increasing sequence to it, and the pool-adjacent-violators
+// algorithm finds that in one pass. Settling one way can leave a new step the other way, so it
+// alternates until both are clear, which usually takes one round.
+const poolSum = new Float64Array(W + 2);
+const poolLen = new Int32Array(W + 2);
+
+function settleOneWay(h, a, b, dir) {
+  let top = -1;
+  let pooled = false;
+  for (let x = a; x <= b; x++) {
+    // dir 1: no drop to the right steeper than REPOSE; dir -1: no drop to the left.
+    let sum = dir > 0 ? h[x] - REPOSE * (x - a) : -h[x] - REPOSE * (x - a);
+    let len = 1;
+    while (top >= 0 && sum / len > poolSum[top] / poolLen[top] + SLUMP_TOL) {
+      sum += poolSum[top];
+      len += poolLen[top];
+      top--;
+      pooled = true;
+    }
+    top++;
+    poolSum[top] = sum;
+    poolLen[top] = len;
+  }
+  if (!pooled) return false;
+  for (let k = top, x = b; k >= 0; k--) {
+    const m = poolSum[k] / poolLen[k];
+    for (let i = 0; i < poolLen[k]; i++, x--) h[x] = dir > 0 ? m + REPOSE * (x - a) : -m - REPOSE * (x - a);
+  }
+  return true;
+}
 
 function slump(h, a, b) {
-  const settle = (x) => {
-    const d = h[x + 1] - h[x];
-    if (d > REPOSE + 1e-3) {
-      const t = (d - REPOSE) / 2;
-      h[x] += t;
-      h[x + 1] -= t;
-      return true;
-    }
-    if (d < -REPOSE - 1e-3) {
-      const t = (-d - REPOSE) / 2;
-      h[x] -= t;
-      h[x + 1] += t;
-      return true;
-    }
-    return false;
-  };
-  // Sweep alternately left and right so the pile spreads both ways evenly.
-  for (let pass = 0; pass < 1500; pass++) {
-    let moved = false;
-    if (pass % 2) for (let x = b - 1; x >= a; x--) moved = settle(x) || moved;
-    else for (let x = a; x < b; x++) moved = settle(x) || moved;
-    if (!moved) return pass;
+  for (let round = 0; round < 8; round++) {
+    const right = settleOneWay(h, a, b, 1);
+    const left = settleOneWay(h, a, b, -1);
+    if (!right && !left) return;
   }
-  return -1;
 }
 
 export function addDirt(terr, cx, cy, r) {
@@ -376,7 +454,9 @@ export function addDirt(terr, cx, cy, r) {
 export function blastDamage(tank, x, y, weapon, direct) {
   if (!tank.alive || !weapon.damage) return 0;
   if (direct) return weapon.damage;
-  const d = Math.max(0, Math.hypot(tank.x - x, tank.y - 9 - y) - 12);
+  const dx = tank.x - x;
+  const dy = tank.y - 9 - y;
+  const d = Math.max(0, Math.sqrt(dx * dx + dy * dy) - 12);
   if (d >= weapon.radius) return 0;
   return Math.max(1, Math.round(weapon.damage * 0.9 * (1 - d / weapon.radius)));
 }

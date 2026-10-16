@@ -6,7 +6,7 @@
 // with a smaller error (overshoot, undershoot, hit), which is how people bracket a target.
 // Planning is a generator so the page can spread the work over several frames.
 
-import { W, simulateShot, gauss, clamp } from './physics.js';
+import { W, WEAPONS, simulateShot, launch, fly, splitShell, gauss, clamp } from './physics.js';
 
 // sigma*: how far off (world units) it aims, and how fast that shrinks with practice.
 // windSense/windNoise: how much of the wind it actually reads, like a person squinting at a flag.
@@ -63,13 +63,23 @@ export class Brain {
     const sol = yield* solve(felt, self, aimX, this.rng, P.pick);
     this.attempts++;
 
-    return {
+    let shot = {
       angle: clamp(sol.angle + gauss(this.rng) * P.jitterA, 0, 180),
       power: clamp(sol.power + gauss(this.rng) * P.jitterP, 0, 100),
       weapon,
-      aimX,
-      sigma,
     };
+    // People don't lob shells onto their own feet. A wild aim point, the wrong wind or a
+    // splitter's spread now and then would, so the final aim is checked against the real wind,
+    // falling back to a plain shell, then the same aim without the wobble, then a shot aimed
+    // right at the target. The records board counts on this: it refuses a match where the CPU
+    // hurt itself.
+    if (hurtsSelf(world, self, shot)) shot = { ...shot, weapon: 'standard' };
+    if (hurtsSelf(world, self, shot)) shot = { angle: sol.angle, power: sol.power, weapon: 'standard' };
+    if (hurtsSelf(world, self, shot)) {
+      const safe = yield* solve(felt, self, foe.x, this.rng, 'best');
+      shot = { angle: safe.angle, power: safe.power, weapon: 'standard' };
+    }
+    return { ...shot, aimX, sigma };
   }
 
   observe(impact) {
@@ -98,6 +108,25 @@ export class Brain {
     if (has('splitter') && sigma >= 26 && r < 0.55) return 'splitter';
     return 'standard';
   }
+}
+
+// Would any part of this shot come down where it hurts the shooter: a blast that reaches its tank
+// or a crater under the ground it stands on? A dirt bomb only ever piles dirt up.
+export function hurtsSelf(world, self, { angle, power, weapon }) {
+  const w = WEAPONS[weapon];
+  if (!w.damage) return false;
+  const me = world.tanks[self];
+  let shells = [launch(world, self, angle, power, weapon)];
+  while (shells.length) {
+    const next = [];
+    for (const p of shells) {
+      const r = fly(world, p, Infinity);
+      if (r.type === 'split') next.push(...splitShell(p));
+      else if (r.type !== 'lost' && ((r.type === 'tank' && r.tank === self) || Math.abs(r.x - me.x) < w.radius + 20)) return true;
+    }
+    shells = next;
+  }
+  return false;
 }
 
 // Find the angle and power that put a shell closest to aimX. Coarse grid over elevations and

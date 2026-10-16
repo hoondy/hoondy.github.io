@@ -1067,6 +1067,238 @@
   background: #1c1e25;
 }
 
+/* ---------------------------------------------------------------- records board */
+
+.sb-records {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sb-records--menu {
+  padding-top: 16px;
+  border-top: 1px solid var(--sb-edge);
+}
+
+.sb-records__panel {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sb-records__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 0;
+  font: 700 11px/1.2 var(--sb-sign-font);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sb-dim);
+}
+
+.sb-records__how {
+  font: 500 13px/1.2 var(--sb-body-font);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--sb-ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(243, 244, 247, 0.4);
+  text-underline-offset: 3px;
+}
+
+.sb-records__how:hover {
+  text-decoration-color: currentColor;
+}
+
+.sb-records__loading {
+  margin: 10px 0;
+  font-size: 14px;
+  color: var(--sb-dim);
+}
+
+.sb .board {
+  margin: 9px;
+}
+
+.sb .board__head {
+  padding: 12px 14px 9px;
+}
+
+/* In a narrow column the month drops under the title instead of breaking in two. */
+.sb .board__title {
+  flex-wrap: wrap;
+  row-gap: 2px;
+  white-space: nowrap;
+}
+
+.sb .board__row {
+  padding: 8px 14px;
+  font-size: 17px;
+}
+
+/* Two columns of five on the start screen, filled down the first column first. */
+@media (min-width: 761px) and (min-height: 521px) {
+  .sb-records--menu .board__list:has(.board__row) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(5, auto);
+    grid-auto-flow: column;
+  }
+
+  .sb-records--menu .board__row:nth-child(n + 6) {
+    border-left: 1px dashed rgba(255, 176, 0, 0.12);
+  }
+
+  .sb-records--menu .board__row:nth-child(6) {
+    border-top-color: transparent;
+  }
+}
+
+/* points and the post form */
+
+.sb-claim {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sb-points {
+  display: grid;
+  gap: 6px;
+  padding: 14px 15px;
+  background: var(--sb-panel);
+  border: 1px solid var(--sb-edge);
+  border-radius: 12px;
+}
+
+.sb-points[hidden],
+.sb-points__new[hidden],
+.sb-post[hidden] {
+  display: none;
+}
+
+.sb-points__new {
+  align-self: center;
+}
+
+.sb-points__total {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+}
+
+.sb-points__num {
+  font: 800 34px/1 var(--sb-led-font);
+  color: var(--sb-led);
+  text-shadow: 0 0 12px rgba(255, 176, 0, 0.45);
+  font-variant-numeric: tabular-nums;
+}
+
+.sb-points__unit {
+  font: 700 12px/1 var(--sb-sign-font);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sb-dim);
+}
+
+.sb-points__how {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--sb-dim);
+}
+
+.sb-post {
+  display: grid;
+  gap: 8px;
+}
+
+.sb-post__label {
+  font: 700 15px/1.3 var(--sb-sign-font);
+  color: #fff;
+}
+
+.sb-post__row {
+  display: flex;
+  gap: 8px;
+}
+
+.sb-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  font: 600 16px/1 var(--sb-body-font);
+  color: #fff;
+  background: #0b0b0d;
+  border: 1.5px solid #3a3e49;
+  border-radius: 12px;
+}
+
+.sb-name::placeholder {
+  color: var(--sb-faint);
+}
+
+.sb .sb-name:focus-visible {
+  outline: none;
+  border-color: var(--sb-led);
+  box-shadow: 0 0 0 3px rgba(255, 176, 0, 0.25);
+}
+
+.sb-name:disabled {
+  opacity: 0.6;
+}
+
+.sb-post__btn {
+  flex: none;
+  min-width: 92px;
+  min-height: 46px;
+  padding: 0 20px;
+  cursor: pointer;
+  font: 700 16px/1 var(--sb-sign-font);
+  color: #0a1606;
+  background: var(--sb-lime);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.sb-post__btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.sb-post__btn:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.sb-post.is-done .sb-post__btn {
+  display: none;
+}
+
+.sb-post__msg {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--sb-dim);
+}
+
+.sb-post.is-done + .sb-post__msg {
+  color: #9be37a;
+}
+
+/* It takes focus after a post only so keyboard users keep their place; it isn't a control. */
+.sb .sb-post__msg:focus,
+.sb .sb-post__msg:focus-visible {
+  outline: none;
+}
+
 /* Desktop: title and the buttons share a row so the whole result fits beside the battlefield. */
 @media (min-width: 761px) and (min-height: 521px) {
   .sb-result {
@@ -1074,6 +1306,7 @@
     grid-template-areas:
       "head actions"
       "stats stats"
+      "records records"
       "share share";
     align-items: center;
     gap: 14px 24px;
@@ -1103,6 +1336,13 @@
 
   .sb-result__share {
     grid-area: share;
+  }
+
+  .sb-records--result {
+    grid-area: records;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: start;
+    gap: 14px 22px;
   }
 }
 
@@ -1718,6 +1958,44 @@
     grid-template-columns: 1fr auto;
     align-items: center;
     padding: 7px 10px;
+  }
+
+  .sb-points {
+    padding: 10px 12px;
+  }
+
+  .sb-points__num {
+    font-size: 26px;
+  }
+
+  .sb .board {
+    margin: 9px;
+  }
+
+  .sb .board__head {
+    padding: 10px 11px 8px;
+  }
+
+  .sb .board__title {
+    font-size: 15px;
+  }
+
+  /* The side dock is only about 200 to 260 px wide here, so the rank column shrinks, the flag
+     goes, and the level, rounds and shots wrap instead of being cut off. Only the longest
+     nicknames still end in an ellipsis on the smallest phones. */
+  .sb .board__row {
+    grid-template-columns: 2ch minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 7px 9px;
+    font-size: 14px;
+  }
+
+  .sb .board__flag {
+    display: none;
+  }
+
+  .sb .board__meta {
+    white-space: normal;
   }
 }
 

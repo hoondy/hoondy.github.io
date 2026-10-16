@@ -7,7 +7,11 @@ import { Renderer } from './render.js';
 import { Fx } from './fx.js';
 import { Sound } from './audio.js';
 import { loadStats, recordMatch, LEVEL_IDS } from './stats.js';
+import { LEVEL_MULTIPLIER, MIN_POINTS, SHOT_COST, VERSION, WIN_POINTS, validateSubmission } from './rules.js';
+import { cleanName, getPlayerName, getTop, renderBoard, submit } from '/assets/js/lib/leaderboard.js';
 import { mountShareBar } from '/assets/js/lib/share.js';
+
+const GAME_ID = 'scorched-borough';
 
 const DEFAULT_AIM = { angle: 50, power: 62 };
 const TURN_BANNER_MS = 950;
@@ -42,6 +46,64 @@ const store = {
     }
   },
 };
+
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const NAME_HINT = 'Try another nickname: letters and numbers, up to 16.';
+
+// The most points any replay-checked win has been worth in this browser, posted or not.
+const BEST_KEY = 'sb:best';
+function loadBest() {
+  try {
+    const b = JSON.parse(store.get(BEST_KEY) || 'null');
+    if (b && Number.isInteger(b.score) && b.score > 0 && Object.hasOwn(LEVELS, b.level)) return b;
+  } catch {
+    /* corrupt: start over */
+  }
+  return null;
+}
+
+// What this browser has posted this month, per nickname. The board keeps each nickname's best
+// of the month, and this says so when a smaller win is posted under the same name, even when
+// that row is too far down the board to show.
+const POSTED_KEY = 'sb:posted';
+function postedBefore(period, name) {
+  try {
+    const p = JSON.parse(store.get(POSTED_KEY) || 'null');
+    const score = p?.period === period ? p.best?.[name.toLowerCase()] : 0;
+    return Number.isInteger(score) ? score : 0;
+  } catch {
+    return 0;
+  }
+}
+function rememberPosted(period, name, score) {
+  let p = null;
+  try {
+    p = JSON.parse(store.get(POSTED_KEY) || 'null');
+  } catch {
+    /* start over */
+  }
+  if (!p || p.period !== period || typeof p.best !== 'object') p = { period, best: {} };
+  p.best[name.toLowerCase()] = score;
+  store.set(POSTED_KEY, JSON.stringify(p));
+}
+
+// In a narrow board this wraps, so it only breaks after a dot: "Hard · 2–1 ·" / "7 shots".
+function boardMeta(entry) {
+  const d = entry.detail || {};
+  const parts = [];
+  if (Object.hasOwn(LEVELS, d.level)) parts.push(LEVELS[d.level].label);
+  if (typeof d.rounds === 'string' && /^\d-\d$/.test(d.rounds)) parts.push(d.rounds.replace('-', '–'));
+  if (Number.isInteger(d.shots)) parts.push(`${d.shots}\u00a0shot${d.shots === 1 ? '' : 's'}`);
+  return parts.join('\u00a0· ');
+}
+
+// "October" for a board key like "2026-10". A post just after midnight on the 1st lands on the
+// new month's board, so name the month rather than saying "this month".
+function boardMonth(period) {
+  const m = /^\d{4}-(0[1-9]|1[0-2])$/.exec(period || '');
+  if (!m) return '';
+  return new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, m[1] - 1, 15)));
+}
 
 class App {
   constructor(root) {
@@ -78,6 +140,15 @@ class App {
       menuStats: $('.sb-menu__stats'),
       live: $('.sb-live'),
       tools: Object.fromEntries([...root.querySelectorAll('.sb-tool')].map((b) => [b.dataset.tool, b])),
+      boards: { menu: $('[data-sb-board="menu"]'), result: $('[data-sb-board="result"]') },
+      points: $('.sb-points'),
+      pointsNum: $('.sb-points__num'),
+      pointsHow: $('.sb-points__how'),
+      pointsNew: $('.sb-points__new'),
+      post: $('.sb-post'),
+      name: $('.sb-name'),
+      postBtn: $('.sb-post__btn'),
+      postMsg: $('.sb-post__msg'),
     };
 
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -104,6 +175,8 @@ class App {
     this.holdStart = 0;
     this.hinted = false;
     this.result = null;
+    this.record = null;
+    this.turnAt = 0;
 
     this.buildWindGauge();
     this.bind();
@@ -222,6 +295,7 @@ class App {
     el.tools.quit.addEventListener('click', () => this.quit());
 
     this.root.querySelector('.sb-again').addEventListener('click', () => this.startMatch(this.level));
+    el.post.addEventListener('submit', (e) => this.onPost(e));
 
     const c = el.canvas;
     c.addEventListener('click', () => {
@@ -313,10 +387,16 @@ class App {
     this.game = new Game({ level: this.level, seed: randomSeed() });
     this.brain = new Brain(this.level, mulberry32(randomSeed()));
     this.result = null;
+    this.record = null;
+    this.matchStart = performance.now();
+    this.matchMs = 0;
     this.resetMatchState();
     this.setMode('match');
     this.el.plates[1].querySelector('.sb-plate__lvl').textContent = LEVELS[this.level].label;
     this.game.startRound();
+    // Set up the round now rather than on the next frame: a shot fired before then would time
+    // its turn from the last turn of the previous match.
+    this.drainNow(performance.now());
     this.reveal();
     this.el.canvas.focus({ preventScroll: true });
   }
@@ -389,13 +469,16 @@ class App {
       el.setAttribute('aria-label', r.w + r.l ? `Your record: ${r.w} wins, ${r.l} losses` : '');
     }
     const bits = [];
+    const top = loadBest();
+    if (top) bits.push(`Most points ${fmt(top.score)} on ${LEVELS[top.level].label}`);
     if (s.best) bits.push(`Best win streak ${s.best}`);
     const fast = LEVEL_IDS.filter((id) => s[id].fast).map((id) => ({ id, n: s[id].fast }));
     if (fast.length) {
-      const top = fast.reduce((a, b) => (LEVEL_IDS.indexOf(b.id) > LEVEL_IDS.indexOf(a.id) ? b : a));
-      bits.push(`Fastest win on ${LEVELS[top.id].label}: ${top.n} shots`);
+      const hardest = fast.reduce((a, b) => (LEVEL_IDS.indexOf(b.id) > LEVEL_IDS.indexOf(a.id) ? b : a));
+      bits.push(`Fastest win on ${LEVELS[hardest.id].label}: ${hardest.n} shots`);
     }
     this.el.menuStats.textContent = bits.length ? bits.join(' · ') : 'Best of three rounds. You shoot first.';
+    this.loadBoard('menu');
   }
 
   // ------------------------------------------------------------------ aiming
@@ -489,7 +572,7 @@ class App {
     this.sound.unlock();
     const g = this.game;
     if (!(g.ammo[0][this.aim.weapon] > 0)) this.aim.weapon = 'standard';
-    g.fire(this.aim.angle, this.aim.power, this.aim.weapon);
+    g.fire(this.aim.angle, this.aim.power, this.aim.weapon, performance.now() - this.turnAt);
     if (!(g.ammo[0][this.aim.weapon] > 0)) this.aim.weapon = 'standard';
     this.syncArsenal();
     this.syncControls();
@@ -630,7 +713,7 @@ class App {
     if (el < c.think || this.banner?.hold) return; // let a round title clear before shooting
     t.shown = c.plan.angle;
     this.cpu = null;
-    g.fire(c.plan.angle, c.plan.power, c.plan.weapon);
+    g.fire(c.plan.angle, c.plan.power, c.plan.weapon, now - this.turnAt);
   }
 
   // ------------------------------------------------------------------ events
@@ -638,6 +721,17 @@ class App {
   onEvent(e, now) {
     this.handle(e, now);
     this.syncControls();
+  }
+
+  drainNow(now) {
+    const g = this.game;
+    for (const e of g.drain()) this.onEvent(e, now);
+    // The terrain only needs painting again when it changed, including on the step where the
+    // last falling dirt lands.
+    if (g.terrainChanged) {
+      g.terrainChanged = false;
+      this.renderer.terrainDirty = true;
+    }
   }
 
   handle(e, now) {
@@ -669,6 +763,7 @@ class App {
         break;
       }
       case 'turn': {
+        this.turnAt = now; // how long each turn takes goes into the match log
         this.syncWind(e.wind);
         this.syncHud();
         // With reduced motion the demo behind the menu stays a still picture.
@@ -769,6 +864,7 @@ class App {
         }
         // Record it now; the result panel only waits so the last blast can be seen.
         this.result ||= recordMatch(this.level, e.winner === 0, e.shots[0]);
+        this.matchMs = Math.round(now - this.matchStart);
         this.timers.result = now + 1500;
         break;
       default:
@@ -898,7 +994,7 @@ class App {
     const shots = g.shots[0];
     const lvl = LEVELS[this.level].label;
     const { stats, newFast, newBest } = this.result || recordMatch(this.level, won, shots);
-    const rec = stats[this.level];
+    const mine = stats[this.level];
     this.hideBanner(true); // the result title says the same thing
     this.setMode('result');
     this.el.dock.scrollTop = 0;
@@ -909,9 +1005,9 @@ class App {
     r.querySelector('.sb-result__line').innerHTML = `<span class="sb-score">${g.score[0]}–${g.score[1]}</span> <span>${won ? `in ${shots} shot${shots === 1 ? '' : 's'}` : `You fired ${shots} shot${shots === 1 ? '' : 's'}`}</span>`;
 
     const items = [
-      [`Record vs ${lvl}`, `${rec.w}–${rec.l}`, false],
+      [`Record vs ${lvl}`, `${mine.w}–${mine.l}`, false],
       ['Win streak', `${stats.streak}${stats.best > stats.streak ? ` (best ${stats.best})` : ''}`, won && newBest],
-      [`Fastest win on ${lvl}`, rec.fast ? `${rec.fast} shots` : '—', won && newFast],
+      [`Fastest win on ${lvl}`, mine.fast ? `${mine.fast} shots` : '—', won && newFast],
     ];
     const ul = r.querySelector('.sb-result__stats');
     ul.textContent = '';
@@ -923,19 +1019,23 @@ class App {
       if (isNew) li.lastChild.insertAdjacentHTML('beforeend', ' <em class="sb-new">New</em>');
       ul.append(li);
     }
+    const rec = this.showRecord(won);
     const again = r.querySelector('.sb-again');
     again.textContent = won && this.level !== 'hard' ? 'Play again' : 'Rematch';
     const change = r.querySelector('.sb-change');
     change.textContent = won && this.level !== 'hard' ? `Next: ${LEVELS[LEVEL_IDS[LEVEL_IDS.indexOf(this.level) + 1]].label}` : 'Change difficulty';
     change.onclick = won && this.level !== 'hard' ? () => this.startMatch(LEVEL_IDS[LEVEL_IDS.indexOf(this.level) + 1]) : () => this.showMenu(true);
 
-    const text = won ? `I flattened the CPU on ${lvl} in ${shots} shots in Scorched Borough.` : `The CPU flattened me on ${lvl} in Scorched Borough. Think you can do better?`;
+    const pts = rec?.score;
+    const text = won
+      ? `I flattened the CPU on ${lvl} in ${shots} shots${pts ? ` for ${fmt(pts)} points` : ''} in Scorched Borough.`
+      : `The CPU flattened me on ${lvl} in Scorched Borough. Think you can do better?`;
     const url = this.root.dataset.shareUrl || location.href.split('#')[0];
     mountShareBar(r.querySelector('.sb-result__share'), {
       url,
       text,
       title: 'Scorched Borough',
-      image: () => this.card(won, lvl, shots),
+      image: () => this.card(won, lvl, shots, pts),
       imageName: 'scorched-borough.png',
     });
     this.say(`${won ? 'You won' : 'You lost'} the match ${g.score[0]} to ${g.score[1]}.`);
@@ -952,8 +1052,155 @@ class App {
     }
   }
 
+  // ------------------------------------------------------------------ records
+
+  // The log the records board replays: the seed and every shot either tank fired.
+  matchLog() {
+    const g = this.game;
+    return {
+      v: VERSION,
+      level: g.level,
+      seed: g.seed,
+      durationMs: this.matchMs,
+      rounds: g.history.map((r) => ({ first: r.first === 0 ? 'you' : 'cpu', shots: r.shots.map((s) => s.slice()) })),
+    };
+  }
+
+  // Scores a won match with the same replay the board runs, so the points shown are the points
+  // the board will give, then sets up the post form.
+  showRecord(won) {
+    const { points, pointsNum, pointsHow, pointsNew, post, name, postBtn, postMsg } = this.el;
+    this.record = null;
+    this.posted = false;
+    post.classList.remove('is-done');
+    let refused = '';
+    if (won) {
+      const log = this.matchLog();
+      let check;
+      try {
+        check = validateSubmission({ log });
+      } catch {
+        check = { ok: false, error: 'replay' };
+      }
+      if (check.ok) this.record = { score: check.score, detail: check.detail, log };
+      else {
+        refused = check.error;
+        console.warn('Scorched Borough: this match does not replay', check.error);
+      }
+    }
+    const rec = this.record;
+    points.hidden = !rec;
+    post.hidden = !rec;
+    if (rec) {
+      const best = loadBest();
+      pointsNew.hidden = !(best && rec.score > best.score);
+      if (!best || rec.score > best.score) store.set(BEST_KEY, JSON.stringify({ score: rec.score, ...rec.detail }));
+      pointsNum.textContent = fmt(rec.score);
+      pointsHow.textContent = this.pointsText(rec.detail);
+      name.disabled = false;
+      postBtn.disabled = false;
+      name.value = getPlayerName() || '';
+    }
+    let msg = '';
+    if (!won) msg = 'Win a match to post a record.';
+    // The board refuses any match where the CPU's own shot hurt it. The CPU checks its aim so
+    // that it never does, but if it ever slips, say why.
+    else if (refused === 'cpu self-hit') msg = 'The CPU hit itself this match, so it can’t go on the records board.';
+    else if (!rec) msg = 'This match can’t go on the records board.';
+    postMsg.textContent = msg;
+    this.loadBoard('result');
+    return rec;
+  }
+
+  pointsText({ level, rounds, shots }) {
+    const raw = WIN_POINTS - SHOT_COST * shots;
+    let text = `${fmt(WIN_POINTS)} for the win − ${fmt(SHOT_COST * shots)} for ${shots} shot${shots === 1 ? '' : 's'}`;
+    if (rounds !== '2-0') text += ' in the rounds you won';
+    if (raw < MIN_POINTS) text += `, raised to ${MIN_POINTS}`;
+    return `${text}, ×${LEVEL_MULTIPLIER[level]} on ${LEVELS[level].label}`;
+  }
+
+  async loadBoard(which, fresh = false) {
+    const el = this.el.boards[which];
+    if (!el) return null;
+    if (!el.querySelector('.board')) el.innerHTML = '<p class="sb-records__loading">Loading…</p>';
+    try {
+      const data = await getTop(GAME_ID, { limit: 10, fresh });
+      renderBoard(el, data, {
+        formatScore: (e) => fmt(e.score),
+        formatMeta: boardMeta,
+        labels: { title: 'This month', empty: 'No records yet this month. Win a match to set one.', unavailable: 'The board is out of service right now.' },
+      });
+      return data;
+    } catch {
+      el.innerHTML = '<p class="sb-records__loading">The board is out of service right now.</p>';
+      return null;
+    }
+  }
+
+  async onPost(e) {
+    e.preventDefault();
+    const rec = this.record;
+    if (this.posted || !rec) return;
+    const { name, postBtn, postMsg, post } = this.el;
+    const clean = cleanName(name.value);
+    if (!clean) {
+      postMsg.textContent = NAME_HINT;
+      name.focus();
+      return;
+    }
+    postBtn.disabled = true;
+    postMsg.textContent = 'Posting…';
+    const res = await submit(GAME_ID, { name: clean, score: rec.score, detail: rec.detail, log: rec.log }, { localScore: rec.score, detail: rec.detail });
+    if (this.record !== rec) return; // a new match started while this was in flight
+    if (res.ok) {
+      this.posted = true;
+      post.classList.add('is-done');
+      name.disabled = true;
+      // The form is gone now; keep keyboard focus where it was instead of dropping it on the page.
+      postMsg.focus({ preventScroll: true });
+      const month = boardMonth(res.period);
+      // A smaller win leaves the nickname's earlier best on the board. This browser may remember
+      // it; otherwise the fresh board shows it (if it is slow, the plain message will do).
+      const board = this.loadBoard('result', true);
+      const data = await Promise.race([board, new Promise((done) => setTimeout(done, 2000, null))]);
+      if (this.record !== rec) return;
+      const same = (e) => e.me && (e.rank === res.rank || e.name.toLowerCase() === clean.toLowerCase());
+      const kept = Math.max(data?.entries.find(same)?.score || 0, postedBefore(res.period, clean));
+      rememberPosted(res.period, clean, Math.max(kept, rec.score));
+      if (kept > rec.score) {
+        postMsg.textContent = `Your ${fmt(kept)} from earlier ${month ? `in ${month}` : 'this month'} still stands${res.rank ? `, #${res.rank} on the board` : ''}.`;
+      } else {
+        postMsg.textContent = res.rank ? `Posted. You’re #${res.rank} ${month ? `for ${month}` : 'this month'}.` : 'Posted.';
+      }
+      return;
+    }
+    const status = res.status || 0;
+    postBtn.disabled = false;
+    if (res.error === 'name') {
+      postMsg.textContent = NAME_HINT;
+    } else if (res.error === 'too_many_names') {
+      postMsg.textContent = 'This network has posted under enough nicknames this month. Try one you used before.';
+    } else if (status === 429) {
+      postMsg.textContent = 'Too many posts from this network just now. Try again in up to 10 minutes.';
+    } else if (res.error === 'duplicate') {
+      postBtn.disabled = true;
+      postMsg.textContent = 'This match is already on the board.';
+    } else if (res.error === 'version') {
+      postBtn.disabled = true;
+      postMsg.textContent = 'The board is running a newer version of the game. Reload the page and your next win will post.';
+    } else if (status >= 400 && status < 500) {
+      // The board replayed this match and said no. Posting it again would get the same answer.
+      postBtn.disabled = true;
+      console.warn('Scorched Borough: record not accepted', status, res.error);
+      postMsg.textContent = 'This match couldn’t be verified, so it wasn’t posted.';
+    } else {
+      postMsg.textContent = 'Couldn’t reach the board. Try again in a moment.';
+    }
+  }
+
   // A share image: the final battlefield with the result on top.
-  card(won, lvl, shots) {
+  card(won, lvl, shots, pts) {
     const c = document.createElement('canvas');
     c.width = 1200;
     c.height = 630;
@@ -985,7 +1232,8 @@ class App {
     g.fillText(won ? 'the CPU.' : 'the CPU.', 66, 354);
     g.font = `500 34px ${font}`;
     g.fillStyle = 'rgba(255,255,255,0.86)';
-    g.fillText(won ? `${lvl} · ${shots} shots · ${this.game.score[0]}–${this.game.score[1]}` : `${lvl} · ${this.game.score[0]}–${this.game.score[1]}`, 68, 430);
+    const tally = `${this.game.score[0]}–${this.game.score[1]}`;
+    g.fillText(won ? `${lvl} · ${tally} in ${shots} shots${pts ? ` · ${fmt(pts)} points` : ''}` : `${lvl} · ${tally}`, 68, 430);
     g.fillStyle = '#FFB000';
     g.font = `600 26px ${font}`;
     g.fillText('hoondy.com/apps/scorched-borough', 68, 548);
@@ -1008,7 +1256,7 @@ class App {
     if (!g) return;
     this.runCpu(now);
     g.update(dt);
-    for (const e of g.drain()) this.onEvent(e, now);
+    this.drainNow(now);
 
     const wind = g.world ? g.world.wind : 0;
     this.renderer.update(dt, wind);
@@ -1030,6 +1278,7 @@ class App {
       this.timers.next = null;
       this.hideBanner(true);
       g.nextRound();
+      this.drainNow(now);
     }
     if (this.timers.result && now >= this.timers.result) {
       this.timers.result = null;

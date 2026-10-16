@@ -43,10 +43,10 @@ Older blog posts have a comment section hosted by Disqus. Nothing from Disqus lo
 
 ## Monthly high score boards
 
-Rush Hour keeps a monthly high score board. Posting a score is optional. When you do, the leaderboard service stores:
+Rush Hour and Scorched Borough keep monthly high score boards. Posting a score is optional. When you do, the leaderboard service stores:
 
 - the nickname you type (pick anything; please don't use your full real name if you'd rather stay anonymous),
-- your score and a few game details shown on the board (for example the stage you reached),
+- your score and a few game details shown on the board (for example the stage you reached in Rush Hour, or the difficulty and shots used in Scorched Borough),
 - the country your connection comes from, derived from your IP address and shown as a flag,
 - a salted, one-way hash of your network address, used to limit spam and to keep one entry per player each month. It is cleared once the month is over. The IP address itself is never stored.
 

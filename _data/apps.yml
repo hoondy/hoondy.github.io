@@ -54,7 +54,7 @@ scorched-borough:
   hex: "#6CBE45"
   image: /assets/apps/scorched-borough/og.png
   kind: "Artillery game"
-  stops: ["1 vs CPU", "Angle & power", "Wind & gravity", "Turn based"]
+  stops: ["1 vs CPU", "Angle & power", "Wind & gravity", "Monthly records"]
   promo:
     kicker: "Weekend service change"
     headline: "Artillery duels on the G"

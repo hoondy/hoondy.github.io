@@ -1,7 +1,7 @@
 ---
 layout: app
 title: "Scorched Borough"
-description: "A turn-based artillery duel against the CPU over the New York skyline. Set your angle and power, read the wind, dig craters, and flatten the other tank. Free, in your browser."
+description: "A turn-based artillery duel against the CPU over the New York skyline. Set your angle and power, read the wind, dig craters, flatten the other tank, and post your wins to the monthly records board. Free, in your browser."
 app_id: scorched-borough
 app_css: /assets/apps/scorched-borough/scorched-borough.css
 app_js: /assets/apps/scorched-borough/main.js
@@ -79,6 +79,10 @@ lang: en
         <button type="button" class="sb-start">Start match <span aria-hidden="true">&rarr;</span></button>
         <p class="sb-menu__stats" aria-live="polite"></p>
       </div>
+      <section class="sb-records sb-records--menu" aria-labelledby="sb-records-menu">
+        <h3 class="sb-records__title" id="sb-records-menu">Monthly records <a class="sb-records__how" href="#records">How points work</a></h3>
+        <div class="sb-records__board" data-sb-board="menu"><p class="sb-records__loading">Loading…</p></div>
+      </section>
     </div>
 
     <div class="sb-console" hidden>
@@ -149,6 +153,26 @@ lang: en
         <button type="button" class="sb-change">Change difficulty</button>
       </div>
       <ul class="sb-result__stats"></ul>
+      <div class="sb-records sb-records--result">
+        <div class="sb-claim">
+          <div class="sb-points" hidden>
+            <p class="sb-points__total"><span class="sb-points__num"></span> <span class="sb-points__unit">points</span> <em class="sb-new sb-points__new" hidden>New best</em></p>
+            <p class="sb-points__how"></p>
+          </div>
+          <form class="sb-post" novalidate hidden>
+            <label class="sb-post__label" for="sb-name">Post your record</label>
+            <div class="sb-post__row">
+              <input class="sb-name" id="sb-name" name="name" type="text" autocomplete="nickname" maxlength="16" placeholder="Nickname" spellcheck="false" required>
+              <button type="submit" class="sb-post__btn">Post</button>
+            </div>
+          </form>
+          <p class="sb-post__msg" role="status" aria-live="polite" tabindex="-1"></p>
+        </div>
+        <section class="sb-records__panel" aria-labelledby="sb-records-result">
+          <h3 class="sb-records__title" id="sb-records-result">Monthly records</h3>
+          <div class="sb-records__board" data-sb-board="result"><p class="sb-records__loading">Loading…</p></div>
+        </section>
+      </div>
       <div class="sb-result__share"></div>
     </div>
   </div>
@@ -202,6 +226,17 @@ lang: en
   <h2 id="cpu">How the CPU aims</h2>
   <p>Since the CPU runs the same simulation you are watching, it could hit you every time. It doesn&rsquo;t. It plays more like a person: it picks a spot that is off by some random amount, reads the wind imperfectly, and after a miss it aims for the other side of you with a smaller error. Long, short, hit. On Easy that error starts large and shrinks slowly. On Hard it usually finds you by the second or third shot, so make your early shots count.</p>
 
+  <h2 id="records">Records</h2>
+  <p>Win a match and you can post it to the monthly records board under a nickname. Points reward a quick, clean win against a tough opponent:</p>
+  <ul>
+    <li>A win starts at <strong>1,000</strong> points.</li>
+    <li>Every shot you fire in the two rounds you win costs <strong>40</strong>. A round the CPU takes doesn&rsquo;t count.</li>
+    <li>That total, never less than 100, is multiplied by the difficulty: <strong>&times;1</strong> on Easy, <strong>&times;2</strong> on Normal, <strong>&times;3</strong> on Hard.</li>
+  </ul>
+  <p>So a 2&#8288;&ndash;&#8288;0 win on Hard in six shots is worth 3&nbsp;&times;&nbsp;(1,000&nbsp;&minus;&nbsp;240) = 2,280 points, and a 2&#8288;&ndash;&#8288;1 win on Normal with fifteen shots in the two rounds you won is worth 2&nbsp;&times;&nbsp;(1,000&nbsp;&minus;&nbsp;600) = 800. The board can check every shot you fire, but not how well the CPU shot, so nothing the CPU does moves your points: not the round it took, and not the armor you have left. When two records tie, the one posted first ranks higher.</p>
+  <p>The board starts fresh at midnight New York time on the 1st of every month. Each nickname keeps its best score of the month.</p>
+  <p>Every record is checked. While you play, the game keeps a short log of the match: its random seed, the difficulty and each shot either tank fired, as an angle, a power and a weapon. The board replays the whole match from that log with the same game code, round by round: the same terrain, the same wind, the same craters and falls. A post only counts if the replay ends in your win, and the board works out the points itself. That only works if the replay lands every shell exactly where it landed for you, so the physics stays away from anything a browser is allowed to round its own way, like the built-in sine and cosine, and uses its own versions instead.</p>
+
   {% include billboard.html format="rectangle" %}
 
   <h2 id="tips">Tips</h2>
@@ -220,7 +255,7 @@ lang: en
   </details>
   <details>
     <summary>Where are my stats kept?</summary>
-    <p>In this browser&rsquo;s local storage: wins and losses for each difficulty, your best win streak, and your fastest win in shots. Nothing is uploaded. Clearing site data resets them. Quitting or leaving a match once you have fired a shot counts as a loss.</p>
+    <p>In this browser&rsquo;s local storage: wins and losses for each difficulty, your best win streak, and your fastest win in shots. Clearing site data resets them. Quitting or leaving a match once you have fired a shot counts as a loss. Nothing leaves your browser unless you post a record; then the board gets your nickname, the points and the log of that match.</p>
   </details>
   <details>
     <summary>How do I play on a phone?</summary>
@@ -229,6 +264,14 @@ lang: en
   <details>
     <summary>Why can&rsquo;t I see the whole trajectory?</summary>
     <p>Because judging it is the game. The aim line only shows direction. The marker and the spotter call tell you how far off you were.</p>
+  </details>
+  <details>
+    <summary>When does the records board reset?</summary>
+    <p>At midnight New York time on the 1st of each month. Only wins can be posted, and each nickname keeps its best score of the month.</p>
+  </details>
+  <details>
+    <summary>Why wasn&rsquo;t my record accepted?</summary>
+    <p>The board replays every match before it takes it. A match it can&rsquo;t replay to the same win, for example one played in a version of the game from before an update, is turned away. Reload the page and the next win will post.</p>
   </details>
   <details>
     <summary>What if one shot takes out both tanks?</summary>

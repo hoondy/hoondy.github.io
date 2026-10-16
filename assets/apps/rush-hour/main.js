@@ -866,6 +866,8 @@ class RushHour {
     } else if (res.error === 'too_many_names') {
       postMsg.textContent = 'This network has posted under enough nicknames this month. Try one you used before.';
       postBtn.disabled = false;
+    } else if (res.error === 'duplicate') {
+      postMsg.textContent = 'This ride is already on the board.';
     } else if (status === 429) {
       postBtn.disabled = false;
       postMsg.textContent = 'Too many posts. Give it a minute and try again.';
