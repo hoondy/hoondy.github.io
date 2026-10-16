@@ -80,33 +80,33 @@ const nyc = list(`
 `);
 
 const science = list(`
-  bio dna dye eye fly gel gut ion lab rna
-  agar atom axon beam bone cell data dose exon gene glia lens lung mass mean mice plot root seed
-  skin spin tube worm
-  algae assay atlas biome blood brain chart cilia clone codon donor exome field flask fungi gland
-  graft heart helix lipid liver locus lysis motif nerve omics organ petri prion probe quark renal
-  serum slide spore stain trait tumor virus yeast
-  allele beaker biopsy cohort cortex embryo enzyme fossil genome intron kinase ligand ligase
-  mutant myelin neuron nuclei photon plasma primer proton ribose spleen sterol stroma tissue
-  vector zygote
-  allelic antigen aptamer barcode biobank biology blinded calcium cluster control ecology entropy
-  epitope glucose gravity histone homolog hormone insulin isoform isotope lineage markers meiosis
-  mitosis network neurons neutron nucleus pathway peptide physics pipette plasmid polymer protein
-  reagent species synapse variant vesicle
-  amygdala antibody bacteria bayesian cadherin catalyst collagen cortical cortisol cytokine
-  dendrite dopamine electron enhancer genetics genomics genotype helicase lysosome membrane
-  molecule mutation ontology oxytocin promoter proteome receptor ribosome sequence silencer
-  spectrum splicing telomere thalamus variance
-  alignment astrocyte chemistry chromatin cytoplasm dendrites dimension embedding enhancers
-  epigenome evolution haplotype heritable karyotype microglia organelle phenotype posterior
-  promoters replicate serotonin substrate
-  annotation centrifuge centromere cerebellum chromosome fibroblast hypothesis imputation
-  macrophage metabolite microarray microbiome microscope nucleotide plasticity polymerase
-  pseudotime regression regulatory sequencing trajectory transcript
-  hippocampus methylation
-  heritability
-  neurogenomics transcriptome
-  oligodendrocyte
+  ant bio dna dye eye fly gas gel gut ion lab ohm rna
+  acid atom base beam bone bulb cell coil core dust fern gene germ heat iron lava lens lung mass
+  moon neon nova root seed skin spin star tide tube volt watt worm zinc
+  algae alloy argon biome blood boron brain clone cloud comet earth flask force fungi gland heart
+  helix joule laser lever liver lunar magma metal meter nerve orbit organ ozone petri prism probe
+  pulse quark radar slide solar sonar spore steam storm trait virus xenon yeast
+  beaker beetle carbon copper cosmos crater embryo energy enzyme fossil fusion galaxy genome
+  helium insect iodine kelvin magnet mammal mantle meteor nebula neuron newton nuclei oxygen
+  photon plasma planet pollen proton quasar rocket sodium spleen tissue torque tundra vacuum
+  zygote
+  biology calcium climate crystal current density eclipse ecology element entropy fission gallium
+  glacier glucose gravity habitat hormone inertia insulin isotope jupiter kinetic lithium meiosis
+  mercury mineral mitosis neptune neutron nucleus physics pipette polymer protein quantum species
+  sunspot synapse vaccine volcano voltage
+  antibody asteroid bacteria catalyst chlorine collagen compound dinosaur dopamine electron
+  equation friction genetics hydrogen magnetic membrane molecule momentum mutation nitrogen
+  organism particle pendulum plankton platinum pressure reaction ribosome sediment skeleton
+  solution spectrum tectonic titanium velocity
+  amplitude astronaut barometer biosphere chemistry conductor cytoplasm ecosystem evolution
+  frequency longitude magnetism mechanics meteorite molecular organelle petroleum radiation
+  satellite serotonin supernova telescope
+  absorption atmosphere centrifuge chromosome combustion conduction convection earthquake
+  experiment geothermal hemisphere hypothesis laboratory microscope oscillator propulsion
+  reflection refraction spacecraft thermostat wavelength
+  chlorophyll circulation electricity evaporation exoskeleton gravitation observatory
+  radioactive temperature thermometer
+  acceleration biodiversity fermentation oceanography paleontology
 `);
 
 const code = list(`
@@ -144,6 +144,6 @@ function unique(words) {
 export const PACK_INFO = {
   everyday: { label: 'Everyday', blurb: 'Common words, short to long', bullet: 'E', color: '#0039A6', words: unique(everyday) },
   nyc: { label: 'NYC', blurb: 'Neighborhoods, streets, food', bullet: 'N', color: '#FCCC0A', dark: true, words: unique(nyc) },
-  science: { label: 'Science', blurb: 'Biology and genomics', bullet: 'S', color: '#00933C', words: unique(science) },
+  science: { label: 'Science', blurb: 'Atoms, planets, lab gear', bullet: 'S', color: '#00933C', words: unique(science) },
   code: { label: 'Code', blurb: 'Programming terms', bullet: 'C', color: '#FF6319', words: unique(code) },
 };

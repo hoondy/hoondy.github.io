@@ -50,8 +50,14 @@ function boardMeta(entry) {
   return parts.join(' · ');
 }
 
-// "Oct 12 – 18" reads better than "2026-W42". Only the current week can be turned into dates
-// here; if the board answers for another week (right around the reset), show its key as is.
+// "October" for a board key like "2026-10". A post made just after midnight on the 1st lands on
+// the new month's board, so name the month rather than saying "this month".
+function boardMonth(period) {
+  const m = /^\d{4}-(0[1-9]|1[0-2])$/.exec(period || '');
+  if (!m) return '';
+  return new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, m[1] - 1, 15)));
+}
+
 class RushHour {
   constructor(root) {
     this.root = root;
@@ -823,7 +829,7 @@ class RushHour {
       renderBoard(el, data, {
         formatScore: (e) => fmt(e.score),
         formatMeta: boardMeta,
-        labels: { title: 'This week', empty: 'No riders yet this week. Be the first.', unavailable: 'The board is out of service right now.' },
+        labels: { title: 'This month', empty: 'No riders yet this month. Be the first.', unavailable: 'The board is out of service right now.' },
       });
     } catch {
       el.innerHTML = '<p class="rh__loading">The board is out of service right now.</p>';
@@ -848,7 +854,8 @@ class RushHour {
       this.posted = true;
       post.classList.add('is-done');
       name.disabled = true;
-      postMsg.textContent = res.rank ? `Posted. You're #${res.rank} this week.` : 'Posted.';
+      const month = boardMonth(res.period);
+      postMsg.textContent = res.rank ? `Posted. You're #${res.rank} ${month ? `for ${month}` : 'this month'}.` : 'Posted.';
       this.loadBoard('over', true);
       return;
     }
@@ -857,7 +864,7 @@ class RushHour {
       postBtn.disabled = false;
       postMsg.textContent = 'Try another nickname: letters and numbers, up to 16.';
     } else if (res.error === 'too_many_names') {
-      postMsg.textContent = 'This network has posted under enough nicknames this week. Try one you used before.';
+      postMsg.textContent = 'This network has posted under enough nicknames this month. Try one you used before.';
       postBtn.disabled = false;
     } else if (status === 429) {
       postBtn.disabled = false;

@@ -1,7 +1,7 @@
 ---
 layout: app
 title: "Rush Hour"
-description: "A falling-words typing game on the 7 train. Type each word before it reaches the platform edge, ride from Hudson Yards to Flushing, and post your score to the weekly high score board."
+description: "A falling-words typing game on the 7 train. Type each word before it reaches the platform edge, ride from Hudson Yards to Flushing, and post your score to the monthly high score board."
 app_id: rush-hour
 app_css: /assets/apps/rush-hour/rush-hour.css
 app_js: /assets/apps/rush-hour/main.js
@@ -69,7 +69,7 @@ lang: en
           <p class="rh__hint" data-rh-hint-touch hidden>Tap the platform any time to bring the keyboard back.</p>
         </div>
         <aside class="rh__board" aria-labelledby="rh-board-start">
-          <h3 class="rh__board-title" id="rh-board-start">Weekly high scores</h3>
+          <h3 class="rh__board-title" id="rh-board-start">Monthly high scores</h3>
           <div data-rh-board="start"><p class="rh__loading">Loading…</p></div>
         </aside>
       </div>
@@ -113,14 +113,14 @@ lang: en
         </div>
         <aside class="rh__board" aria-labelledby="rh-board-over">
           <form class="rh__post" data-rh-post novalidate>
-            <label class="rh__post-label" for="rh-name">Post to this week's board</label>
+            <label class="rh__post-label" for="rh-name">Post to this month's board</label>
             <div class="rh__post-row">
               <input class="rh__name" id="rh-name" name="name" type="text" autocomplete="nickname" maxlength="16" placeholder="Nickname" spellcheck="false" required>
               <button type="submit" class="rh__btn rh__btn--post" data-rh-post-btn>Post score</button>
             </div>
             <p class="rh__post-msg" data-rh-post-msg role="status" aria-live="polite"></p>
           </form>
-          <h3 class="rh__board-title" id="rh-board-over">Weekly high scores</h3>
+          <h3 class="rh__board-title" id="rh-board-over">Monthly high scores</h3>
           <div data-rh-board="over"></div>
         </aside>
       </div>
@@ -171,7 +171,7 @@ lang: en
     <dl class="rh-packs">
       <div><dt>Everyday</dt><dd>Familiar words, from <em>cat</em> and <em>lamp</em> up to <em>encyclopedia</em>. The fairest test of plain typing speed.</dd></div>
       <div><dt>NYC</dt><dd>Neighborhoods, streets, food and landmarks: <em>bodega</em>, <em>bleecker</em>, <em>pastrami</em>, <em>verrazzano</em>. Spelling counts.</dd></div>
-      <div><dt>Science</dt><dd>Biology and genomics, from <em>gene</em> to <em>oligodendrocyte</em>. A nod to the day job.</dd></div>
+      <div><dt>Science</dt><dd>Planets, lab gear and the odd quark, from <em>atom</em> and <em>comet</em> up to <em>paleontology</em>. Dinosaurs included.</dd></div>
       <div><dt>Code</dt><dd>Programming terms: <em>lambda</em>, <em>mutex</em>, <em>refactor</em>, <em>asynchronous</em>.</dd></div>
     </dl>
 
@@ -200,8 +200,8 @@ lang: en
       <p>The usual way: every five letters count as one word, divided by the minutes you spent playing. Pauses don't count, and neither do letters in words that got away.</p>
     </details>
     <details>
-      <summary>When does the weekly board reset?</summary>
-      <p>Every Monday at midnight, New York time. Each nickname keeps its best score of the week.</p>
+      <summary>When does the board reset?</summary>
+      <p>At midnight New York time on the 1st of each month. Each nickname keeps its best score of the month.</p>
     </details>
     <details>
       <summary>How do you stop people faking scores?</summary>
