@@ -11,39 +11,39 @@ async function run(work) {
   }
 }
 
-export function topScores(db, game, week, limit) {
+export function topScores(db, game, period, limit) {
   return run(async () => {
     const { results } = await db
       .prepare(
         `SELECT id, name, score, country, detail, updated_at AS ts
            FROM scores
-          WHERE game = ?1 AND week = ?2
+          WHERE game = ?1 AND period = ?2
           ORDER BY score DESC, updated_at, id
           LIMIT ?3`,
       )
-      .bind(game, week, limit)
+      .bind(game, period, limit)
       .all();
     return results;
   });
 }
 
-// Keeps the player's best score for the week and returns where that best now stands.
-// `improved` is false when an earlier post this week was at least as good.
+// Keeps the player's best score for the month and returns where that best now stands.
+// `improved` is false when an earlier post this month was at least as good.
 //
-// A network may only start `maxNames` rows per game per week; otherwise one person could take
+// A network may only start `maxNames` rows per game per month; otherwise one person could take
 // over the whole board under a stream of nicknames. Returns null when this post would have
 // been a row over that cap. The check and the insert are one statement, so racing posts
 // can't slip past it.
-export function saveScore(db, { game, week, client, player, name, score, country, detail, now, maxNames }) {
+export function saveScore(db, { game, period, client, player, name, score, country, detail, now, maxNames }) {
   return run(async () => {
     const [saved, standing] = await db.batch([
       db
         .prepare(
-          `INSERT INTO scores (game, week, client, player, name, score, country, detail, created_at, updated_at)
+          `INSERT INTO scores (game, period, client, player, name, score, country, detail, created_at, updated_at)
            SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?9
-            WHERE EXISTS (SELECT 1 FROM scores WHERE game = ?1 AND week = ?2 AND client = ?3 AND player = ?4)
-               OR (SELECT COUNT(*) FROM scores WHERE game = ?1 AND week = ?2 AND client = ?3) < ?10
-           ON CONFLICT (game, week, client, player) DO UPDATE SET
+            WHERE EXISTS (SELECT 1 FROM scores WHERE game = ?1 AND period = ?2 AND client = ?3 AND player = ?4)
+               OR (SELECT COUNT(*) FROM scores WHERE game = ?1 AND period = ?2 AND client = ?3) < ?10
+           ON CONFLICT (game, period, client, player) DO UPDATE SET
              name = excluded.name,
              score = excluded.score,
              country = excluded.country,
@@ -52,19 +52,19 @@ export function saveScore(db, { game, week, client, player, name, score, country
            WHERE excluded.score > scores.score
            RETURNING id`,
         )
-        .bind(game, week, client, player, name, score, country, detail, now, maxNames),
+        .bind(game, period, client, player, name, score, country, detail, now, maxNames),
       db
         .prepare(
           `SELECT s.id, s.score,
                   1 + (SELECT COUNT(*) FROM scores b
-                        WHERE b.game = s.game AND b.week = s.week AND b.score > s.score)
+                        WHERE b.game = s.game AND b.period = s.period AND b.score > s.score)
                     + (SELECT COUNT(*) FROM scores b
-                        WHERE b.game = s.game AND b.week = s.week AND b.score = s.score
+                        WHERE b.game = s.game AND b.period = s.period AND b.score = s.score
                           AND (b.updated_at < s.updated_at OR (b.updated_at = s.updated_at AND b.id < s.id))) AS rank
              FROM scores s
-            WHERE s.game = ?1 AND s.week = ?2 AND s.client = ?3 AND s.player = ?4`,
+            WHERE s.game = ?1 AND s.period = ?2 AND s.client = ?3 AND s.player = ?4`,
         )
-        .bind(game, week, client, player),
+        .bind(game, period, client, player),
     ]);
     const row = standing.results[0];
     if (!row) return null;
@@ -112,18 +112,56 @@ export function minutesUntilSlot(db, { client, game, minute, window, limit }) {
 }
 
 // Daily housekeeping: forget rate-limit rows after a day, drop the IP-derived hashes once a
-// week is over (nobody can post to it any more), and delete weeks past the retention period.
-export function cleanup(db, { minute, currentWeek, oldestWeek }) {
+// month is over (nobody can post to it any more), and delete months past the retention period.
+// LQ statistics hold nothing about the person, so they're kept.
+export function cleanup(db, { minute, currentPeriod, oldestPeriod }) {
   return run(() =>
     db.batch([
       db.prepare('DELETE FROM hits WHERE bucket < ?1').bind(minute - 24 * 60),
       db
         .prepare(
           `UPDATE scores SET client = NULL, player = 'closed:' || id
-            WHERE week < ?1 AND player NOT LIKE 'closed:%'`,
+            WHERE period < ?1 AND player NOT LIKE 'closed:%'`,
         )
-        .bind(currentWeek),
-      db.prepare('DELETE FROM scores WHERE week < ?1').bind(oldestWeek),
+        .bind(currentPeriod),
+      db.prepare('DELETE FROM scores WHERE period < ?1').bind(oldestPeriod),
     ]),
   );
+}
+
+// ------------------------------------------------------------------------------------------
+// LQ statistics
+
+// Stores one anonymous result and counts it in the histogram in the same batch (D1 runs a
+// batch as one transaction), then returns the new total.
+//
+// The row gets a random id rather than the next one in line: sequential ids would give the
+// order results came in, and that order could be lined up with the rate-limit rows. Keeping
+// ids under 2^53 lets them come back to JavaScript exactly.
+export function saveLqResult(db, { day, lang, version, lq, archetype, answers, bin, stamp }) {
+  return run(async () => {
+    const [, , total] = await db.batch([
+      db
+        .prepare(
+          `INSERT INTO lq_results (id, day, lang, version, lq, archetype, answers)
+           VALUES (abs(random() % 9007199254740992), ?1, ?2, ?3, ?4, ?5, ?6)`,
+        )
+        .bind(day, lang, version, lq, archetype, answers),
+      db
+        .prepare(
+          `INSERT INTO lq_hist (bin, count, updated_at) VALUES (?1, 1, ?2)
+           ON CONFLICT (bin) DO UPDATE SET count = count + 1, updated_at = excluded.updated_at`,
+        )
+        .bind(bin, stamp),
+      db.prepare('SELECT COALESCE(SUM(count), 0) AS n FROM lq_hist'),
+    ]);
+    return total.results[0]?.n ?? 0;
+  });
+}
+
+export function lqHistogram(db) {
+  return run(async () => {
+    const { results } = await db.prepare('SELECT bin, count, updated_at FROM lq_hist ORDER BY bin').all();
+    return results;
+  });
 }

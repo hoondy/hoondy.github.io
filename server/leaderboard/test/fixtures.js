@@ -1,6 +1,6 @@
 // Builders for realistic submissions, made with the same rule modules the worker uses.
 
-import { DIM_IDS, ITEMS, scoreAnswers } from '../../../assets/apps/leadership/scoring.js';
+import { DIM_IDS, ITEMS, VERSION, scoreAnswers } from '../../../assets/apps/leadership/scoring.js';
 import { HOLD_MS, KIND, RESUME_MS, lengthRange, replay, stats, wordsForStage } from '../../../assets/apps/rush-hour/rules.js';
 
 // Real people don't give every statement about a trait the same answer.
@@ -21,12 +21,13 @@ export function leadershipAnswers(levels = {}) {
   });
 }
 
-export function leadershipBody(name, levels, extra = {}) {
+/** The body the results page posts to /v1/leadership/results, and what it should score. */
+export function lqResultBody(levels, extra = {}) {
   const answers = leadershipAnswers(levels);
   const durationMs = 4 * 60 * 1000;
   const expected = scoreAnswers(answers, { durationMs });
   if (!expected.valid) throw new Error(`fixture is not valid: ${expected.flags.join(',')}`);
-  return { body: { name, answers, lang: 'en', durationMs, ...extra }, expected };
+  return { body: { answers, lang: 'en', durationMs, v: VERSION, ...extra }, expected };
 }
 
 /**

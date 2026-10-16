@@ -1,25 +1,40 @@
-// Weekly leaderboards for hoondy.com.
+// Monthly leaderboards and anonymous LQ test statistics for hoondy.com.
 //
-//   GET  /v1/:game/top?limit=20   this week's board, best first (limit 1..50)
-//   POST /v1/:game/scores         submit a result; the game's validator decides the score
+//   GET  /v1/:game/top?limit=20         this month's board, best first (limit 1..50)
+//   POST /v1/:game/scores               submit a run; the game's validator decides the score
+//   POST /v1/leadership/results         add one anonymous LQ result to the statistics
+//   GET  /v1/leadership/distribution    histogram of LQ results so far
 //
-// Players are identified by a salted hash of their network + nickname that rotates every
-// week, and only their best score of the week is kept. The raw IP is never written anywhere.
+// Board players are identified by a salted hash of their network + nickname that rotates every
+// month, and only their best score of the month is kept. LQ results are stored with no name, no
+// time of day and nothing derived from the network. The raw IP is never written anywhere.
 
-import { weekInfo } from '../../../assets/js/lib/week.js';
+import { periodInfo } from '../../../assets/js/lib/period.js';
 import { cleanName } from '../../../assets/js/lib/names.js';
 import { GAMES, getGame } from './games.js';
 import { HttpError, errorResponse, json, noContent, readJsonObject } from './http.js';
 import { networkOf } from './ip.js';
+import { binFor, checkResult, distribution } from './lq.js';
+import { monthsBefore, nyDay, utcDayStart } from './time.js';
 import * as db from './db.js';
 
 const BOARD_SIZE = 50;
 const DEFAULT_LIMIT = 20;
-const EDGE_TTL = 20; // seconds a board may be served from the edge cache
+const BOARD_TTL = 20; // seconds a board may be served from the edge cache
+const DIST_TTL = 300; // seconds for the LQ histogram
 const MAX_DETAIL = 1024;
+// 49 small integers, a language code, a duration and a version string come to about 200 bytes.
+const LQ_MAX_BODY = 4 * 1024;
+const LQ_SCOPE = 'lq-results'; // rate-limit bucket, kept apart from the game boards
+// The LQ counter is keyed by only 16 bits of a salted hash of the network: enough to keep one
+// connection from flooding the statistics, but shared by tens of thousands of IPv4 addresses,
+// so even with the salt a counter row can't be traced to an address or matched to the boards'
+// counters.
+const LQ_TAG_HEX = 4;
 const DEV_SALT = 'local-development-salt';
 
-const ROUTE = /^\/v1\/([a-z0-9-]{1,40})\/(top|scores)\/?$/;
+const BOARD_ROUTE = /^\/v1\/([a-z0-9-]{1,40})\/(top|scores)\/?$/;
+const LQ_ROUTE = /^\/v1\/leadership\/(results|distribution)\/?$/;
 const LOOPBACK_HOST = /^(localhost|127\.0\.0\.1|\[::1\])$/;
 const LOOPBACK_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d{1,5})?$/;
 
@@ -40,8 +55,10 @@ function settings(env, local) {
     anyPort: origins.filter((o) => o.endsWith(':*')).map((o) => o.slice(0, -1)),
     rateLimit: intSetting(env.RATE_LIMIT, 6, 1, 1000),
     rateWindow: intSetting(env.RATE_WINDOW_MINUTES, 10, 1, 24 * 60),
+    lqRateLimit: intSetting(env.LQ_RATE_LIMIT, 5, 1, 1000),
+    lqRateWindow: intSetting(env.LQ_RATE_WINDOW_MINUTES, 60, 1, 24 * 60),
     maxNames: intSetting(env.NAMES_PER_CLIENT, 3, 1, 1000),
-    retainWeeks: intSetting(env.RETAIN_WEEKS, 52, 1, 520),
+    retainMonths: intSetting(env.RETAIN_MONTHS, 24, 1, 240),
     // Without a real secret the hashes could be brute-forced back to IPs, so production
     // refuses to take posts until IP_SALT is set. Local dev gets a throwaway salt.
     salt: salt || (local ? DEV_SALT : null),
@@ -76,13 +93,19 @@ function parseDetail(text) {
 }
 
 // ------------------------------------------------------------------------------------------
-// Edge cache. One entry per board per week holds the top BOARD_SIZE rows; any `limit` is a
+// Edge cache. One entry per board per month holds the top BOARD_SIZE rows; any `limit` is a
 // slice of it. Posting deletes the entry in that data center so the poster sees their row
-// right away; elsewhere it expires within EDGE_TTL. (The Cache API only does anything on a
-// custom domain; on workers.dev every read goes to D1.)
+// right away; elsewhere it expires within BOARD_TTL. The LQ histogram is one entry that simply
+// expires, stored with the time it was read so browsers only keep it for what's left of
+// DIST_TTL. (The Cache API only does anything on a custom domain; on workers.dev every read
+// goes to D1.)
 
-function boardKey(url, game, week) {
-  return new Request(`${url.origin}/_board/${game}/${week}`);
+function boardKey(url, game, period) {
+  return new Request(`${url.origin}/_board/${game}/${period}`);
+}
+
+function distKey(url) {
+  return new Request(`${url.origin}/_lq/distribution`);
 }
 
 async function cacheGet(key) {
@@ -94,9 +117,9 @@ async function cacheGet(key) {
   }
 }
 
-function cachePut(ctx, key, rows) {
-  const res = new Response(JSON.stringify(rows), {
-    headers: { 'content-type': 'application/json', 'cache-control': `public, max-age=${EDGE_TTL}` },
+function cachePut(ctx, key, data, ttl) {
+  const res = new Response(JSON.stringify(data), {
+    headers: { 'content-type': 'application/json', 'cache-control': `public, max-age=${ttl}` },
   });
   try {
     ctx.waitUntil(caches.default.put(key, res).catch(() => {}));
@@ -114,16 +137,41 @@ async function cacheDelete(key) {
 }
 
 // ------------------------------------------------------------------------------------------
-// Handlers
+// Shared checks for POSTs
+
+function requireJson(request, maxBody, cfg) {
+  if (!/^application\/json(\s*;|$)/i.test(request.headers.get('content-type') || '')) {
+    throw new HttpError(415, 'content_type');
+  }
+  if (Number(request.headers.get('content-length')) > maxBody) throw new HttpError(413, 'too_large');
+  if (!cfg.salt) throw new HttpError(503, 'not_configured');
+}
+
+// Counts the attempt before doing any real work, so floods stay cheap. The key has no date in
+// it, so the window slides across midnight; the rows themselves are gone after a day.
+async function rateLimit(env, client, scope, limit, window, now) {
+  const slot = { client, game: scope, minute: Math.floor(now / 60000), window, limit };
+  if (!(await db.takeSlot(env.DB, slot))) {
+    const wait = await db.minutesUntilSlot(env.DB, slot);
+    throw new HttpError(429, 'rate_limited', { 'retry-after': String(wait * 60 - Math.floor((now / 1000) % 60)) });
+  }
+}
+
+function networkFor(request) {
+  return networkOf(request.headers.get('cf-connecting-ip') || '127.0.0.1');
+}
+
+// ------------------------------------------------------------------------------------------
+// Boards
 
 async function getTop(env, ctx, url, game) {
   const limit = intSetting(url.searchParams.get('limit'), DEFAULT_LIMIT, 1, BOARD_SIZE);
-  const week = weekInfo(new Date());
-  const key = boardKey(url, game, week.key);
+  const period = periodInfo(new Date());
+  const key = boardKey(url, game, period.key);
 
   let rows = await cacheGet(key);
   if (!rows) {
-    rows = (await db.topScores(env.DB, game, week.key, BOARD_SIZE)).map((r, i) => ({
+    rows = (await db.topScores(env.DB, game, period.key, BOARD_SIZE)).map((r, i) => ({
       id: r.id,
       rank: i + 1,
       name: r.name,
@@ -132,30 +180,17 @@ async function getTop(env, ctx, url, game) {
       detail: parseDetail(r.detail),
       ts: r.ts,
     }));
-    cachePut(ctx, key, rows);
+    cachePut(ctx, key, rows, BOARD_TTL);
   }
 
-  return json(200, { week: week.key, resetsAt: week.resetsAt.toISOString(), entries: rows.slice(0, limit) });
+  return json(200, { period: period.key, resetsAt: period.resetsAt.toISOString(), entries: rows.slice(0, limit) });
 }
 
 async function postScore(request, env, url, game, def, cfg) {
-  if (!/^application\/json(\s*;|$)/i.test(request.headers.get('content-type') || '')) {
-    throw new HttpError(415, 'content_type');
-  }
-  if (Number(request.headers.get('content-length')) > def.maxBody) throw new HttpError(413, 'too_large');
-  if (!cfg.salt) throw new HttpError(503, 'not_configured');
-
-  const net = networkOf(request.headers.get('cf-connecting-ip') || '127.0.0.1');
+  requireJson(request, def.maxBody, cfg);
+  const net = networkFor(request);
   const now = Date.now();
-  const minute = Math.floor(now / 60000);
-
-  // Count the attempt before doing any real work, so floods stay cheap. The key has no date in
-  // it, so the window slides across midnight; the rows themselves are gone after a day.
-  const slot = { client: await sha256(`${cfg.salt}|limit|${net}`), game, minute, window: cfg.rateWindow, limit: cfg.rateLimit };
-  if (!(await db.takeSlot(env.DB, slot))) {
-    const wait = await db.minutesUntilSlot(env.DB, slot);
-    throw new HttpError(429, 'rate_limited', { 'retry-after': String(wait * 60 - Math.floor((now / 1000) % 60)) });
-  }
+  await rateLimit(env, await sha256(`${cfg.salt}|limit|${net}`), game, cfg.rateLimit, cfg.rateWindow, now);
 
   const body = await readJsonObject(request, def.maxBody);
   const name = cleanName(body.name);
@@ -177,12 +212,12 @@ async function postScore(request, env, url, game, def, cfg) {
   let detail = JSON.stringify(verdict.detail ?? {});
   if (detail.length > MAX_DETAIL) detail = '{}';
 
-  const week = weekInfo(new Date(now));
-  const client = await sha256(`${cfg.salt}|client|${week.key}|${net}`);
-  const player = await sha256(`${cfg.salt}|player|${game}|${week.key}|${net}|${name.toLowerCase()}`);
+  const period = periodInfo(new Date(now));
+  const client = await sha256(`${cfg.salt}|client|${period.key}|${net}`);
+  const player = await sha256(`${cfg.salt}|player|${game}|${period.key}|${net}|${name.toLowerCase()}`);
   const saved = await db.saveScore(env.DB, {
     game,
-    week: week.key,
+    period: period.key,
     client,
     player,
     name,
@@ -193,12 +228,12 @@ async function postScore(request, env, url, game, def, cfg) {
     maxNames: cfg.maxNames,
   });
   if (!saved) {
-    // This network already has its share of nicknames on this week's board.
-    const wait = Math.max(1, Math.ceil((week.resetsAt.getTime() - now) / 1000));
+    // This network already has its share of nicknames on this month's board.
+    const wait = Math.max(1, Math.ceil((period.resetsAt.getTime() - now) / 1000));
     throw new HttpError(429, 'too_many_names', { 'retry-after': String(wait) });
   }
 
-  await cacheDelete(boardKey(url, game, week.key));
+  await cacheDelete(boardKey(url, game, period.key));
 
   return json(200, {
     ok: true,
@@ -208,42 +243,89 @@ async function postScore(request, env, url, game, def, cfg) {
     best: saved.best,
     improved: saved.improved,
     name,
-    week: week.key,
+    period: period.key,
   });
+}
+
+// ------------------------------------------------------------------------------------------
+// LQ statistics
+
+async function postLqResult(request, env, cfg) {
+  requireJson(request, LQ_MAX_BODY, cfg);
+  const now = Date.now();
+  // The network only feeds the rate-limit counter, as a short tag; nothing about it goes into
+  // the result.
+  const tag = (await sha256(`${cfg.salt}|lq|${networkFor(request)}`)).slice(0, LQ_TAG_HEX);
+  await rateLimit(env, tag, LQ_SCOPE, cfg.lqRateLimit, cfg.lqRateWindow, now);
+
+  const body = await readJsonObject(request, LQ_MAX_BODY);
+  const row = checkResult(body);
+  // The histogram's timestamp is public, so it only says which day (UTC) a bin last changed.
+  // To the minute, it would line a result up with its rate-limit row.
+  const n = await db.saveLqResult(env.DB, {
+    ...row,
+    day: nyDay(new Date(now)),
+    bin: binFor(row.lq),
+    stamp: utcDayStart(now),
+  });
+  return json(200, { ok: true, n });
+}
+
+async function getLqDistribution(env, ctx, url) {
+  const key = distKey(url);
+  const now = Date.now();
+  const hit = await cacheGet(key);
+  let data = hit?.dist;
+  let age = 0;
+  if (data && Number.isFinite(hit.at)) {
+    age = Math.min(DIST_TTL, Math.max(0, Math.floor((now - hit.at) / 1000)));
+  } else {
+    data = distribution(await db.lqHistogram(env.DB));
+    cachePut(ctx, key, { at: now, dist: data }, DIST_TTL);
+  }
+  return json(200, data, { 'cache-control': `public, max-age=${DIST_TTL - age}` });
+}
+
+// ------------------------------------------------------------------------------------------
+
+function preflight(allow) {
+  return noContent({
+    allow,
+    'access-control-allow-methods': allow,
+    'access-control-allow-headers': 'content-type',
+    'access-control-max-age': '86400',
+  });
+}
+
+function only(method, request) {
+  const allow = `${method}, OPTIONS`;
+  if (request.method === 'OPTIONS') return preflight(allow);
+  if (request.method !== method) throw new HttpError(405, 'method', { allow });
+  return null;
 }
 
 async function route(request, env, ctx, url, cfg) {
   const { pathname } = url;
-  const method = request.method;
 
   if (pathname === '/' || pathname === '/v1' || pathname === '/v1/') {
-    if (method !== 'GET') throw new HttpError(405, 'method', { allow: 'GET' });
-    return json(200, { ok: true, service: 'hoondy-leaderboard', games: Object.keys(GAMES), week: weekInfo().key });
+    if (request.method !== 'GET') throw new HttpError(405, 'method', { allow: 'GET' });
+    return json(200, { ok: true, service: 'hoondy-leaderboard', games: Object.keys(GAMES), period: periodInfo().key });
   }
 
-  const m = ROUTE.exec(pathname);
+  const lq = LQ_ROUTE.exec(pathname);
+  if (lq) {
+    if (lq[1] === 'results') return only('POST', request) || postLqResult(request, env, cfg);
+    return only('GET', request) || getLqDistribution(env, ctx, url);
+  }
+
+  const m = BOARD_ROUTE.exec(pathname);
   if (!m) throw new HttpError(404, 'not_found');
   const [, game, action] = m;
-  const allow = action === 'top' ? 'GET, OPTIONS' : 'POST, OPTIONS';
-
-  if (method === 'OPTIONS') {
-    return noContent({
-      allow,
-      'access-control-allow-methods': allow,
-      'access-control-allow-headers': 'content-type',
-      'access-control-max-age': '86400',
-    });
-  }
-
   const def = getGame(game);
   if (!def) throw new HttpError(404, 'unknown_game');
 
-  if (action === 'top') {
-    if (method !== 'GET') throw new HttpError(405, 'method', { allow });
-    return getTop(env, ctx, url, game);
-  }
-  if (method !== 'POST') throw new HttpError(405, 'method', { allow });
-  return postScore(request, env, url, game, def, cfg);
+  if (action === 'top') return only('GET', request) || getTop(env, ctx, url, game);
+  return only('POST', request) || postScore(request, env, url, game, def, cfg);
 }
 
 export default {
@@ -274,11 +356,12 @@ export default {
   async scheduled(controller, env, ctx) {
     const now = controller.scheduledTime || Date.now();
     const cfg = settings(env, false);
+    const current = periodInfo(new Date(now)).key;
     ctx.waitUntil(
       db.cleanup(env.DB, {
         minute: Math.floor(now / 60000),
-        currentWeek: weekInfo(new Date(now)).key,
-        oldestWeek: weekInfo(new Date(now - cfg.retainWeeks * 7 * 86400000)).key,
+        currentPeriod: current,
+        oldestPeriod: monthsBefore(current, cfg.retainMonths),
       }),
     );
   },

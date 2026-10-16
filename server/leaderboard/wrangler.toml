@@ -12,10 +12,12 @@ workers_dev = true
 # Comma-separated list of sites allowed to call the API from a browser. An entry like
 # "http://localhost:*" matches any port. Under `wrangler dev`, localhost pages are always allowed.
 ALLOWED_ORIGINS = "https://hoondy.com,https://www.hoondy.com"
-RATE_LIMIT = "6"            # posts per client per game...
-RATE_WINDOW_MINUTES = "10"  # ...within this many minutes
-NAMES_PER_CLIENT = "3"      # nicknames one network can put on a game's board each week
-RETAIN_WEEKS = "52"         # older weeks are deleted by the daily cleanup
+RATE_LIMIT = "6"              # board posts per client per game...
+RATE_WINDOW_MINUTES = "10"    # ...within this many minutes
+LQ_RATE_LIMIT = "5"           # anonymous LQ results per client...
+LQ_RATE_WINDOW_MINUTES = "60" # ...within this many minutes
+NAMES_PER_CLIENT = "3"        # nicknames one network can put on a game's board each month
+RETAIN_MONTHS = "24"          # older monthly boards are deleted by the daily cleanup
 # IP_SALT is a secret: `npx wrangler secret put IP_SALT` (see README).
 
 [[d1_databases]]

@@ -1,10 +1,10 @@
-// Weekly leaderboards.
+// Monthly leaderboards.
 //
 // When the page carries <meta name="leaderboard-api" content="https://...">, scores go to the
-// worker in /server/leaderboard and everyone shares one board per game per week. Without it
+// worker in /server/leaderboard and everyone shares one board per game per month. Without it
 // the board lives in this browser only, so the apps still work on a plain static host.
 
-import { weekInfo, weekLabel } from './week.js';
+import { isPeriodKey, periodInfo, periodLabel } from './period.js';
 import { cleanName, NAME_MAX } from './names.js';
 
 const API = (document.querySelector('meta[name="leaderboard-api"]')?.content || '').trim().replace(/\/+$/, '');
@@ -12,7 +12,7 @@ const LOCAL_LIMIT = 50;
 const CACHE_MS = 30_000;
 const TIMEOUT_MS = 8_000;
 
-export { cleanName, NAME_MAX, weekInfo, weekLabel };
+export { cleanName, NAME_MAX, periodInfo, periodLabel };
 
 export const isGlobal = () => Boolean(API);
 
@@ -57,8 +57,8 @@ function rememberBest(game, score, detail) {
   return false;
 }
 
-function localKey(game, week) {
-  return `lb:local:${game}:${week}`;
+function localKey(game, period) {
+  return `lb:local:${game}:${period}`;
 }
 
 function ranked(entries) {
@@ -107,12 +107,12 @@ async function request(path, init) {
 }
 
 function localTop(game, limit) {
-  const week = weekInfo();
+  const period = periodInfo();
   const mine = mineIds(game);
-  const entries = ranked(store.get(localKey(game, week.key), []))
+  const entries = ranked(store.get(localKey(game, period.key), []))
     .slice(0, limit)
     .map((e) => ({ ...e, me: mine.has(e.id) }));
-  return { global: false, week: week.key, resetsAt: week.resetsAt.toISOString(), entries };
+  return { global: false, period: period.key, resetsAt: period.resetsAt.toISOString(), entries };
 }
 
 function clearCache(game) {
@@ -126,8 +126,8 @@ function clearCache(game) {
 }
 
 /**
- * Top scores for the current week.
- * @returns {Promise<{global:boolean, week:string, resetsAt:string, entries:Array<{rank:number,name:string,score:number,country?:string,detail?:object,ts:number,me?:boolean}>, error?:string}>}
+ * Top scores for the current month.
+ * @returns {Promise<{global:boolean, period:string, resetsAt:string, entries:Array<{rank:number,name:string,score:number,country?:string,detail?:object,ts:number,me?:boolean}>, error?:string}>}
  */
 export async function getTop(game, { limit = 20, fresh = false } = {}) {
   if (!API) return localTop(game, limit);
@@ -145,10 +145,13 @@ export async function getTop(game, { limit = 20, fresh = false } = {}) {
   try {
     const data = await request(`/v1/${encodeURIComponent(game)}/top?limit=${limit}`);
     const mine = mineIds(game);
+    // An older or misbehaving server without a month key still gets a sensible header.
+    const local = periodInfo();
+    const known = isPeriodKey(data.period);
     const out = {
       global: true,
-      week: data.week,
-      resetsAt: data.resetsAt,
+      period: known ? data.period : local.key,
+      resetsAt: known ? data.resetsAt : local.resetsAt.toISOString(),
       entries: data.entries.map((e, i) => ({ ...e, rank: e.rank ?? i + 1, me: mine.has(e.id) })),
     };
     try {
@@ -159,8 +162,8 @@ export async function getTop(game, { limit = 20, fresh = false } = {}) {
     return out;
   } catch (err) {
     // Scores only ever go to the server in this mode, so a device board would just be empty.
-    const week = weekInfo();
-    return { global: true, week: week.key, resetsAt: week.resetsAt.toISOString(), entries: [], error: err.message || 'unavailable' };
+    const period = periodInfo();
+    return { global: true, period: period.key, resetsAt: period.resetsAt.toISOString(), entries: [], error: err.message || 'unavailable' };
   }
 }
 
@@ -168,7 +171,7 @@ export async function getTop(game, { limit = 20, fresh = false } = {}) {
  * Submit a score. `payload` is game specific; it always has `name`, and either `score`
  * (+ optional `detail`) or the raw data the server re-scores (e.g. `answers` for the
  * leadership test). `localScore` is what to store when no server is configured.
- * @returns {Promise<{ok:boolean, global:boolean, rank?:number, score?:number, week?:string, best?:boolean, error?:string}>}
+ * @returns {Promise<{ok:boolean, global:boolean, rank?:number, score?:number, period?:string, best?:boolean, error?:string}>}
  */
 export async function submit(game, payload, { localScore = payload.score, detail = payload.detail } = {}) {
   const name = cleanName(payload.name);
@@ -184,15 +187,15 @@ export async function submit(game, payload, { localScore = payload.score, detail
       if (res.id) addMine(game, res.id);
       clearCache(game);
       const best = rememberBest(game, res.score, detail);
-      return { ok: true, global: true, rank: res.rank, score: res.score, week: res.week, best };
+      return { ok: true, global: true, rank: res.rank, score: res.score, period: res.period, best };
     } catch (err) {
       return { ok: false, global: true, error: err.message || 'unavailable', status: err.status };
     }
   }
 
-  // Same rule as the server: one row per nickname per week, best score kept.
-  const week = weekInfo();
-  const key = localKey(game, week.key);
+  // Same rule as the server: one row per nickname per month, best score kept.
+  const period = periodInfo();
+  const key = localKey(game, period.key);
   const entries = store.get(key, []);
   const same = (e) => e.name.toLowerCase() === name.toLowerCase();
   const prev = entries.find(same);
@@ -205,7 +208,7 @@ export async function submit(game, payload, { localScore = payload.score, detail
   if (!mineIds(game).has(entry.id)) addMine(game, entry.id);
   const rank = top.find((e) => e.id === entry.id)?.rank;
   const best = rememberBest(game, localScore, detail);
-  return { ok: true, global: false, rank, score: localScore, week: week.key, best };
+  return { ok: true, global: false, rank, score: localScore, period: period.key, best };
 }
 
 const FLAG_BASE = 0x1f1e6 - 65;
@@ -230,12 +233,12 @@ export function timeLeft(resetsAt, now = Date.now()) {
  * Render a board into `el` using the shared `.board` markup (styled in main.css).
  * opts.formatScore(entry) -> string, opts.formatMeta(entry) -> string (plain text),
  * opts.labels: { title, empty, local, unavailable, resets, you, units: { d, h, m } } for translation,
- * opts.locale for the week dates (defaults to the page language).
+ * opts.locale for the month name (defaults to the page language).
  */
 export function renderBoard(el, data, opts = {}) {
   const L = {
-    title: 'This week',
-    empty: 'No scores yet this week. Be the first.',
+    title: 'This month',
+    empty: 'No scores yet this month. Be the first.',
     local: 'Scores saved on this device',
     resets: 'Resets in',
     you: 'you',
@@ -263,7 +266,7 @@ export function renderBoard(el, data, opts = {}) {
 
   el.innerHTML = `<div class="board">
   <div class="board__head">
-    <span class="board__title">${escapeHtml(L.title)} <span class="board__week">${escapeHtml(weekLabel(data.week, opts.locale || document.documentElement.lang || 'en'))}</span></span>
+    <span class="board__title">${escapeHtml(L.title)} <span class="board__period">${escapeHtml(periodLabel(data.period, opts.locale || document.documentElement.lang || 'en'))}</span></span>
     <span class="board__reset">${escapeHtml(L.resets)} ${escapeHtml(left)}</span>
   </div>
   <ol class="board__list">${rows}</ol>
