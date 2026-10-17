@@ -104,7 +104,7 @@ redirect_from:
           <ol class="stops" style="--line: {{ app.color }}" aria-label="Features">
             {%- for stop in app.stops %}<li>{{ stop }}</li>{% endfor -%}
           </ol>
-          <span class="btn btn--primary service__cta" aria-hidden="true">{{ app.promo.cta }} {% include icon.html name="arrow" %}</span>
+          <a class="btn btn--primary service__cta" href="{{ app.url | relative_url }}" tabindex="-1" aria-hidden="true">{{ app.promo.cta }} {% include icon.html name="arrow" %}</a>
         </div>
       </li>
       {%- endfor %}
