@@ -44,9 +44,12 @@ one board per game per month and the LQ page can use the real distribution.
 - The worker replays the whole match with `assets/apps/scorched-borough/rules.js` and the game
   code it imports, the same files the page runs. It rebuilds each round's terrain and wind from
   the seed and the level, checks the turn order and each round's ammo, flies every shell and
-  applies the craters, dirt piles, falls and damage. A post only counts if the replay ends in a
-  win for the player with the last shot in the log. The worker works the points out itself, and
-  a `score` sent along has to match.
+  applies the craters, dirt piles, falls and damage. A tank buried under dirt (the pile over its
+  middle covers its turret) can't shoot out: its shell goes off on top of it, costing it
+  30 armor with a Standard, 36 with a Splitter, 45 with a Heavy (plus any fall into the crater)
+  and nothing with a Dirt Bomb, and the replay does the same. A post only counts if the replay
+  ends in a win for the player with the last shot in the log. The worker works the points out
+  itself, and a `score` sent along has to match.
 - The seed is 30 bits. The match's random generator starts from the seed in its top 30 bits and
   the level in the bottom two, so no seed on one level starts it where a seed on another level
   does, and every round's terrain mixes the level in again, so a forged first round can't line
@@ -55,14 +58,20 @@ one board per game per month and the LQ page can use the real distribution.
 - The CPU's shots come from the log too, and the server doesn't re-run the CPU's aim (that would
   cost far more CPU than a post is allowed), so a forged log can make the CPU shoot however it
   likes. Nothing the CPU's shots do is allowed to earn points: a CPU shot that lowers the CPU's
-  own armor (a direct hit, a blast or a fall) gets the whole post refused, and the real CPU
-  checks its aim so it never does that.
+  own armor (a direct hit, a blast or a fall) or buries it under its own dirt bomb gets the whole
+  post refused (`cpu self-hit`), and the real CPU checks its aim so it never does either. The
+  one exception is digging out. Only the player's dirt bombs ever bury the real CPU, and then it
+  fires a Standard shell, which goes off on top of it for a fixed 30 (that crater is too shallow
+  for a fall to cost anything). A buried CPU firing anything else is refused the same way, so a
+  forged log can't make it pay more, or stay buried for free turns.
 - Points: `k × max(100, 1000 − 40 × your shots in the two rounds you won)`, with `k` = 1, 2 or 3
   for Easy, Normal or Hard. A round the CPU took doesn't count either way, and neither does the
   armor left over, since both depend on how well the CPU shot. `detail.shots` is that count.
 - It also turns away matches that couldn't have been played: a CPU turn quicker than the CPU ever
   thinks, a match shorter than its turns and shells in the air add up to, more than 120 shots in
   a round, a turn over an hour or a match over six hours, and logs from another `VERSION`.
+  Version 1.1.0 brought in the buried-tank rule, so wins logged by an open 1.0.0 page get
+  `version`, and the page asks the player to reload. Deploy the worker and the site together.
 - What it can't stop: the page picks the seed, and a log says nothing about who played it or
   when. A script can try a win on a harder level with seed after seed until one happens to
   replay as a win too. The shots almost never win a different match, but in testing about one
@@ -72,9 +81,10 @@ one board per game per month and the LQ page can use the real distribution.
 - The replay has to land every shell exactly where it landed in the browser, in any engine. Plain
   arithmetic and `Math.sqrt` round the same everywhere, but `Math.sin`, `Math.exp` and friends
   don't have to, so the physics uses its own versions (`detmath.js`). `test/units.test.js` pins
-  the exact bits of the math, the terrain and a scripted match. If those tests fail after a
-  change to the game, matches recorded before it won't replay any more: bump `VERSION` in
-  `rules.js` and deploy the worker together with the site.
+  the exact bits of the math, the terrain and a scripted match (every weapon, and a buried tank
+  on each side digging out). If those tests fail after a change to the game, matches recorded
+  before it won't replay any more: bump `VERSION` in `rules.js` and deploy the worker together
+  with the site.
 - Replaying a typical match (10 to 40 shots) takes about a third of a millisecond on a warm
   isolate, and a very long one (three rounds of 20 to 55 shots, heavy weapons, lots of dirt)
   about a millisecond (p99 under 3 ms). A fresh isolate runs that code in the interpreter at

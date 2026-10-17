@@ -10,7 +10,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpuSelfHitLog, lqResultBody, rushHourRun, scorchedMatch } from './fixtures.js';
+import { buriedMatch, buriedShots, cpuSelfBuryLog, cpuSelfHitLog, lqResultBody, rushHourRun, scorchedMatch } from './fixtures.js';
 
 const API = (process.env.LB_URL || 'http://127.0.0.1:8787').replace(/\/+$/, '');
 const RUN = Math.random().toString(36).slice(2, 7);
@@ -231,8 +231,13 @@ test('scorched borough: the server replays the match and scores it', async () =>
   assert.equal(bare.data.score, other.score);
 });
 
+// Nothing posted here is ever accepted, so this test can use the same match every run. It has
+// to: a forged shot changes the rest of the match, and on some seeds the 'ammo' forgery's first
+// dirt bomb buries the CPU, so the CPU's next logged shot is refused before the third bomb.
+const TAMPER_SEED = 500;
+
 test('scorched borough: tampered and lost matches are refused', async () => {
-  const body = scorchedMatch({ level: 'normal', seed: SEED + 200 });
+  const body = scorchedMatch({ level: 'normal', seed: TAMPER_SEED });
   const name = `Cheat${RUN}`;
   const tampered = (fn) => {
     const b = structuredClone(body);
@@ -249,7 +254,7 @@ test('scorched borough: tampered and lost matches are refused', async () => {
     ['turn order', tampered((b) => { const s = b.log.rounds[0].shots; [s[0], s[1]] = [s[1], s[0]]; })],
     ['version', tampered((b) => { b.log.v = '0.0.1'; })],
     ['duration', tampered((b) => { b.log.durationMs = 10_000; })],
-    ['not a win', scorchedMatch({ level: 'normal', seed: SEED + 200, want: 1 })],
+    ['not a win', scorchedMatch({ level: 'normal', seed: TAMPER_SEED, want: 1 })],
     // A forged CPU shot that lands on the CPU itself would be free damage.
     ['cpu self-hit', tampered((b) => { b.log = cpuSelfHitLog(b.log); })],
   ];
@@ -265,6 +270,42 @@ test('scorched borough: tampered and lost matches are refused', async () => {
 
   const { entries } = (await top('scorched-borough', 50)).data;
   assert.equal(entries.filter((e) => e.name === name).length, 0);
+});
+
+test('scorched borough: buried tanks dig out, and the CPU only the way it really does', async () => {
+  // Your dirt bomb buries the CPU in round 1 and the CPU's buries you in round 2; both dig out
+  // by firing, which blows up on top of them.
+  const { body, backfires } = buriedMatch({ level: 'hard', seed: SEED + 300, bury: 'both' });
+  assert.deepEqual([...new Set(backfires.map((b) => b.tank))].sort(), [0, 1]);
+  const ok = await post('scorched-borough', { name: `Digger${RUN}`, ...body });
+  assert.equal(ok.status, 200, JSON.stringify(ok.data));
+  assert.equal(ok.data.score, body.score);
+
+  const other = buriedMatch({ level: 'normal', seed: SEED + 400, bury: 'cpu' });
+  const dig = buriedShots(other.body.log).find((s) => s.who === 1);
+  const forged = (fn) => {
+    const b = structuredClone(other.body);
+    fn(b);
+    return b;
+  };
+  const selfBury = cpuSelfBuryLog(scorchedMatch({ level: 'normal', seed: SEED + 500 }).log);
+  assert.ok(selfBury, 'no self-burying shot found');
+  const name = `Mole${RUN}`;
+  const cases = [
+    // A buried CPU digs out with a Standard; a Heavy would cost it more.
+    ['cpu self-hit', forged((b) => { b.log.rounds[dig.round].shots[dig.index][3] = 1; })],
+    // Another dirt bomb would keep it buried for free turns.
+    ['cpu self-hit', forged((b) => { b.log.rounds[dig.round].shots[dig.index][3] = 3; })],
+    // Nor can the CPU bury itself to set that up.
+    ['cpu self-hit', forged((b) => { b.log = selfBury; })],
+  ];
+  for (const [error, payload] of cases) {
+    const r = await post('scorched-borough', { name, ...payload });
+    assert.equal(r.status, 422, error);
+    assert.deepEqual(r.data, { ok: false, error });
+  }
+  const real = await post('scorched-borough', { name, ...other.body });
+  assert.equal(real.status, 200, JSON.stringify(real.data));
 });
 
 test('one row per player per month, best score kept', async () => {

@@ -6,7 +6,7 @@
 // with a smaller error (overshoot, undershoot, hit), which is how people bracket a target.
 // Planning is a generator so the page can spread the work over several frames.
 
-import { W, WEAPONS, simulateShot, launch, fly, splitShell, gauss, clamp } from './physics.js';
+import { W, WEAPONS, WEAPON_ORDER, simulateShot, launch, fly, splitShell, isBuried, gauss, clamp } from './physics.js';
 
 // sigma*: how far off (world units) it aims, and how fast that shrinks with practice.
 // windSense/windNoise: how much of the wind it actually reads, like a person squinting at a flag.
@@ -39,7 +39,13 @@ export class Brain {
 
   *plan(world, self, target, ammo) {
     const P = this.p;
+    const me = world.tanks[self];
     const foe = world.tanks[target];
+
+    // Buried, whatever it fires goes off on top of it, so there is nothing to aim at: it digs
+    // itself out as cheaply as it can, and its aim at the other tank stays where it was. Another
+    // dirt bomb would only bury it deeper, turn after turn.
+    if (isBuried(world.h, me)) return { angle: me.angle, power: me.power, weapon: digOutWeapon(ammo || {}), aimX: me.x, sigma: 0 };
 
     // If the target moved (fell into a crater, say), the old corrections only half apply.
     if (this.lastTarget && (Math.abs(foe.x - this.lastTarget.x) > 6 || Math.abs(foe.y - this.lastTarget.y) > 24)) {
@@ -68,11 +74,11 @@ export class Brain {
       power: clamp(sol.power + gauss(this.rng) * P.jitterP, 0, 100),
       weapon,
     };
-    // People don't lob shells onto their own feet. A wild aim point, the wrong wind or a
-    // splitter's spread now and then would, so the final aim is checked against the real wind,
-    // falling back to a plain shell, then the same aim without the wobble, then a shot aimed
-    // right at the target. The records board counts on this: it refuses a match where the CPU
-    // hurt itself.
+    // People don't lob shells onto their own feet, or dirt over their own heads. A wild aim
+    // point, the wrong wind or a splitter's spread now and then would, so the final aim is
+    // checked against the real wind, falling back to a plain shell, then the same aim without
+    // the wobble, then a shot aimed right at the target. The records board counts on this: it
+    // refuses a match where the CPU hurt or buried itself.
     if (hurtsSelf(world, self, shot)) shot = { ...shot, weapon: 'standard' };
     if (hurtsSelf(world, self, shot)) shot = { angle: sol.angle, power: sol.power, weapon: 'standard' };
     if (hurtsSelf(world, self, shot)) {
@@ -110,19 +116,38 @@ export class Brain {
   }
 }
 
+// The shell a buried tank fires to get out: the exploding one it has left that costs it the
+// least. That is always the Standard, which never runs out. The records board holds the CPU to
+// this (see rules.js).
+export function digOutWeapon(ammo) {
+  let best = 'standard';
+  for (const id of WEAPON_ORDER) {
+    if (!WEAPONS[id].dirt && ammo[id] > 0 && WEAPONS[id].buried < WEAPONS[best].buried) best = id;
+  }
+  return best;
+}
+
 // Would any part of this shot come down where it hurts the shooter: a blast that reaches its tank
-// or a crater under the ground it stands on? A dirt bomb only ever piles dirt up.
+// or a crater under the ground it stands on? A dirt bomb does no damage, but one that lands close
+// enough to bury the shooter would make its next shot blow up on it. Its pile reaches 2.6 radii
+// from where it lands (see addDirt), plus a margin.
+// It checks the shot the game will really fire, aim rounded to tenths: with the barrel in a
+// mound, a tenth of a degree can decide whether the shell pushes up through the dirt or bursts
+// in it.
 export function hurtsSelf(world, self, { angle, power, weapon }) {
   const w = WEAPONS[weapon];
-  if (!w.damage) return false;
+  if (!w.damage && !w.dirt) return false;
   const me = world.tanks[self];
-  let shells = [launch(world, self, angle, power, weapon)];
+  const reach = w.dirt ? w.radius * 2.6 + 30 : w.radius + 20;
+  const a = clamp(Math.round(angle * 10), 0, 1800) / 10;
+  const pw = clamp(Math.round(power * 10), 0, 1000) / 10;
+  let shells = [launch(world, self, a, pw, weapon)];
   while (shells.length) {
     const next = [];
     for (const p of shells) {
       const r = fly(world, p, Infinity);
       if (r.type === 'split') next.push(...splitShell(p));
-      else if (r.type !== 'lost' && ((r.type === 'tank' && r.tank === self) || Math.abs(r.x - me.x) < w.radius + 20)) return true;
+      else if (r.type !== 'lost' && ((r.type === 'tank' && r.tank === self) || Math.abs(r.x - me.x) < reach)) return true;
     }
     shells = next;
   }

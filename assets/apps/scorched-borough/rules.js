@@ -23,14 +23,16 @@
 // the shot went off. The CPU's shots are part of the log; the server doesn't second-guess its
 // aim, it checks that the shots it fired add up to the match you played. Since a log can make
 // the CPU shoot however it likes, nothing the CPU's shots do can earn you points: a CPU shot
-// that hurts the CPU itself is refused, and the points only look at your shots in the rounds
-// you won.
+// that hurts or buries the CPU itself is refused, and the points only look at your shots in
+// the rounds you won. The one CPU shot that may cost it armor is the one the real CPU fires to
+// dig itself out after you buried it, and only with the shell the real CPU uses for that.
 
 import { Game, LEVELS, SEED_MAX, SETTLE_MIN } from './game.js';
-import { DT, WEAPON_ORDER } from './physics.js';
-import { PROFILES } from './cpu.js';
+import { DT, WEAPON_ORDER, isBuried } from './physics.js';
+import { PROFILES, digOutWeapon } from './cpu.js';
 
-export const VERSION = '1.0.0';
+// 1.1.0: a buried tank's shot goes off on top of it.
+export const VERSION = '1.1.0';
 
 // Points: a win is worth WIN_POINTS, minus SHOT_COST for every shot you fired in the two rounds
 // you won, never less than MIN_POINTS, all times the difficulty. A round the CPU took doesn't
@@ -102,11 +104,17 @@ export function replay(log) {
       if (ms < 0 || ms > MAX_TURN_MS) return fail('turn time');
       if (who === 1 && ms < cpuMin) return fail('turn time');
       const cpuArmor = game.tanks[1].hp;
+      // Buried, a shell goes off on top of the tank that fired it. Only your dirt bombs ever bury
+      // the real CPU, and it always digs out with the same shell, which costs it a fixed amount
+      // (and never a fall: that crater is too shallow). Anything else is a forged turn.
+      const cpuBuried = who === 1 && isBuried(game.terr.h, game.tanks[1]);
+      if (cpuBuried && weapon !== digOutWeapon(game.ammo[1])) return fail('cpu self-hit');
       game.fire(angle / 10, power / 10, weapon, ms);
       game.resolve();
       // The real CPU aims away from itself and all but never hurts itself; a log that has it do
-      // so is handing you free damage. This covers direct hits, blasts and falls alike.
-      if (who === 1 && game.tanks[1].hp < cpuArmor) return fail('cpu self-hit');
+      // so is handing you free damage. This covers direct hits, blasts and falls alike, and a
+      // dirt bomb on its own head, which would make its next shot blow up on it.
+      if (who === 1 && !cpuBuried && (game.tanks[1].hp < cpuArmor || isBuried(game.terr.h, game.tanks[1]))) return fail('cpu self-hit');
       shotCount++;
       minMs += ms + game.flightTicks * DT * 1000 + SETTLE_MIN * 1000 - SLACK_PER_SHOT_MS;
     }

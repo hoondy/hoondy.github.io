@@ -1,6 +1,6 @@
 // Scorched Borough: page controller. Wires the game, the CPU, the renderer and the controls.
 
-import { W, H, WEAPONS, WEAPON_ORDER, UNIT_M, PIVOT_Y, clamp, randomSeed, mulberry32, groundAt } from './physics.js';
+import { W, H, WEAPONS, WEAPON_ORDER, UNIT_M, PIVOT_Y, clamp, randomSeed, mulberry32, groundAt, isBuried } from './physics.js';
 import { Game, LEVELS } from './game.js';
 import { Brain } from './cpu.js';
 import { Renderer } from './render.js';
@@ -18,8 +18,24 @@ const TURN_BANNER_MS = 950;
 const ROUND_BANNER_MS = 1700;
 const ROUND_OVER_MS = 2600;
 const CPU_SLICE_MS = 4;
+const BACKFIRE_MS = 2600;
+// Right over the barrel the direction from it to the pointer jumps around, so a drag only starts
+// aiming once the pointer is this far (CSS pixels) from the barrel pivot.
+const AIM_DEAD_CSS = 14;
+// Outside your own turn a tap doesn't touch your aim (people tap at the shell and at the CPU's
+// tank); it takes a drag at least this long (CSS pixels) to line up the next shot early.
+const TAP_SLOP_CSS = 10;
 
 const round1 = (v) => Math.round(v * 10) / 10;
+
+// What firing each weapon while buried does to you: [full sentence, short one for a phone].
+function buriedWarning(id) {
+  const cost = `−${WEAPONS[id].buried}`;
+  if (id === 'dirt') return ['A Dirt Bomb just piles on more dirt. Pick Standard to blow your way out.', 'Dirt just piles on. Pick Standard to dig out.'];
+  if (id === 'heavy') return [`A Heavy blows up in your face (${cost}). A Standard costs less and usually digs you out.`, `Heavy blows up on you (${cost}). Standard costs less.`];
+  if (id === 'splitter') return [`A Splitter blows up in your face (${cost}) and may not dig you out. Pick Standard.`, `Splitter blows up on you (${cost}), may not dig out.`];
+  return [`Firing now blows up in your face (${cost}), but it usually digs you out.`, `Firing blows up on you (${cost}), usually digs you out.`];
+}
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 const fmtAngle = (a) => `${a.toFixed(1)}°`;
 // Doto draws "." as a five-dot cluster that reads like "+", so the LED dials show whole numbers
@@ -141,6 +157,9 @@ class App {
       live: $('.sb-live'),
       tools: Object.fromEntries([...root.querySelectorAll('.sb-tool')].map((b) => [b.dataset.tool, b])),
       boards: { menu: $('[data-sb-board="menu"]'), result: $('[data-sb-board="result"]') },
+      warn: $('.sb-warn'),
+      warnLong: $('.sb-warn__long'),
+      warnShort: $('.sb-warn__short'),
       points: $('.sb-points'),
       pointsNum: $('.sb-points__num'),
       pointsHow: $('.sb-points__how'),
@@ -367,6 +386,7 @@ class App {
   }
 
   resetMatchState() {
+    this.backfired = -1;
     this.cpu = null;
     this.drag = null;
     this.banners = [];
@@ -493,6 +513,11 @@ class App {
     return this.mode === 'match' && g && g.phase === 'aim' && g.turn === 0 && g.tanks[0].alive;
   }
 
+  buried(side) {
+    const t = this.game?.tanks?.[side];
+    return Boolean(t?.alive) && isBuried(this.game.terr.h, t);
+  }
+
   setAim(angle, power, source) {
     const a = round1(clamp(angle, 0, 180));
     const p = round1(clamp(power, 0, 100));
@@ -541,6 +566,7 @@ class App {
     if (sound && id !== this.aim.weapon) this.sound.click();
     this.aim.weapon = id;
     this.syncArsenal();
+    this.syncWarn();
   }
 
   syncArsenal() {
@@ -589,12 +615,7 @@ class App {
       return;
     }
     if (!this.canAim() || (e.pointerType === 'mouse' && e.button !== 0)) return;
-    const p = this.toWorld(e);
-    const t = this.game.tanks[0];
-    const px = t.x;
-    const py = t.y - PIVOT_Y;
-    const near = Math.hypot(p.x - px, p.y - py) < Math.max(60, this.renderer.css(44));
-    this.drag = { id: e.pointerId, ax: near ? px : p.x, ay: near ? py : p.y, px: p.x, py: p.y, live: false };
+    this.drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, px: 0, py: 0, live: false };
     try {
       this.el.canvas.setPointerCapture(e.pointerId);
     } catch {
@@ -603,23 +624,27 @@ class App {
     this.sound.unlock();
     this.dropTurnBanners(); // it sits right where people aim
     e.preventDefault();
-    if (near) this.pointerMove(e);
+    this.pointerMove(e);
   }
 
+  // The shot goes where you point: the barrel turns toward the pointer, and the farther the
+  // pointer is from your tank, the harder the shot. Where the drag started doesn't matter, so a
+  // finger can land anywhere on the battlefield and slide from there, or just tap the spot.
   pointerMove(e) {
     const d = this.drag;
     if (!d || e.pointerId !== d.id) return;
+    if (!d.live && !this.canFire() && Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < TAP_SLOP_CSS) return;
     const p = this.toWorld(e);
     d.px = p.x;
     d.py = p.y;
-    // Slingshot: the shot goes the opposite way from the pull.
-    const vx = d.ax - p.x;
-    const vy = p.y - d.ay;
+    const t = this.game.tanks[0];
+    const vx = p.x - t.x;
+    const vy = t.y - PIVOT_Y - p.y;
     const lenCss = Math.hypot(vx, vy) * this.renderer.cssK;
-    if (!d.live && lenCss < 10) return;
+    if (lenCss < AIM_DEAD_CSS) return;
     d.live = true;
     let ang = (Math.atan2(vy, vx) * 180) / Math.PI;
-    if (ang < 0) ang = ang < -90 ? 180 : 0;
+    if (ang < 0) ang = ang < -90 ? 180 : 0; // below the barrel: flat out on that side
     const full = clamp(this.renderer.cssK * W * 0.32, 110, 260);
     this.setAim(ang, (lenCss / full) * 100);
   }
@@ -772,22 +797,47 @@ class App {
           let hint = '';
           if (e.turn === 0 && !this.hinted) {
             this.hinted = true;
-            hint = window.matchMedia?.('(pointer: coarse)').matches ? 'Drag back from your tank to aim, then tap Fire.' : 'Arrow keys aim, Space fires. Or drag back from your tank.';
+            hint = window.matchMedia?.('(pointer: coarse)').matches ? 'Drag toward where you want to shoot. Farther is harder. Then tap Fire.' : 'Arrow keys aim, Space fires. Or drag toward where you want to shoot.';
           }
           this.queueBanner(e.turn === 0 ? 'Your turn' : 'CPU’s turn', hint, hint ? 2800 : TURN_BANNER_MS, { tone: e.turn === 0 ? 'you' : 'cpu', kind: 'turn' });
-          if (e.turn === 0) this.say(`Your turn. ${this.windWords(e.wind)}.`);
+          if (e.turn === 0) {
+            const buried = this.buried(0);
+            // Another dirt bomb from under the ground would only bury you deeper.
+            if (buried && this.aim.weapon === 'dirt') this.pickWeapon('standard');
+            this.say(`Your turn. ${buried ? `You’re buried. ${buriedWarning(this.aim.weapon)[0]} ` : ''}${this.windWords(e.wind)}.`);
+          }
         }
         break;
       }
       case 'fire': {
         const w = WEAPONS[e.weapon];
         this.dropTurnBanners(); // stale once someone has fired
+        if (e.buried) break; // it goes off right there; 'backfire' tells the story
         this.fx.muzzle(e.x, e.y, e.angle, e.weapon === 'heavy');
         if (sfx) {
           this.sound.fire(e.weapon === 'heavy');
           this.sound.startWhistle();
           if (e.tank === 1) this.say(`CPU fired ${w.id === 'standard' ? 'a shell' : `the ${w.name}`}.`);
         }
+        break;
+      }
+      case 'backfire': {
+        this.backfired = g.turnCount;
+        if (this.demo) break;
+        const you = e.tank === 0;
+        const who = you ? 'You' : 'The CPU';
+        let main;
+        let sub;
+        if (WEAPONS[e.weapon].dirt) {
+          main = 'More dirt on top';
+          sub = `A dirt bomb fired from under the ground just piles on. ${you ? 'You’re' : 'It’s'} still buried.`;
+        } else {
+          main = you ? 'It blew up in your face' : 'The CPU blew itself up';
+          const out = e.dugOut ? `The blast dug ${you ? 'you' : 'it'} out.` : you ? 'Still buried. Fire again to dig out.' : 'It’s still buried.';
+          sub = `${you ? 'You were' : 'It was'} buried, so the shell went off right there: −${e.damage}. ${out}`;
+        }
+        this.queueBanner(main, sub, BACKFIRE_MS, { tone: you ? 'cpu' : 'you' });
+        this.say(`${main}. ${e.damage ? `${who} took ${e.damage} damage. ` : ''}${sub.split('. ').pop()}`);
         break;
       }
       case 'split':
@@ -845,7 +895,8 @@ class App {
           break;
         }
         const you = e.winner === 0;
-        const score = `${e.score[0]}–${e.score[1]}`;
+        let score = `${e.score[0]}–${e.score[1]}`;
+        if (this.backfired === g.turnCount) score = `Blown up while buried · ${score}`;
         if (e.final) {
           this.queueBanner(you ? 'You win the match' : 'The CPU takes it', score, 60000, { tone: you ? 'you' : 'cpu', sticky: true });
         } else {
@@ -932,12 +983,24 @@ class App {
     if (next) label = 'Next round';
     else if (!mine && g && this.mode === 'match') {
       if (g.phase === 'aim' && g.turn === 1) label = 'CPU aiming';
-      else if (g.phase === 'flight' || g.phase === 'settle') label = g.turn === 0 ? 'Shell away' : 'Incoming';
+      else if (g.phase === 'flight' || g.phase === 'settle') label = this.backfired === g.turnCount ? 'Kaboom' : g.turn === 0 ? 'Shell away' : 'Incoming';
       else if (g.phase === 'match-over') label = 'Match over';
       else label = 'Wait';
     }
     this.el.fireLabel.textContent = label;
     this.root.classList.toggle('is-your-turn', mine);
+    this.syncWarn();
+  }
+
+  // Your shot is about to go off on top of you: say so where you can't miss it, for the weapon
+  // you have picked.
+  syncWarn() {
+    const on = this.canFire() && this.buried(0);
+    this.el.warn.hidden = !on;
+    if (!on) return;
+    const [long, short] = buriedWarning(this.aim.weapon);
+    if (this.el.warnLong.textContent !== long) this.el.warnLong.textContent = long;
+    if (this.el.warnShort.textContent !== short) this.el.warnShort.textContent = short;
   }
 
   syncTools() {
@@ -1298,10 +1361,13 @@ class App {
     if (cpuTurn && !this.demo) {
       const t = g.tanks[g.turn];
       const w = WEAPONS[this.cpu.plan.weapon];
-      readout = { text: `${w.short} · ${fmtAngle(t.shown)} · ${Math.round(t.power)}`, x: t.x, y: t.y - 34 - this.renderer.css(36) };
+      readout = { text: `${w.short} · ${fmtAngle(t.shown)} · ${Math.round(t.power)}`, tank: g.turn };
     }
     let drag = null;
-    if (this.drag?.live) drag = { ax: this.drag.ax, ay: this.drag.ay, px: this.drag.px, py: this.drag.py };
+    if (this.drag?.live) {
+      const t = g.tanks[0];
+      drag = { ax: t.x, ay: t.y - PIVOT_Y, px: this.drag.px, py: this.drag.py };
+    }
     return {
       terr: g.terr,
       tanks: g.tanks,
@@ -1309,10 +1375,12 @@ class App {
       cam: this.cam,
       flash: this.flash,
       marker: this.mode === 'match' ? this.marker : null,
-      aim: yourAim ? { tank: 0, angle: this.aim.angle, power: this.aim.power, strong: Boolean(drag) || (g.phase === 'aim' && g.turn === 0) } : null,
+      // Buried, the line still shows your aim for later, just fainter: this shot won't follow it.
+      aim: yourAim ? { tank: 0, angle: this.aim.angle, power: this.aim.power, strong: !this.buried(0) && (Boolean(drag) || (g.phase === 'aim' && g.turn === 0)) } : null,
       drag,
       readout,
       active: g.phase === 'aim' && !this.demo ? g.turn : -1,
+      tags: !this.demo && this.mode === 'match',
     };
   }
 

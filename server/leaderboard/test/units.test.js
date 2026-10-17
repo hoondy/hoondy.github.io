@@ -5,9 +5,10 @@ import assert from 'node:assert/strict';
 import { VERSION } from '../../../assets/apps/leadership/scoring.js';
 import { LQ_BINS, LQ_STEP, binFor, checkResult, distribution } from '../src/lq.js';
 import { monthsBefore, nyDay, utcDayStart } from '../src/time.js';
-import { cpuSelfHitLog, lqResultBody, playScorched, scorchedMatch, scorchedRounds } from './fixtures.js';
+import { buriedMatch, buriedShots, cpuSelfBuryLog, cpuSelfHitLog, lqResultBody, playScorched, scorchedMatch, scorchedRounds } from './fixtures.js';
 import * as dm from '../../../assets/apps/scorched-borough/detmath.js';
-import { SHAPES, WEAPON_ORDER, generateTerrain, mulberry32 } from '../../../assets/apps/scorched-borough/physics.js';
+import { SHAPES, WEAPONS, WEAPON_ORDER, generateTerrain, isBuried, mulberry32 } from '../../../assets/apps/scorched-borough/physics.js';
+import { solve } from '../../../assets/apps/scorched-borough/cpu.js';
 import { Game, LEVELS, SEED_MAX, rngStart } from '../../../assets/apps/scorched-borough/game.js';
 import { VERSION as SB_VERSION, replay as sbReplay, scoreMatch, validateSubmission as sbValidate } from '../../../assets/apps/scorched-borough/rules.js';
 
@@ -155,12 +156,14 @@ test('deterministic math and terrain give the same bits as always', () => {
   assert.equal(fingerprint(terrain), '47418e2f');
 });
 
-// Three rounds on Hard with every weapon, fired from fixed numbers. The CPU takes it 2-1.
-const SCRIPTED_SEED = 425570;
+// Three rounds on Hard with every weapon, fired from fixed numbers. Your dirt bomb buries the CPU
+// in round 1 and it digs out with a Standard; the CPU's buries you in round 2 and you dig out
+// with a Heavy. The CPU takes it 2-1.
+const SCRIPTED_SEED = 520043;
 const SCRIPTED = [
-  [[0, 611, 821, 2], [1, 1471, 857, 1], [0, 526, 856, 1], [1, 1197, 898, 2], [0, 576, 780, 2], [1, 1383, 859, 1]],
-  [[1, 1353, 699, 0], [0, 388, 741, 0], [1, 1651, 945, 3], [0, 375, 573, 3], [1, 1290, 819, 0], [0, 601, 745, 0]],
-  [[0, 119, 934, 2], [1, 1385, 737, 1], [0, 305, 899, 1], [1, 1592, 905, 2]],
+  [[0, 536, 900, 3], [1, 1300, 620, 0], [0, 566, 970, 0], [1, 1051, 945, 0], [0, 531, 938, 2], [1, 1293, 742, 2], [0, 462, 857, 0]],
+  [[1, 1200, 979, 3], [0, 500, 620, 1], [1, 1275, 939, 0], [0, 456, 778, 0], [1, 1255, 943, 2]],
+  [[0, 208, 892, 2], [1, 1228, 818, 2], [0, 222, 986, 0], [1, 1317, 701, 0], [0, 602, 935, 2], [1, 1202, 739, 1]],
 ];
 const scriptedLog = () => ({
   v: SB_VERSION,
@@ -174,10 +177,11 @@ test('a scripted match replays to the same bits', () => {
   const r = sbReplay(scriptedLog());
   assert.equal(r.ok, true, r.error);
   assert.deepEqual([r.winner, r.won, r.lost], [1, 1, 2]);
-  assert.deepEqual(r.shots, [8, 8]);
+  assert.deepEqual(r.shots, [9, 9]);
 
   // Live play, one 60 Hz frame at a time, ends in exactly the same world as the replay.
   const states = [];
+  const backfires = [];
   for (const replay of [true, false]) {
     const g = new Game({ level: 'hard', seed: SCRIPTED_SEED, replay });
     for (const shots of SCRIPTED) {
@@ -187,12 +191,163 @@ test('a scripted match replays to the same bits', () => {
         g.fire(a / 10, p / 10, WEAPON_ORDER[w], 1000);
         if (replay) g.resolve();
         else for (let n = 0; n < 100_000 && (g.phase === 'flight' || g.phase === 'settle'); n++) g.update(1 / 60);
+        for (const e of g.drain()) if (e.type === 'backfire') backfires.push([g.round, e.tank, e.weapon, e.damage, e.dugOut]);
       }
     }
     states.push(fingerprint([...g.terr.h, ...g.tanks.flatMap((t) => [t.x, t.y, t.hp]), g.world.wind]));
   }
   assert.equal(states[0], states[1]);
-  assert.equal(states[0], '91a4d6e8');
+  assert.equal(states[0], '9b355056');
+  assert.deepEqual(backfires, [[1, 1, 'standard', 30, true], [2, 0, 'heavy', 45, true]]);
+});
+
+// The final world after playing a log through, either as the server replays it or live, one
+// 60 Hz frame at a time the way the page runs it.
+function finalState(log, replay) {
+  const g = new Game({ level: log.level, seed: log.seed, replay });
+  log.rounds.forEach((round, r) => {
+    if (r === 0) g.startRound();
+    else g.nextRound();
+    for (const [, a, p, w, ms] of round.shots) {
+      g.fire(a / 10, p / 10, WEAPON_ORDER[w], ms);
+      if (replay) g.resolve();
+      else for (let n = 0; n < 100_000 && (g.phase === 'flight' || g.phase === 'settle'); n++) g.update(1 / 60);
+    }
+  });
+  return fingerprint([...g.terr.h, ...g.tanks.flatMap((t) => [t.x, t.y, t.hp]), g.world.wind, g.score[0], g.score[1]]);
+}
+
+const runToEnd = (gen) => {
+  for (;;) {
+    const { value, done } = gen.next();
+    if (done) return value;
+  }
+};
+
+test('a buried tank\'s shot goes off on top of it', () => {
+  // Bury the CPU with a dirt bomb, then have it fire each weapon from under the pile.
+  const buried = (replay) => {
+    const g = new Game({ level: 'normal', seed: 11, replay });
+    g.startRound();
+    const sol = runToEnd(solve(g.world, 0, g.tanks[1].x - 10));
+    g.fire(sol.angle, sol.power, 'dirt', 2000);
+    if (replay) g.resolve();
+    else for (let n = 0; n < 100_000 && g.phase !== 'aim'; n++) g.update(1 / 60);
+    g.drain();
+    return g;
+  };
+  const world = (g) => fingerprint([...g.terr.h, ...g.tanks.flatMap((t) => [t.x, t.y, t.hp])]);
+  for (const id of WEAPON_ORDER) {
+    const out = [];
+    for (const replay of [true, false]) {
+      const g = buried(replay);
+      assert.equal(g.turn, 1);
+      assert.ok(isBuried(g.terr.h, g.tanks[1]), 'the dirt bomb buried the CPU');
+      const over = g.terr.h[g.tanks[1].x];
+      assert.equal(g.fire(130, 62, id, 1500), true);
+      // Nothing flies: it went off at once and the turn is already winding down.
+      assert.equal(g.phase, 'settle');
+      assert.equal(g.projectiles.length, 0);
+      const events = g.drain();
+      if (!replay) {
+        const bf = events.find((e) => e.type === 'backfire');
+        assert.ok(bf && bf.tank === 1 && bf.weapon === id && bf.damage === WEAPONS[id].buried, `${id}: ${JSON.stringify(bf)}`);
+        assert.ok(events.find((e) => e.type === 'fire').buried);
+        assert.equal(events.some((e) => e.type === 'impact'), false, 'a buried shot tells the CPU nothing about its aim');
+      }
+      if (replay) g.resolve();
+      else for (let n = 0; n < 100_000 && g.phase === 'settle'; n++) g.update(1 / 60);
+      assert.equal(g.flightTicks, 0);
+      assert.equal(g.phase, 'aim');
+      assert.equal(g.tanks[0].hp, 100, `${id}: the other tank is far out of the blast`);
+      const lost = 100 - g.tanks[1].hp;
+      if (id === 'heavy') assert.ok(lost >= WEAPONS.heavy.buried && lost <= WEAPONS.heavy.buried + 5, `heavy cost ${lost}`);
+      else assert.equal(lost, WEAPONS[id].buried, id);
+      if (id === 'dirt') {
+        assert.ok(isBuried(g.terr.h, g.tanks[1]), 'a dirt bomb leaves it buried');
+        assert.ok(g.terr.h[g.tanks[1].x] < over, 'under even more dirt');
+      } else if (id !== 'splitter') {
+        // The Splitter's crater is the smallest; under a pile this deep it doesn't always do it.
+        assert.equal(isBuried(g.terr.h, g.tanks[1]), false, `${id} dug the CPU out`);
+      }
+      out.push(world(g));
+    }
+    assert.equal(out[0], out[1], `${id}: live and replay agree`);
+  }
+  // Where a buried tank aims makes no difference.
+  const a = buried(true);
+  const b = buried(true);
+  a.fire(130, 62, 'standard', 1500);
+  b.fire(20, 100, 'standard', 1500);
+  a.resolve();
+  b.resolve();
+  assert.equal(world(a), world(b));
+  assert.deepEqual(WEAPON_ORDER.map((id) => WEAPONS[id].buried), [30, 45, 36, 0]);
+});
+
+test('one Standard digs a tank out from under a whole dirt bomb', () => {
+  for (let seed = 11; seed < 31; seed++) {
+    const g = new Game({ level: 'normal', seed, replay: true });
+    g.startRound();
+    const cpu = g.tanks[1];
+    const sol = runToEnd(solve(g.world, 0, cpu.x));
+    g.fire(sol.angle, sol.power, 'dirt', 2000);
+    g.resolve();
+    assert.ok(isBuried(g.terr.h, cpu), `seed ${seed}: a dead-centre dirt bomb buries it`);
+    g.fire(130, 62, 'standard', 1500);
+    g.resolve();
+    assert.equal(100 - cpu.hp, WEAPONS.standard.buried, `seed ${seed}`);
+    assert.equal(isBuried(g.terr.h, cpu), false, `seed ${seed}: dug out`);
+    // Whatever dirt is left over the barrel, the turret is out, so the next shot really flies.
+    g.fire(45, 30, 'standard', 2000);
+    g.resolve();
+    assert.equal(g.fire(130, 62, 'standard', 1500), true);
+    assert.equal(g.phase, 'flight', `seed ${seed}`);
+  }
+});
+
+test('buried tanks dig out the same way live and on the server', () => {
+  for (const level of ['easy', 'normal', 'hard']) {
+    const { body, backfires } = buriedMatch({ level, seed: 7, bury: 'both' });
+    const v = sbValidate(body);
+    assert.equal(v.ok, true, `${level}: ${v.error}`);
+    assert.equal(v.score, body.score);
+    // Both tanks got buried, and each dug out with a Standard, the cheapest way.
+    for (const side of [0, 1]) {
+      const own = backfires.filter((b) => b.tank === side);
+      assert.ok(own.length >= 1, `${level}: tank ${side} never dug out`);
+      for (const b of own) assert.deepEqual([b.weapon, b.damage], ['standard', 30]);
+    }
+    assert.deepEqual(buriedShots(body.log).map((s) => s.who).sort(), backfires.map((b) => b.tank).sort());
+    assert.equal(finalState(body.log, true), finalState(body.log, false), level);
+  }
+});
+
+test('a buried CPU can only dig out the way the real one does', () => {
+  const { body } = buriedMatch({ level: 'normal', seed: 7, bury: 'cpu' });
+  const dig = buriedShots(body.log).find((s) => s.who === 1);
+  assert.ok(dig, 'the CPU was buried');
+  const digShot = (b) => b.log.rounds[dig.round].shots[dig.index];
+  assert.equal(digShot(body)[3], WEAPON_ORDER.indexOf('standard'));
+  const swap = (fn) => {
+    const t = structuredClone(body);
+    fn(digShot(t));
+    return sbValidate(t);
+  };
+  // Anything but the Standard costs the CPU more, or keeps it buried for another free turn.
+  for (const id of ['heavy', 'splitter', 'dirt']) {
+    assert.deepEqual(swap((s) => { s[3] = WEAPON_ORDER.indexOf(id); }), { ok: false, error: 'cpu self-hit' }, id);
+  }
+  // Its aim doesn't matter while it is buried, so another one replays to the same win.
+  const reaimed = swap((s) => { s[1] = 900; s[2] = 1000; });
+  assert.equal(reaimed.ok, true, reaimed.error);
+  assert.equal(reaimed.score, body.score);
+
+  // A forged CPU dirt bomb on its own head is refused straight away: it would set up free damage.
+  const plain = scorchedMatch({ level: 'normal', seed: 7 });
+  const selfBury = cpuSelfBuryLog(plain.log);
+  assert.ok(selfBury, 'no self-burying shot found');
+  assert.deepEqual(sbValidate({ log: selfBury }), { ok: false, error: 'cpu self-hit' });
 });
 
 test('scorched points', () => {

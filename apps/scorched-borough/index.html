@@ -46,8 +46,9 @@ lang: en
   </div>
 
   <div class="sb-screen">
-    <canvas class="sb-canvas" width="1200" height="675" tabindex="0" aria-label="Battlefield. Arrow keys aim, Space fires, or drag back from your tank to aim.">The battlefield needs a browser that supports the canvas element.</canvas>
+    <canvas class="sb-canvas" width="1200" height="675" tabindex="0" aria-label="Battlefield. Arrow keys aim, Space fires, or drag toward where you want to shoot.">The battlefield needs a browser that supports the canvas element.</canvas>
     <div class="sb-banner" aria-hidden="true"><span class="sb-banner__main"></span><span class="sb-banner__sub"></span></div>
+    <p class="sb-warn" aria-hidden="true" hidden><strong class="sb-warn__main">Buried!</strong> <span class="sb-warn__sub sb-warn__long">Firing now blows up in your face (&minus;30), but it usually digs you out.</span><span class="sb-warn__sub sb-warn__short">Firing blows up on you (&minus;30), usually digs you out.</span></p>
     <span class="sb-demo" aria-hidden="true">Demo</span>
     <div class="sb-cta">
       <button type="button" class="sb-cta__go">Start match <span class="sb-cta__lvl">Normal</span> <span aria-hidden="true">&rarr;</span></button>
@@ -194,8 +195,8 @@ lang: en
     <table>
       <thead><tr><th scope="col">To</th><th scope="col">Mouse or touch</th><th scope="col">Keyboard</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Swing the barrel</th><td>Drag back from your tank like a slingshot, or use the angle slider</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
-        <tr><th scope="row">Set power</th><td>Pull the slingshot farther, or use the power slider</td><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td></tr>
+        <tr><th scope="row">Swing the barrel</th><td>Drag toward where you want the shell to go (start anywhere on the battlefield), or use the angle slider</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+        <tr><th scope="row">Set power</th><td>Drag farther from your tank for a harder shot, or use the power slider</td><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td></tr>
         <tr><th scope="row">Fine adjust</th><td>Tap the arrow and plus/minus buttons</td><td>Hold <kbd>Shift</kbd> for 0.1 steps</td></tr>
         <tr><th scope="row">Pick a weapon</th><td>Tap a weapon</td><td><kbd>1</kbd>&ndash;<kbd>4</kbd></td></tr>
         <tr><th scope="row">Fire</th><td>The red Fire button</td><td><kbd>Space</kbd> or <kbd>Enter</kbd></td></tr>
@@ -211,8 +212,9 @@ lang: en
     <div><dt><svg aria-hidden="true"><use href="#sb-i-standard"/></svg>Standard shell <span>Unlimited</span></dt><dd>16&nbsp;m blast, up to 50 damage on a direct hit. Two clean hits finish a tank.</dd></div>
     <div><dt><svg aria-hidden="true"><use href="#sb-i-heavy"/></svg>Heavy shell <span>3 per round</span></dt><dd>26&nbsp;m blast, up to 70 damage, and a crater big enough to drop a tank into. Save it for when your last shot was close.</dd></div>
     <div><dt><svg aria-hidden="true"><use href="#sb-i-splitter"/></svg>Five-Borough Splitter <span>2 per round</span></dt><dd>Breaks into five bomblets at the top of its arc, one for each borough. Each does up to 24. Handy when you are not sure of the wind.</dd></div>
-    <div><dt><svg aria-hidden="true"><use href="#sb-i-dirt"/></svg>Dirt Bomb <span>2 per round</span></dt><dd>No damage. Drops a ball of earth that settles into a mound. Build a wall in front of you, or bury the other tank. A buried tank can still fire; its shell pushes up through the loose dirt.</dd></div>
+    <div><dt><svg aria-hidden="true"><use href="#sb-i-dirt"/></svg>Dirt Bomb <span>2 per round</span></dt><dd>No damage. Drops a ball of earth that settles into a mound. Build a wall in front of you, or bury the other tank: its next shot blows up in its own face.</dd></div>
   </dl>
+  <p id="buried"><strong>Buried tanks.</strong> When dirt piles up over a tank&rsquo;s turret, that tank is buried. It shows as a dashed outline under the mound with a <em>Buried</em> tag over it. A buried tank can still fire, but the shell can&rsquo;t get out: it goes off right on top of the tank, wherever it was aimed. That costs the tank that fired it 30 armor with a Standard shell, 36 with the Splitter (all five bomblets at once) or 45 with a Heavy (a little more if it drops into the Heavy&rsquo;s deeper crater). The other tank is only hurt if it is close enough to catch the blast. The crater usually digs the tank out in one go. A Dirt Bomb fired while buried just piles on more dirt. The CPU plays by the same rule.</p>
 
   <h2 id="physics">The physics</h2>
   <ul>
@@ -221,10 +223,11 @@ lang: en
     <li><strong>Edges are walls.</strong> A shell that reaches the left or right side bursts against it, so every shot lands somewhere you can see, and a tank parked near a wall can still get caught by the blast. There is no ceiling: a shell that climbs off the top of the screen comes back down, and a small marker follows it along the top edge.</li>
     <li><strong>Fixed timestep.</strong> Flight is simulated at 240 steps per second whatever your frame rate, so the same angle, power and wind always land in the same place. The CPU plans with that exact simulation.</li>
     <li><strong>Damage</strong> falls off with distance from the center of the blast. A direct hit does the full amount. Falling more than a few meters costs a little armor too.</li>
+    <li><strong>Dirt doesn&rsquo;t let a shell through.</strong> A tank buried past its turret can&rsquo;t shoot out: its shell goes off where it sits (see <a href="#buried">Buried tanks</a>). A tank whose turret still shows, or a barrel that only pokes into a mound, is fine: the shell pushes up through the loose dirt until it reaches open air.</li>
   </ul>
 
   <h2 id="cpu">How the CPU aims</h2>
-  <p>Since the CPU runs the same simulation you are watching, it could hit you every time. It doesn&rsquo;t. It plays more like a person: it picks a spot that is off by some random amount, reads the wind imperfectly, and after a miss it aims for the other side of you with a smaller error. Long, short, hit. On Easy that error starts large and shrinks slowly. On Hard it usually finds you by the second or third shot, so make your early shots count.</p>
+  <p>Since the CPU runs the same simulation you are watching, it could hit you every time. It doesn&rsquo;t. It plays more like a person: it picks a spot that is off by some random amount, reads the wind imperfectly, and after a miss it aims for the other side of you with a smaller error. Long, short, hit. On Easy that error starts large and shrinks slowly. On Hard it usually finds you by the second or third shot, so make your early shots count. When it is buried, it doesn&rsquo;t aim at all: it digs itself out with a Standard shell, the cheapest way out.</p>
 
   <h2 id="records">Records</h2>
   <p>Win a match and you can post it to the monthly records board under a nickname. Points reward a quick, clean win against a tough opponent:</p>
@@ -245,6 +248,7 @@ lang: en
     <li>Into a headwind, go flatter and harder. With the wind behind you, ease off the power.</li>
     <li>A crater right next to a tank can drop it in. That is free damage, and it throws off the CPU&rsquo;s range.</li>
     <li>A dirt mound in front of you blocks flat shots, which forces the CPU to lob, and lobs drift.</li>
+    <li>A Dirt Bomb doesn&rsquo;t have to be a direct hit. Land it close and the CPU is buried, so its next turn goes into blowing itself out of the ground for 30.</li>
     <li>When your marker says you were close, switch to the Heavy before you fire again.</li>
   </ul>
 
@@ -259,7 +263,11 @@ lang: en
   </details>
   <details>
     <summary>How do I play on a phone?</summary>
-    <p>Drag back from your tank to aim, then tap Fire. You can also start the drag anywhere on the battlefield. Portrait works fine; turning the phone sideways gives you a bigger battlefield with the controls on the side.</p>
+    <p>Put a finger on the battlefield and drag toward where you want the shell to go. The barrel follows your finger, and the farther your finger is from your tank, the harder the shot. Then tap Fire. Portrait works fine; turning the phone sideways gives you a bigger battlefield with the controls on the side.</p>
+  </details>
+  <details>
+    <summary>My tank is buried. What now?</summary>
+    <p>Fire a Standard shell. It goes off on top of you and costs 30 armor, but its crater usually digs you out in one shot. A Heavy costs 45 and digs a much bigger hole; the Splitter costs 36 and digs the smallest one. A Dirt Bomb costs nothing and buries you deeper, so if you had it picked, your turn starts on the Standard instead. Your aim doesn&rsquo;t matter while you are buried. The <em>Buried</em> tag over your tank and the warning on the battlefield tell you when this applies.</p>
   </details>
   <details>
     <summary>Why can&rsquo;t I see the whole trajectory?</summary>

@@ -8,8 +8,8 @@
 // pause after each shot.
 
 import {
-  DT, GRAVITY, WEAPONS, WEAPON_ORDER,
-  mulberry32, generateTerrain, placeTanks, makeTerrain, supportAt, launch, step, fly, splitShell, clearLine,
+  DT, GRAVITY, PIVOT_Y, WEAPONS, WEAPON_ORDER,
+  mulberry32, generateTerrain, placeTanks, makeTerrain, supportAt, isBuried, launch, step, fly, splitShell, clearLine,
   carve, addDirt, stepDirt, blastDamage, fallDamage, nextWind, clamp,
 } from './physics.js';
 
@@ -127,14 +127,49 @@ export class Game {
     tank.power = pw / 10;
     if (Number.isFinite(this.ammo[this.turn][weapon])) this.ammo[this.turn][weapon]--;
     this.history[this.history.length - 1].shots.push([this.turn, a, pw, WEAPON_ORDER.indexOf(weapon), Math.max(0, Math.round(ms) || 0)]);
-    const p = launch(this.world, this.turn, tank.angle, tank.power, weapon);
-    this.projectiles = [p];
     this.shots[this.turn]++;
     this.roundShots[this.turn]++;
     this.flightTicks = 0;
+    if (isBuried(this.terr.h, tank)) {
+      this.backfire(weapon);
+      return true;
+    }
+    const p = launch(this.world, this.turn, tank.angle, tank.power, weapon);
+    this.projectiles = [p];
     this.phase = 'flight';
     this.emit('fire', { tank: this.turn, x: p.x, y: p.y, angle: tank.angle, power: tank.power, weapon });
     return true;
+  }
+
+  // A buried tank's shell has nowhere to go: it goes off in the dirt right on top of the tank,
+  // whatever the aim. The tank that fired takes the weapon's `buried` damage, the other tank
+  // only what the blast would do to it from there (nothing, unless the two are side by side),
+  // and the crater usually digs the tank out. A dirt bomb just adds its dirt.
+  backfire(weapon) {
+    const owner = this.turn;
+    const w = WEAPONS[weapon];
+    const tank = this.tanks[owner];
+    const x = tank.x;
+    const y = tank.y - PIVOT_Y;
+    this.emit('fire', { tank: owner, x, y, angle: tank.angle, power: tank.power, weapon, buried: true });
+    const hits = this.tanks.map((t, i) => (i === owner ? w.buried : blastDamage(t, x, y, w, false)));
+    if (w.dirt) {
+      addDirt(this.terr, x, y, w.radius);
+      this.world.clear = clearLine(this.terr.h, this.tanks);
+    } else {
+      carve(this.terr, x, y, w.radius);
+    }
+    this.terrainChanged = true;
+    this.groundDirty = true;
+    // The tank hasn't dropped into its crater yet, but one that is going to can't be buried
+    // once it lands, so this already says how it ends up.
+    const dugOut = !isBuried(this.terr.h, tank);
+    this.emit('explode', { x, y, hit: 'buried', weapon: w.id, radius: w.radius, owner, direct: -1, child: false, buried: true });
+    this.emit('backfire', { tank: owner, weapon: w.id, damage: hits[owner], dugOut, x, y });
+    hits.forEach((dmg, i) => this.hurt(i, dmg, i === owner ? 'buried' : 'blast', owner));
+    this.projectiles = [];
+    this.phase = 'settle';
+    this.settleT = 0;
   }
 
   update(dt) {

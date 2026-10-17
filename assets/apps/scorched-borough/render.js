@@ -301,9 +301,11 @@ export class Renderer {
 
     ctx.setTransform(k, 0, 0, k, sx, sy);
 
-    // Tanks buried under dirt go behind the ground and get an outline on top.
+    // A tank with dirt banked partway up its hull goes behind the ground, so it looks sunk in,
+    // and gets its hull outlined on top. Only one buried past its turret gets the BURIED tag.
+    const sunk = scene.tanks.map((t) => t.alive && scene.terr.h[clamp(Math.round(t.x), 0, W)] < t.y - 9);
     const buried = scene.tanks.map((t) => t.alive && isBuried(scene.terr.h, t));
-    scene.tanks.forEach((t, i) => buried[i] && this.drawTank(ctx, t, i, scene));
+    scene.tanks.forEach((t, i) => sunk[i] && this.drawTank(ctx, t, i, scene));
 
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, sx, sy);
@@ -313,13 +315,15 @@ export class Renderer {
 
     this.drawGlows(ctx, fx);
     this.drawWalls(ctx);
-    scene.tanks.forEach((t, i) => (buried[i] ? this.drawBuriedOutline(ctx, t, i) : this.drawTank(ctx, t, i, scene)));
+    scene.tanks.forEach((t, i) => (sunk[i] ? this.drawBuriedOutline(ctx, t, i) : this.drawTank(ctx, t, i, scene)));
 
     if (scene.marker) this.drawMarker(ctx, scene.marker);
-    if (scene.aim) this.drawAim(ctx, scene.aim, scene);
     if (scene.drag) this.drawDrag(ctx, scene.drag);
-    if (scene.readout) this.drawReadout(ctx, scene.readout);
-    if (scene.active >= 0) this.drawCaret(ctx, scene.tanks[scene.active], scene.active);
+    if (scene.aim) this.drawAim(ctx, scene.aim, scene);
+    if (scene.readout) this.drawReadout(ctx, scene.readout, scene);
+    if (scene.active >= 0) this.drawCaret(ctx, scene.tanks[scene.active], scene.active, scene, buried[scene.active] && scene.tags);
+    // A buried tank's next shot goes off on top of it, so it is labelled on every turn, not just its own.
+    if (scene.tags) scene.tanks.forEach((t, i) => buried[i] && i !== scene.active && this.drawBuriedTag(ctx, t, scene));
 
     if (fx) this.drawFx(ctx, fx);
     for (const p of scene.projectiles) this.drawShell(ctx, p);
@@ -507,11 +511,20 @@ export class Renderer {
     ctx.restore();
   }
 
-  drawCaret(ctx, t, i) {
+  // Just above a tank, or above the dirt piled on it, and above a shot marker sitting on it.
+  headroom(t, scene) {
+    let top = t.y - 34;
+    if (t.alive && isBuried(scene.terr.h, t)) top = Math.min(top, scene.terr.h[clamp(Math.round(t.x), 0, W)] - 10);
+    const m = scene.marker;
+    if (m && Math.abs(m.x - t.x) < 40 && m.y > top - this.css(40)) top = Math.min(top, m.y - this.css(26));
+    return top;
+  }
+
+  drawCaret(ctx, t, i, scene, buried) {
     if (!t || !t.alive) return;
     const pal = i === 0 ? PALETTE.you : PALETTE.cpu;
     const bob = this.reduced ? 0 : Math.sin(this.time * 4) * this.css(2);
-    const y = t.y - 34 - this.css(10) + bob;
+    const y = this.headroom(t, scene) - this.css(10) + bob;
     const s = this.css(5);
     ctx.fillStyle = pal.main;
     ctx.beginPath();
@@ -520,12 +533,23 @@ export class Renderer {
     ctx.lineTo(t.x, y);
     ctx.closePath();
     ctx.fill();
-    const label = i === 0 ? 'YOU' : 'CPU';
+    const label = `${i === 0 ? 'YOU' : 'CPU'}${buried ? ' · BURIED!' : ''}`;
     ctx.font = `700 ${this.css(10.5)}px ${FONT}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.fillText(label, t.x, y - s - this.css(3));
+    const half = ctx.measureText(label).width / 2 + 4;
+    const x = clamp(t.x, half, W - half);
+    if (buried) {
+      ctx.lineWidth = this.css(3);
+      ctx.strokeStyle = 'rgba(8,8,12,0.85)';
+      ctx.strokeText(label, x, y - s - this.css(3));
+    }
+    ctx.fillStyle = buried ? BURIED_INK : 'rgba(255,255,255,0.92)';
+    ctx.fillText(label, x, y - s - this.css(3));
+  }
+
+  drawBuriedTag(ctx, t, scene) {
+    this.pill(ctx, 'BURIED', t.x, this.headroom(t, scene) - this.css(2), BURIED_INK);
   }
 
   drawAim(ctx, aim, scene) {
@@ -555,9 +579,10 @@ export class Renderer {
     ctx.setLineDash([]);
   }
 
+  // The line from your barrel out to your finger: the shot goes that way, harder the longer it is.
   drawDrag(ctx, d) {
     const lw = Math.max(1.2, this.css(1.4));
-    ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.32)';
     ctx.lineWidth = lw;
     ctx.beginPath();
     ctx.moveTo(d.ax, d.ay);
@@ -591,8 +616,9 @@ export class Renderer {
     if (m.text) this.pill(ctx, m.text, m.x, m.y - r * 2.2, col);
   }
 
-  drawReadout(ctx, r) {
-    this.pill(ctx, r.text, r.x, r.y, 'rgba(255,170,120,0.95)');
+  drawReadout(ctx, r, scene) {
+    const t = scene.tanks[r.tank];
+    this.pill(ctx, r.text, t.x, this.headroom(t, scene) - this.css(36), 'rgba(255,170,120,0.95)');
   }
 
   pill(ctx, text, x, y, color) {
@@ -735,6 +761,7 @@ export class Renderer {
 }
 
 const FONT = '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif';
+const BURIED_INK = '#FFC23D';
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();

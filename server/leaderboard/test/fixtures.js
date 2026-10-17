@@ -3,8 +3,8 @@
 import { DIM_IDS, ITEMS, VERSION, scoreAnswers } from '../../../assets/apps/leadership/scoring.js';
 import { HOLD_MS, KIND, RESUME_MS, lengthRange, replay, stats, wordsForStage } from '../../../assets/apps/rush-hour/rules.js';
 import { Game } from '../../../assets/apps/scorched-borough/game.js';
-import { Brain } from '../../../assets/apps/scorched-borough/cpu.js';
-import { WEAPON_ORDER, mulberry32, simulateShot } from '../../../assets/apps/scorched-borough/physics.js';
+import { Brain, solve } from '../../../assets/apps/scorched-borough/cpu.js';
+import { WEAPON_ORDER, isBuried, mulberry32, simulateShot } from '../../../assets/apps/scorched-borough/physics.js';
 import { VERSION as SB_VERSION, validateSubmission as sbValidate } from '../../../assets/apps/scorched-borough/rules.js';
 
 // Real people don't give every statement about a trait the same answer.
@@ -91,28 +91,48 @@ const runToEnd = (gen) => {
   }
 };
 
+// A dirt bomb dropped just short of the other tank, which buries it.
+function dirtOn(game, from) {
+  const foe = game.tanks[1 - from];
+  const sol = runToEnd(solve(game.world, from, foe.x + (from === 0 ? -10 : 10)));
+  return { angle: sol.angle, power: sol.power, weapon: 'dirt' };
+}
+
+// Turn scripts for playScorched: they take over a turn by returning a shot, or leave it to the
+// Brain by returning null. Your first shot of the match buries the CPU; the CPU opens round 2 by
+// burying you. A buried Brain digs itself out like the real CPU does.
+export const BURY = {
+  cpu: (game, side) => (side === 0 && game.round === 1 && game.roundShots[0] === 0 ? dirtOn(game, 0) : null),
+  you: (game, side) => (side === 1 && game.round === 2 && game.roundShots[1] === 0 ? dirtOn(game, 1) : null),
+};
+BURY.both = (game, side) => BURY.cpu(game, side) || BURY.you(game, side);
+
 /**
  * Plays one Scorched Borough match the way the page does: the real game in live mode, stepped
  * one 60 Hz frame at a time, the CPU's Brain on its side and another Brain standing in for the
- * player (`you` sets how good). Everything comes from `seed`, so the same arguments always give
- * the same match. Returns { winner, body } where body is what the page would post.
+ * player (`you` sets how good). `script` can take over chosen turns (see BURY). Everything
+ * comes from `seed`, so the same arguments always give the same match. Returns { winner, body,
+ * backfires } where body is what the page would post and backfires lists every shot that went
+ * off on top of a buried tank.
  */
-export function playScorched({ level = 'normal', seed = 1, you = 'hard' } = {}) {
+export function playScorched({ level = 'normal', seed = 1, you = 'hard', script = null } = {}) {
   const game = new Game({ level, seed });
   const rng = mulberry32(seed ^ 0x5bd1e995);
   const brains = [new Brain(you, rng), new Brain(level, rng)];
   let clock = 0;
   let turnAt = 0;
+  const backfires = [];
   game.startRound();
   for (let guard = 0; game.phase !== 'match-over' && guard < 500000; guard++) {
     for (const e of game.drain()) {
       if (e.type === 'turn') turnAt = clock;
       if (e.type === 'round') brains.forEach((b) => b.reset());
       if (e.type === 'impact') brains[e.owner].observe(e);
+      if (e.type === 'backfire') backfires.push({ round: game.round, tank: e.tank, weapon: e.weapon, damage: e.damage, dugOut: e.dugOut });
     }
     if (game.phase === 'aim') {
       const side = game.turn;
-      const plan = runToEnd(brains[side].plan(game.world, side, 1 - side, game.ammo[side]));
+      const plan = script?.(game, side) || runToEnd(brains[side].plan(game.world, side, 1 - side, game.ammo[side]));
       clock += Math.round(brains[side].thinkTime()) + 40;
       game.fire(plan.angle, plan.power, plan.weapon, clock - turnAt);
     } else if (game.phase === 'round-over') {
@@ -136,7 +156,7 @@ export function playScorched({ level = 'normal', seed = 1, you = 'hard' } = {}) 
     if (!v.ok) throw new Error(`fixture does not replay: ${v.error}`);
     Object.assign(body, { score: v.score, detail: v.detail });
   }
-  return { winner: game.matchWinner, body };
+  return { winner: game.matchWinner, body, backfires };
 }
 
 /** The first match from `seed` on that ends the way `want` says (0: you win, 1: the CPU does). */
@@ -146,6 +166,35 @@ export function scorchedMatch({ level = 'normal', seed = 1, want = 0, you = want
     if (m.winner === want) return m.body;
   }
   throw new Error('no fixture match');
+}
+
+/**
+ * The first match from `seed` on that you win with tanks buried as `bury` says ('cpu', 'you' or
+ * 'both', see BURY), where every buried tank dug itself out by firing. Returns { body, backfires }.
+ */
+export function buriedMatch({ level = 'normal', seed = 1, bury = 'both', you = 'hard' } = {}) {
+  const sides = { cpu: [1], you: [0], both: [0, 1] }[bury];
+  for (let s = seed; s < seed + 60; s++) {
+    const m = playScorched({ level, seed: s, you, script: BURY[bury] });
+    if (m.winner === 0 && sides.every((side) => m.backfires.some((b) => b.tank === side && b.damage > 0))) return m;
+  }
+  throw new Error('no buried fixture match');
+}
+
+/** Where in a log a buried tank fired: [{ round, index, who }], in order. */
+export function buriedShots(log) {
+  const game = new Game({ level: log.level, seed: log.seed, replay: true });
+  const out = [];
+  log.rounds.forEach((round, r) => {
+    if (r === 0) game.startRound();
+    else game.nextRound();
+    round.shots.forEach(([who, a, p, w, ms], index) => {
+      if (isBuried(game.terr.h, game.tanks[who])) out.push({ round: r, index, who });
+      game.fire(a / 10, p / 10, WEAPON_ORDER[w], ms);
+      game.resolve();
+    });
+  });
+  return out;
 }
 
 /** Replays a log's rounds one by one: who won each and how many shots you fired in it. */
@@ -183,6 +232,38 @@ export function cpuSelfHitLog(log) {
         forged.rounds[0].shots[at] = [1, a, p, WEAPON_ORDER.indexOf('heavy'), shots[at][4]];
         return forged;
       }
+    }
+  }
+  return null;
+}
+
+/**
+ * Swaps the CPU's first shot in a log for a dirt bomb lobbed almost straight up, so it buries the
+ * CPU itself: no damage, but its next shot would blow up on it. Returns the forged log, or null.
+ */
+export function cpuSelfBuryLog(log) {
+  const game = new Game({ level: log.level, seed: log.seed, replay: true });
+  game.startRound();
+  const shots = log.rounds[0].shots;
+  const at = shots.findIndex((s) => s[0] === 1);
+  for (const [, a, p, w, ms] of shots.slice(0, at)) {
+    game.fire(a / 10, p / 10, WEAPON_ORDER[w], ms);
+    game.resolve();
+  }
+  const me = game.tanks[1];
+  for (let p = 150; p <= 450; p += 10) {
+    for (let a = 860; a <= 940; a += 5) {
+      const hit = simulateShot(game.world, 1, a / 10, p / 10, 'dirt');
+      if (hit.type === 'lost' || Math.abs(hit.x - me.x) > 30) continue;
+      const forged = structuredClone(log);
+      forged.rounds[0].shots[at] = [1, a, p, WEAPON_ORDER.indexOf('dirt'), shots[at][4]];
+      const check = new Game({ level: log.level, seed: log.seed, replay: true });
+      check.startRound();
+      for (const [, sa, sp, sw, ms] of forged.rounds[0].shots.slice(0, at + 1)) {
+        check.fire(sa / 10, sp / 10, WEAPON_ORDER[sw], ms);
+        check.resolve();
+      }
+      if (isBuried(check.terr.h, check.tanks[1])) return forged;
     }
   }
   return null;

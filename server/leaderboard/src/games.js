@@ -32,19 +32,20 @@ export function getGame(id) {
 // A Scorched Borough post replays the whole match, physics and all. On a fresh isolate that
 // code starts out in V8's interpreter, which roughly doubles the first post's CPU time and can
 // push it past the free plan's 10 ms. Replaying one short match while the worker starts up
-// gets it compiled before a real post arrives. This one is three rounds with every weapon, and
-// the CPU wins it, so it could never pass as a record anyway.
+// gets it compiled before a real post arrives. This one is three rounds with every weapon and
+// a buried tank on each side digging itself out, and the CPU wins it, so it could never pass
+// as a record anyway. It is the scripted match in test/units.test.js.
 const WARM_UP = [
-  [[0, 611, 821, 2], [1, 1471, 857, 1], [0, 526, 856, 1], [1, 1197, 898, 2], [0, 576, 780, 2], [1, 1383, 859, 1]],
-  [[1, 1353, 699, 0], [0, 388, 741, 0], [1, 1651, 945, 3], [0, 375, 573, 3], [1, 1290, 819, 0], [0, 601, 745, 0]],
-  [[0, 119, 934, 2], [1, 1385, 737, 1], [0, 305, 899, 1], [1, 1592, 905, 2]],
+  [[0, 536, 900, 3], [1, 1300, 620, 0], [0, 566, 970, 0], [1, 1051, 945, 0], [0, 531, 938, 2], [1, 1293, 742, 2], [0, 462, 857, 0]],
+  [[1, 1200, 979, 3], [0, 500, 620, 1], [1, 1275, 939, 0], [0, 456, 778, 0], [1, 1255, 943, 2]],
+  [[0, 208, 892, 2], [1, 1228, 818, 2], [0, 222, 986, 0], [1, 1317, 701, 0], [0, 602, 935, 2], [1, 1202, 739, 1]],
 ];
 
 try {
   sbReplay({
     v: SB_VERSION,
     level: 'hard',
-    seed: 425570,
+    seed: 520043,
     durationMs: 120_000,
     rounds: WARM_UP.map((shots, i) => ({ first: i % 2 ? 'cpu' : 'you', shots: shots.map((s) => [...s, 1500]) })),
   });

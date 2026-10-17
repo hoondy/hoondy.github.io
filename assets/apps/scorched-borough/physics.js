@@ -28,11 +28,15 @@ export const MAX_FLIGHT = 12; // safety net only: walls and bedrock stop every r
 export const SPLIT_SPREAD = 44;
 export const UNIT_M = 0.5; // one world unit in meters, for callouts
 
+// `buried` is what a shell costs the tank that fires it while buried, when it goes off on top of
+// it (see Game.backfire). The dirt soaks up some of the blast, so it hurts without being a
+// knockout from full armor. The Splitter's five bomblets all go off at once, so it costs more
+// than a plain shell and digs a smaller hole: the Standard is always the cheapest way out.
 export const WEAPONS = {
-  standard: { id: 'standard', key: '1', name: 'Standard', short: 'Standard', radius: 32, damage: 50, ammo: Infinity },
-  heavy: { id: 'heavy', key: '2', name: 'Heavy', short: 'Heavy', radius: 52, damage: 70, ammo: 3 },
-  splitter: { id: 'splitter', key: '3', name: 'Five-Borough Splitter', short: 'Splitter', radius: 26, damage: 24, ammo: 2, split: 5 },
-  dirt: { id: 'dirt', key: '4', name: 'Dirt Bomb', short: 'Dirt', radius: 58, damage: 0, ammo: 2, dirt: true },
+  standard: { id: 'standard', key: '1', name: 'Standard', short: 'Standard', radius: 32, damage: 50, ammo: Infinity, buried: 30 },
+  heavy: { id: 'heavy', key: '2', name: 'Heavy', short: 'Heavy', radius: 52, damage: 70, ammo: 3, buried: 45 },
+  splitter: { id: 'splitter', key: '3', name: 'Five-Borough Splitter', short: 'Splitter', radius: 26, damage: 24, ammo: 2, split: 5, buried: 36 },
+  dirt: { id: 'dirt', key: '4', name: 'Dirt Bomb', short: 'Dirt', radius: 58, damage: 0, ammo: 2, dirt: true, buried: 0 },
 };
 export const WEAPON_ORDER = ['standard', 'heavy', 'splitter', 'dirt'];
 
@@ -165,8 +169,13 @@ export function supportAt(h, x) {
   return top;
 }
 
+// Buried: the dirt over the middle of the tank is piled over the top of its turret, so none of
+// the gun shows. Dirt only up to the barrel is not enough: the turret and barrel stick out, and
+// the shell pushes up through the loose dirt (see launch). A tank that has just landed never
+// counts, since it rests on the highest ground under its tracks, so only a dirt pile can bury one.
+export const TURRET_TOP = PIVOT_Y + 8; // the dome reaches 7.5 above the barrel pivot
 export function isBuried(h, tank) {
-  return h[clamp(Math.round(tank.x), 0, W)] < tank.y - 9;
+  return h[clamp(Math.round(tank.x), 0, W)] < tank.y - TURRET_TOP;
 }
 
 export function pivot(tank) {
@@ -199,7 +208,9 @@ export function launch(world, owner, angle, power, weapon = 'standard') {
     t: 0,
     owner,
     weapon,
-    // A buried tank's shell pushes through the loose dirt above it until it reaches open air.
+    // A buried tank never gets this far (its shell goes off on top of it), but a barrel can still
+    // poke into a mound beside a tank. That shell pushes up through the loose dirt until it
+    // reaches open air.
     burrow: m.y >= groundAt(world.h, m.x),
     splits: Boolean(WEAPONS[weapon]?.split),
     child: false,
